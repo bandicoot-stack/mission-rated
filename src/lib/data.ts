@@ -21,30 +21,46 @@ export async function getHomepageData(): Promise<HomepageData> {
   if (!hasSupabaseEnv()) return preview;
   try {
     const supabase = await createClient();
-    const [{ data: installationRows }, { data: businessRows }] = await Promise.all([
+    const [installationResult, businessResult] = await Promise.all([
       supabase.from("installations").select("*").limit(12),
       supabase.from("businesses").select("*").limit(12),
     ]);
-    const businessesRaw = (businessRows ?? []) as Record<string, unknown>[];
+
+    if (installationResult.error || businessResult.error) {
+      console.error("Unable to load Mission Rated homepage base data", installationResult.error ?? businessResult.error);
+      return preview;
+    }
+
+    const businessesRaw = (businessResult.data ?? []) as Record<string, unknown>[];
     const ids = businessesRaw.map((row) => String(row.id)).filter(Boolean);
-    const [{ data: scores }, { data: deals }] = ids.length
-      ? await Promise.all([
-          supabase.from("business_scores").select("*").in("business_id", ids),
-          supabase.from("deals").select("*").in("business_id", ids),
-        ])
-      : [{ data: [] }, { data: [] }];
-    const scoreRows = (scores ?? []) as Record<string, unknown>[];
-    const dealRows = (deals ?? []) as Record<string, unknown>[];
+
+    let scoreRows: Record<string, unknown>[] = [];
+    let dealRows: Record<string, unknown>[] = [];
+    if (ids.length) {
+      const [scoreResult, dealResult] = await Promise.all([
+        supabase.from("business_scores").select("*").in("business_id", ids),
+        supabase.from("deals").select("*").in("business_id", ids),
+      ]);
+      if (scoreResult.error || dealResult.error) {
+        console.error("Unable to load Mission Rated score/deal data", scoreResult.error ?? dealResult.error);
+        return preview;
+      }
+      scoreRows = (scoreResult.data ?? []) as Record<string, unknown>[];
+      dealRows = (dealResult.data ?? []) as Record<string, unknown>[];
+    }
+
     const businesses = businessesRaw.flatMap((row) => {
       const score = scoreRows.find((item) => item.business_id === row.id);
       const deal = dealRows.find((item) => item.business_id === row.id);
       const item = normalizeBusiness(row, score, deal);
       return item ? [item] : [];
     });
-    const installations = ((installationRows ?? []) as Record<string, unknown>[]).flatMap((row) => {
+    const installations = ((installationResult.data ?? []) as Record<string, unknown>[]).flatMap((row) => {
       const item = normalizeInstallation(row);
       return item ? [item] : [];
     });
+
+    if (!installations.length) return preview;
     return { source: "live", installations, businesses };
   } catch (error) {
     console.error("Unable to load Mission Rated homepage data", error);
