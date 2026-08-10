@@ -1,100 +1,132 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BriefcaseBusiness, Building2, ChevronDown, GraduationCap, HandCoins, Home, Menu, Search, ShieldCheck, ShoppingBag, Tags, Truck, UtensilsCrossed, Wrench, X } from "lucide-react";
+import {
+  BriefcaseBusiness, Building2, Car, ChevronDown, GraduationCap, HandCoins,
+  HeartPulse, Home, Menu, PawPrint, Search, ShieldCheck, ShoppingBag, Tag,
+  Tickets, Truck, UtensilsCrossed, Wrench, X
+} from "lucide-react";
 import type { HomepageData } from "@/lib/types";
 import { Logo } from "./logo";
 import { BusinessCard } from "./business-card";
 
-const futureLinks = ["PCS & Housing", "Schools", "Jobs", "Marketplace", "Price Check", "Benefits"];
+const nav = [
+  ["Explore", "#explore"], ["Deals", "#deals"], ["Reviews", "#reviews"],
+  ["Resources", "#resources"], ["About", "#about"]
+] as const;
+
 const categories = [
-  { name: "Home services", icon: Home, note: "Movers, repair & more" },
-  { name: "Food & drink", icon: UtensilsCrossed, note: "Local favorites" },
-  { name: "Auto", icon: Truck, note: "Repair, sales & care" },
-  { name: "Professional", icon: BriefcaseBusiness, note: "Trusted expertise" },
-  { name: "Shopping", icon: ShoppingBag, note: "Everyday essentials" },
-  { name: "Military deals", icon: Tags, note: "Verified offers" },
+  { name: "Auto", query: "auto", icon: Car },
+  { name: "Home", query: "home", icon: Home },
+  { name: "Dining", query: "food", icon: UtensilsCrossed },
+  { name: "Health", query: "health", icon: HeartPulse },
+  { name: "Pets", query: "pet", icon: PawPrint },
+  { name: "Fitness", query: "fitness", icon: HeartPulse },
+  { name: "Services", query: "service", icon: Wrench },
+  { name: "Fun", query: "entertainment", icon: Tickets },
+];
+
+const resources = [
+  { title: "PCS & Moving", note: "Local movers, storage, transport & more", icon: Truck },
+  { title: "Schools", note: "Find the right fit for your kids", icon: GraduationCap },
+  { title: "Jobs", note: "Opportunities near your next duty station", icon: BriefcaseBusiness },
+  { title: "Housing", note: "Neighborhoods, agents and resources", icon: Home },
+  { title: "Marketplace", note: "Buy, sell and trade locally", icon: ShoppingBag },
+  { title: "Price Check", note: "Know when you're getting a fair deal", icon: Tag },
+  { title: "Benefits", note: "Maximize what you've earned", icon: ShieldCheck },
 ];
 
 export function HomePage({ data }: { data: HomepageData }) {
   const [query, setQuery] = useState("");
   const [installation, setInstallation] = useState(data.installations[0]?.id ?? "");
   const [menuOpen, setMenuOpen] = useState(false);
-  const businesses = useMemo(() => data.businesses.filter((item) => `${item.name} ${item.category} ${item.deal ?? ""}`.toLowerCase().includes(query.toLowerCase())), [data.businesses, query]);
+  const [showScore, setShowScore] = useState(false);
+
+  const activeInstallation = data.installations.find((item) => item.id === installation) ?? data.installations[0];
+  const businesses = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return data.businesses;
+    return data.businesses.filter((item) => `${item.name} ${item.category} ${item.deal ?? ""}`.toLowerCase().includes(term));
+  }, [data.businesses, query]);
+  const deals = data.businesses.filter((item) => item.deal).slice(0, 4);
+
+  function jump(id: string) {
+    document.querySelector(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
-    <main id="top">
+    <main id="top" className="app-shell">
       <header className="site-header">
         <Logo />
         <nav className="desktop-nav" aria-label="Main navigation">
-          {futureLinks.map((link) => <a href="#coming-soon" key={link}>{link}</a>)}
+          {nav.map(([label, href]) => <a href={href} key={label}>{label}</a>)}
         </nav>
+        <a className="business-cta" href="#about"><Building2 size={16} /> For Businesses</a>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Toggle navigation">{menuOpen ? <X /> : <Menu />}</button>
-        {menuOpen && <nav className="mobile-nav">{futureLinks.map((link) => <a href="#coming-soon" onClick={() => setMenuOpen(false)} key={link}>{link}</a>)}</nav>}
+        {menuOpen && <nav className="mobile-nav">{nav.map(([label, href]) => <a href={href} onClick={() => setMenuOpen(false)} key={label}>{label}</a>)}</nav>}
       </header>
 
-      <section className="hero">
-        <div className="topo" aria-hidden="true" />
-        <div className="hero-copy">
-          <span className="market-label"><span /> Now building in Hampton Roads</span>
-          <h1>Know what’s worth it.<br /><em>Wherever orders take you.</em></h1>
-          <p>Find trusted local businesses, real military deals, and community insight—organized around your installation.</p>
-          <div className="search-shell" role="search">
-            <label className="installation-select">
-              <span>Your installation</span>
-              <select value={installation} onChange={(event) => setInstallation(event.target.value)}>
-                {data.installations.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
-              </select>
-              <ChevronDown size={17} />
-            </label>
-            <label className="search-input">
-              <Search size={20} />
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search movers, dentists, deals…" />
-            </label>
-            <button onClick={() => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth" })}>Search</button>
+      <section className="dashboard-hero" id="explore">
+        <div className="hero-texture" aria-hidden="true" />
+        <div className="hero-main">
+          <span className="welcome">HAMPTON ROADS BETA</span>
+          <h1>Hampton Roads</h1>
+          <div className="hero-accent" />
+          <p>Real businesses. Honest reviews.<br />Built by the community. Free for military families.</p>
+
+          <div className="hero-search" role="search">
+            <label className="hero-query"><Search size={22} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search businesses, services, or deals…" /></label>
+            <label className="hero-install"><span>Installation</span><select value={installation} onChange={(e) => setInstallation(e.target.value)}>{data.installations.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}</select><ChevronDown size={16} /></label>
           </div>
-          <div className="hero-proof"><span><ShieldCheck size={17} /> Free for military families</span><span>Ratings can’t be bought</span><span>Community-led</span></div>
+
+          <div className="category-rail">
+            {categories.map(({ name, query: categoryQuery, icon: Icon }) => <button key={name} onClick={() => { setQuery(categoryQuery); jump("#businesses"); }} className={query.toLowerCase() === categoryQuery ? "active" : ""}><Icon /><span>{name}</span></button>)}
+            <button onClick={() => setQuery("")}><span className="more-dots">•••</span><span>More</span></button>
+          </div>
         </div>
-        <aside className="hero-panel">
-          <div className="map-card">
-            <div className="map-lines" />
-            <span className="map-label label-norfolk">Naval Station<br /><b>Norfolk</b></span>
-            <span className="map-label label-langley">JBLE<br /><b>Langley</b></span>
-            <span className="map-label label-oceana">NAS <b>Oceana</b></span>
-            <span className="map-pin pin-one" /><span className="map-pin pin-two" /><span className="map-pin pin-three" />
-            <div className="market-card"><span>01</span><div><small>FIRST MARKET</small><b>Hampton Roads</b><p>17 installations · One connected community</p></div></div>
-          </div>
+
+        <aside className="mission-score-panel">
+          <span className="panel-label">MISSION SCORE</span>
+          <button className="score-ring" onClick={() => setShowScore(!showScore)} aria-expanded={showScore}><strong>—</strong><span>COMMUNITY<br />POWERED</span></button>
+          <ul><li>Military-specific criteria</li><li>Verified community reviews</li><li>Confidence adjusted</li><li>Never influenced by payment</li></ul>
+          <button className="text-link" onClick={() => setShowScore(!showScore)}>See how it works →</button>
+          {showScore && <div className="score-explainer"><b>How scoring works</b><p>Mission Score combines trust, military knowledge, responsiveness, price transparency, PCS friendliness and recommendation signals. New businesses stay unrated until real community data exists.</p></div>}
         </aside>
       </section>
 
-      <section className="category-section section-wrap">
-        <div className="section-heading"><div><span className="eyebrow">EXPLORE LOCALLY</span><h2>What do you need today?</h2></div><a href="#coming-soon">Browse all categories →</a></div>
-        <div className="category-grid">{categories.map(({ name, icon: Icon, note }) => <button key={name} onClick={() => setQuery(name)}><span><Icon size={22} /></span><b>{name}</b><small>{note}</small></button>)}</div>
+      <section className="dashboard-grid section-wrap" id="businesses">
+        <div className="business-panel">
+          <div className="panel-heading"><div><span className="eyebrow">COMMUNITY PICKS</span><h2>Top Rated Near You</h2></div><button onClick={() => setQuery("")}>View All</button></div>
+          {data.source === "preview" && <div className="preview-notice"><Building2 size={17} /><span><b>Preview mode.</b> Placeholder businesses are clearly labeled until production data is connected.</span></div>}
+          <div className="business-grid">{businesses.slice(0, 4).map((business) => <BusinessCard key={business.id} business={business} preview={data.source === "preview"} />)}</div>
+          {!businesses.length && <div className="empty-state"><Search size={26} /><h3>No matches yet</h3><p>Try another category or clear your search.</p><button onClick={() => setQuery("")}>Clear search</button></div>}
+        </div>
+
+        <aside className="deals-panel" id="deals">
+          <div className="panel-heading"><div><span className="eyebrow">FRESH OFFERS</span><h2>Military Deals</h2></div><span className="count-pill">{deals.length}</span></div>
+          {deals.length ? deals.map((business) => <a className="deal-row" href="#businesses" key={business.id}><span className="deal-avatar">{business.name.slice(0, 2).toUpperCase()}</span><span><b>{business.name}</b><small>{business.deal}</small></span><span>→</span></a>) : <div className="deal-empty"><HandCoins /><b>Verified offers are coming online</b><p>We only show deals we can trace and verify.</p></div>}
+        </aside>
       </section>
 
-      <section className="business-section" id="businesses">
-        <div className="section-wrap">
-          <div className="section-heading"><div><span className="eyebrow">COMMUNITY PICKS</span><h2>Worth knowing near you</h2></div><p>Mission Scores come only from community signals—never ad spend.</p></div>
-          {data.source === "preview" && <div className="preview-notice"><Building2 size={18} /><span><b>Interface preview</b> Connect the production environment to display real businesses, verified deals, reviews, and Mission Scores.</span></div>}
-          <div className="business-grid">{businesses.map((business) => <BusinessCard key={business.id} business={business} preview={data.source === "preview"} />)}</div>
-          {!businesses.length && <div className="empty-state"><Search size={28} /><h3>No matches yet</h3><p>Try a broader service or category.</p></div>}
-        </div>
+      <section className="resource-strip section-wrap" id="resources">
+        {resources.map(({ title, note, icon: Icon }) => <a href="#coming-soon" key={title}><Icon /><span><b>{title}</b><small>{note}</small></span><span>→</span></a>)}
       </section>
 
-      <section className="trust-section section-wrap" id="how-it-works">
-        <div className="trust-copy"><span className="eyebrow">THE MISSION RATED PROMISE</span><h2>Trust is the product.</h2><p>Mission Rated is built to help military families make confident local decisions. Businesses help fund the platform—but the score always belongs to the community.</p><a href="#principles">How Mission Scores work →</a></div>
-        <div className="principle-list" id="principles">
-          <article><span>01</span><div><h3>Families always use it free</h3><p>No subscription, paywall, or premium tier for military families.</p></div></article>
-          <article><span>02</span><div><h3>Visibility is not credibility</h3><p>Businesses may pay for clearly labeled promotion. Payment never changes Mission Score.</p></div></article>
-          <article><span>03</span><div><h3>Community ownership matters</h3><p>Military spouse-owned businesses receive visibility without paying for placement.</p></div></article>
-        </div>
+      <section className="trust-band section-wrap" id="reviews">
+        <div className="trust-title"><ShieldCheck /><div><span className="eyebrow">MISSION RATED PROMISE</span><h2>By military families, for military families.</h2></div></div>
+        <div className="trust-points"><div><b>Free for Military Families</b><span>Always and forever.</span></div><div><b>Mission Scores Are Never for Sale</b><span>Honest. Transparent. Trusted.</span></div><div><b>Businesses Pay for Visibility</b><span>Not ratings. Never influence.</span></div></div>
+      </section>
+
+      <section className="about-panel section-wrap" id="about">
+        <div><span className="eyebrow">THIS IS YOUR COMMUNITY</span><h2>Help it grow.</h2><p>Share real experiences, support great local businesses, and help the next military family make a confident decision.</p><div className="action-row"><a href="#coming-soon" className="primary-action">Add a Review</a><a href="#coming-soon" className="secondary-action">Claim Your Business</a></div></div>
+        <div className="promise-card"><b>THE PROMISE</b><ul><li>Families use Mission Rated free</li><li>Businesses may pay for visibility, never ratings</li><li>Reviews and scores belong to the community</li><li>Deals must be verifiable</li></ul></div>
       </section>
 
       <section className="coming-section" id="coming-soon">
-        <div className="section-wrap coming-inner"><div><span className="eyebrow">THE NEXT CHAPTER</span><h2>Your whole community,<br />one trusted starting point.</h2></div><div className="coming-grid"><span><Home /> PCS & Housing</span><span><GraduationCap /> Schools</span><span><BriefcaseBusiness /> Jobs</span><span><ShoppingBag /> Marketplace</span><span><HandCoins /> Price Check</span><span><Wrench /> Benefits</span></div></div>
+        <div className="section-wrap coming-inner"><div><span className="eyebrow">NEXT CAPABILITIES</span><h2>One trusted starting point for military life.</h2><p>PCS, housing, schools, jobs, marketplace, price checks and benefits will plug into the same installation-first experience.</p></div><a href="#top">Back to Hampton Roads ↑</a></div>
       </section>
 
-      <footer><Logo /><p>Made for the military community. Built with independence.</p><span>© 2026 Mission Rated</span></footer>
+      <footer><Logo /><p>{activeInstallation ? `Exploring around ${activeInstallation.name}` : "Hampton Roads beta"}</p><span>© 2026 Mission Rated</span></footer>
     </main>
   );
 }
