@@ -9,11 +9,12 @@ This file is an operational snapshot for the Hampton Roads beta. Supabase, GitHu
 - Businesses: 14
 - External business signals: 10
 - Hampton Roads installations: 5
-- Installation signals: 12
+- Installation signals: 14
 - Mission Rated community reviews: 0
 - Deals: 0
 - Latest external business signal observed: 2026-08-10T01:27:55Z
-- Latest installation signal observed: 2026-08-10T00:37:49Z
+- Latest installation signal observed: 2026-08-10T08:34:43Z
+- Added official Navy MWR childcare operating-hour signals for Naval Station Norfolk (Willoughby CDC) and Naval Medical Center Portsmouth (Portsmouth CDC).
 
 ## Data integrity rules
 
