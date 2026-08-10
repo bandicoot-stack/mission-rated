@@ -9,11 +9,12 @@ This file is an operational snapshot for the Hampton Roads beta. Supabase, GitHu
 - Businesses: 14
 - External business signals: 10
 - Hampton Roads installations: 5
-- Installation signals: 15
+- Installation signals: 16
 - Mission Rated community reviews: 0
 - Deals: 0
 - Latest external business signal observed: 2026-08-10T01:27:55Z
-- Latest installation signal observed: 2026-08-10T09:37:49Z
+- Latest installation signal observed: 2026-08-10T10:35:00Z
+- Added official Naval Medical Center Portsmouth base-access requirements from the NMCP/TRICARE visitor guidance, including visitor screening and vehicle documentation requirements.
 - Added official JBLE gate-access operating-hour signal covering Langley and Eustis from the Joint Base Langley-Eustis website.
 - Added official Navy MWR childcare operating-hour signals for Naval Station Norfolk (Willoughby CDC) and Naval Medical Center Portsmouth (Portsmouth CDC).
 
@@ -42,4 +43,4 @@ This file is an operational snapshot for the Hampton Roads beta. Supabase, GitHu
 
 ## Repository privacy
 
-Repository visibility was still public at verification time. The founder has requested private visibility; changing repository visibility remains an owner/admin settings action and should be verified after it is changed.
+Repository visibility is still public as of this verification. The founder has requested private visibility; changing repository visibility remains an owner/admin settings action and should be verified after it is changed.
