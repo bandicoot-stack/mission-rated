@@ -5,7 +5,7 @@ const hasHttps=(v:unknown)=>typeof v==='string'&&/^https:\/\//i.test(v)
 const host=(v:unknown)=>{try{return hasHttps(v)?new URL(String(v)).hostname.replace(/^www\./,''):''}catch{return''}}
 const officialBusinessSource=(website:unknown,source:unknown)=>{const sh=host(source),wh=host(website);return !!sh&&(sh.endsWith('.gov')||sh.endsWith('.mil')|| (!!wh&&(sh===wh||sh.endsWith('.'+wh))))}
 const officialSchoolSource=(...values:unknown[])=>values.some(v=>{const h=host(v);return !!h&&(h.endsWith('.gov')||h.endsWith('.virginia.gov')||h==='virginia.gov')})
-const dealWeight=(x:any)=>{const t=`${x.offer_value_text||''} ${x.title||''}`.toLowerCase();if(/free\b|100%/.test(t))return 100;const p=t.match(/(\d+(?:\.\d+)?)\s*%/);if(p)return Math.min(90,Number(p[1]));const d=t.match(/\$(\d+(?:\.\d+)?)/);if(d)return Math.min(80,Number(d[1])*2);return 10}
+const dealWeight=(x:any)=>{const t=`${x.offer_value_text||''} ${x.title||''}`.toLowerCase();if(/free\b|100%/.test(t))return 100;const p=t.match(/(\d+(?:\.\d+)?)\s*%\s*off\b/);if(p)return Math.min(90,Number(p[1]));const d=t.match(/\$(\d+(?:\.\d+)?)\s*off\b/);if(d)return Math.min(80,Number(d[1])*2);const pct=t.match(/(\d+(?:\.\d+)?)\s*%/);if(pct&&/\bdiscount\b|\bsavings?\b|\boff\b/.test(t))return Math.min(90,Number(pct[1]));return 10}
 let memoryCache:string|null=null
 let memoryCacheAt=0
 const CACHE_MS=5*60*1000
