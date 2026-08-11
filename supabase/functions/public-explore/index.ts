@@ -17,54 +17,32 @@ Deno.serve(async (req)=>{
    s.from('deals').select('id,business_id,title,description,offer_value_text,source_url,verified_at,ends_at,businesses(name,city)').eq('active',true).not('verified_at','is',null).or(`ends_at.is.null,ends_at.gte.${nowIso}`).order('verified_at',{ascending:false}).limit(30),
    s.from('school_districts').select('id,name,locality,official_profile_url,summary,confidence,observed_at').order('name').limit(30),
    s.from('installations').select('id,name,branch,city,state').eq('active',true).order('name').limit(30),
-   s.from('school_district_signals').select('school_district_id,signal_label,numeric_value,text_value,unit,source_name,source_url,observed_at,confidence').order('observed_at',{ascending:false}),
+   s.from('school_district_signals').select('school_district_id,signal_key,signal_label,numeric_value,text_value,unit,source_name,source_url,observed_at,confidence').order('observed_at',{ascending:false}),
    s.from('installation_signals').select('installation_id,signal_key,signal_label,numeric_value,text_value,unit,source_name,source_url,source_type,observed_at,confidence').order('observed_at',{ascending:false})
   ])
   for(const x of [b,d,sc,i,ss,isig]) if(x.error) throw x.error
 
-  const latestSchool = new Map<string, any>()
-  for(const sig of ss.data||[]) if(!latestSchool.has(sig.school_district_id)) latestSchool.set(sig.school_district_id,sig)
+  const signalsBySchool = new Map<string, any[]>()
+  for(const sig of ss.data||[]){ const arr=signalsBySchool.get(sig.school_district_id)||[]; arr.push(sig); signalsBySchool.set(sig.school_district_id,arr) }
   const latestInstallation = new Map<string, any>()
   const installationSignalCounts = new Map<string, number>()
-  for(const sig of isig.data||[]){
-    installationSignalCounts.set(sig.installation_id,(installationSignalCounts.get(sig.installation_id)||0)+1)
-    if(!latestInstallation.has(sig.installation_id)) latestInstallation.set(sig.installation_id,sig)
-  }
+  for(const sig of isig.data||[]){ installationSignalCounts.set(sig.installation_id,(installationSignalCounts.get(sig.installation_id)||0)+1); if(!latestInstallation.has(sig.installation_id)) latestInstallation.set(sig.installation_id,sig) }
   const activeDealBusinessIds = new Set((d.data||[]).map((deal:any)=>deal.business_id).filter(Boolean))
 
   const schools=(sc.data||[]).map((school:any)=>{
-    const sig=latestSchool.get(school.id)
-    if(!sig) return school
+    const sigs=signalsBySchool.get(school.id)||[]
+    const sig=sigs[0]
+    const purple=sigs.find((x:any)=>String(x.signal_key||'').toLowerCase().includes('purple') || String(x.signal_label||'').toLowerCase().includes('purple star'))
+    const base:any={...school,signal_count:sigs.length,purple_star:purple?{label:purple.signal_label,text:purple.text_value,value:purple.numeric_value,source_name:purple.source_name,source_url:purple.source_url,observed_at:purple.observed_at,confidence:purple.confidence}:null}
+    if(!sig) return base
     const parts=[sig.text_value, sig.numeric_value!=null ? `${sig.numeric_value}${sig.unit?` ${sig.unit}`:''}` : null].filter(Boolean)
-    return {...school,
-      summary: parts.length ? `${parts.join(' • ')}. ${school.summary||''}`.trim() : school.summary,
-      latest_signal:{label:sig.signal_label,value:sig.numeric_value,text:sig.text_value,unit:sig.unit,source_name:sig.source_name,source_url:sig.source_url,observed_at:sig.observed_at,confidence:sig.confidence}
-    }
+    return {...base,summary:parts.length?`${parts.join(' • ')}. ${school.summary||''}`.trim():school.summary,latest_signal:{key:sig.signal_key,label:sig.signal_label,value:sig.numeric_value,text:sig.text_value,unit:sig.unit,source_name:sig.source_name,source_url:sig.source_url,observed_at:sig.observed_at,confidence:sig.confidence}}
   })
 
-  const installations=(i.data||[]).map((installation:any)=>{
-    const sig=latestInstallation.get(installation.id)
-    return {...installation,
-      signal_count:installationSignalCounts.get(installation.id)||0,
-      latest_signal:sig?{key:sig.signal_key,label:sig.signal_label,value:sig.numeric_value,text:sig.text_value,unit:sig.unit,source_name:sig.source_name,source_url:sig.source_url,source_type:sig.source_type,observed_at:sig.observed_at,confidence:sig.confidence}:null
-    }
-  })
+  const installations=(i.data||[]).map((installation:any)=>{ const sig=latestInstallation.get(installation.id); return {...installation,signal_count:installationSignalCounts.get(installation.id)||0,latest_signal:sig?{key:sig.signal_key,label:sig.signal_label,value:sig.numeric_value,text:sig.text_value,unit:sig.unit,source_name:sig.source_name,source_url:sig.source_url,source_type:sig.source_type,observed_at:sig.observed_at,confidence:sig.confidence}:null} })
+  const deals=(d.data||[]).map((deal:any)=>({...deal,description:[deal.description,`Verified ${day(deal.verified_at)}.`,deal.ends_at?`Listed end date ${day(deal.ends_at)}.`:null].filter(Boolean).join(' ')}))
+  const businesses=(b.data||[]).map((biz:any)=>({...biz,has_active_military_offer:activeDealBusinessIds.has(biz.id),source_freshness:biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}`:null,description:[biz.description,activeDealBusinessIds.has(biz.id)?'Verified military offer currently tracked in Military Value.':null,biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}.`:null].filter(Boolean).join(' ')}))
 
-  const deals=(d.data||[]).map((deal:any)=>({
-    ...deal,
-    description:[deal.description,`Verified ${day(deal.verified_at)}.`,deal.ends_at?`Listed end date ${day(deal.ends_at)}.`:null].filter(Boolean).join(' ')
-  }))
-
-  const businesses=(b.data||[]).map((biz:any)=>({
-    ...biz,
-    has_active_military_offer:activeDealBusinessIds.has(biz.id),
-    source_freshness:biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}`:null,
-    description:[biz.description,activeDealBusinessIds.has(biz.id)?'Verified military offer currently tracked in Military Value.':null,biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}.`:null].filter(Boolean).join(' ')
-  }))
-
-  return new Response(JSON.stringify({businesses,deals,schools,installations,meta:{generated_at:new Date().toISOString(),school_signals:(ss.data||[]).length,installation_signals:(isig.data||[]).length}}),{headers})
- }catch(e){
-  console.error('public-explore',e)
-  return new Response(JSON.stringify({businesses:[],deals:[],schools:[],installations:[]}),{status:500,headers})
- }
+  return new Response(JSON.stringify({businesses,deals,schools,installations,meta:{generated_at:new Date().toISOString(),school_signals:(ss.data||[]).length,installation_signals:(isig.data||[]).length,purple_star_districts:schools.filter((x:any)=>x.purple_star).length}}),{headers})
+ }catch(e){ console.error('public-explore',e); return new Response(JSON.stringify({businesses:[],deals:[],schools:[],installations:[]}),{status:500,headers}) }
 })
