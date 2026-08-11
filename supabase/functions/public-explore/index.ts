@@ -41,8 +41,17 @@ Deno.serve(async (req)=>{
 
   const installations=(i.data||[]).map((installation:any)=>{ const sig=latestInstallation.get(installation.id); return {...installation,signal_count:installationSignalCounts.get(installation.id)||0,latest_signal:sig?{key:sig.signal_key,label:sig.signal_label,value:sig.numeric_value,text:sig.text_value,unit:sig.unit,source_name:sig.source_name,source_url:sig.source_url,source_type:sig.source_type,observed_at:sig.observed_at,confidence:sig.confidence}:null} })
   const deals=(d.data||[]).map((deal:any)=>({...deal,description:[deal.description,`Verified ${day(deal.verified_at)}.`,deal.ends_at?`Listed end date ${day(deal.ends_at)}.`:null].filter(Boolean).join(' ')}))
-  const businesses=(b.data||[]).map((biz:any)=>({...biz,has_active_military_offer:activeDealBusinessIds.has(biz.id),source_freshness:biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}`:null,description:[biz.description,activeDealBusinessIds.has(biz.id)?'Verified military offer currently tracked in Military Value.':null,biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}.`:null].filter(Boolean).join(' ')}))
+  const businesses=(b.data||[]).map((biz:any)=>{
+    const hasSource=typeof biz.source_url==='string' && /^https:\/\//i.test(biz.source_url)
+    return {...biz,
+      has_active_military_offer:activeDealBusinessIds.has(biz.id),
+      provenance_status:hasSource?'sourced':'source_pending',
+      source_freshness:hasSource&&biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}`:null,
+      description:[biz.description,activeDealBusinessIds.has(biz.id)?'Verified military offer currently tracked in Military Value.':null,hasSource&&biz.source_checked_at?`Source checked ${day(biz.source_checked_at)}.`:null].filter(Boolean).join(' ')
+    }
+  })
+  const sourcedBusinesses=businesses.filter((biz:any)=>biz.provenance_status==='sourced').length
 
-  return new Response(JSON.stringify({businesses,deals,schools,installations,meta:{generated_at:new Date().toISOString(),school_signals:(ss.data||[]).length,installation_signals:(isig.data||[]).length,purple_star_districts:schools.filter((x:any)=>x.purple_star).length}}),{headers})
+  return new Response(JSON.stringify({businesses,deals,schools,installations,meta:{generated_at:new Date().toISOString(),school_signals:(ss.data||[]).length,installation_signals:(isig.data||[]).length,purple_star_districts:schools.filter((x:any)=>x.purple_star).length,sourced_businesses:sourcedBusinesses,source_pending_businesses:businesses.length-sourcedBusinesses}}),{headers})
  }catch(e){ console.error('public-explore',e); return new Response(JSON.stringify({businesses:[],deals:[],schools:[],installations:[]}),{status:500,headers}) }
 })
