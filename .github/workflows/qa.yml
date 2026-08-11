@@ -53,6 +53,8 @@ jobs:
                       errors.append(f'{path}: target=_blank link missing noopener noreferrer')
 
               for attr, target in re.findall(r'\b(href|src)=["\']([^"\']+)["\']', text, flags=re.I):
+                  if '${' in target:
+                      continue
                   if target.startswith(('#', 'https://', 'mailto:', 'tel:', 'data:', 'javascript:')):
                       continue
                   clean = target.split('#', 1)[0].split('?', 1)[0].lstrip('/')
