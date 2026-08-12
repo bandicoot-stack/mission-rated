@@ -30,7 +30,8 @@ jobs:
 
           root = pathlib.Path('.')
           dist = root / 'dist'
-          core = ['index.html', 'military-value.html', 'schools.html', 'bases.html', 'sitemap.xml', 'robots.txt', 'feedback.js', 'rankings.js']
+          html_names = ['index.html', 'military-value.html', 'schools.html', 'bases.html']
+          core = html_names + ['sitemap.xml', 'robots.txt', 'feedback.js', 'rankings.js']
           errors = []
 
           for name in core:
@@ -53,17 +54,19 @@ jobs:
 
           feedback = (root / 'feedback.js').read_text(encoding='utf-8') if (root / 'feedback.js').exists() else ''
           rankings = (root / 'rankings.js').read_text(encoding='utf-8') if (root / 'rankings.js').exists() else ''
-          built_index = (dist / 'index.html').read_text(encoding='utf-8') if (dist / 'index.html').exists() else ''
           if 'submit-beta-feedback' not in feedback:
               errors.append('feedback.js missing submit-beta-feedback endpoint')
           if 'mrFeedbackButton' not in feedback:
               errors.append('feedback.js missing feedback control')
-          if '/feedback.js' not in built_index:
-              errors.append('dist/index.html missing feedback.js')
-          if 'MR OPEN' not in rankings or 'businessOpen' not in rankings or 'baseOpen' not in rankings:
+          if 'MR OPEN' not in rankings or 'businessOpen' not in rankings or 'baseOpen' not in rankings or 'schoolOpen' not in rankings:
               errors.append('rankings.js missing transparent MR ranking logic')
-          if '/rankings.js' not in built_index:
-              errors.append('dist/index.html missing rankings.js')
+
+          for name in html_names:
+              built = (dist / name).read_text(encoding='utf-8') if (dist / name).exists() else ''
+              if '/feedback.js' not in built:
+                  errors.append(f'dist/{name} missing feedback.js')
+              if '/rankings.js' not in built:
+                  errors.append(f'dist/{name} missing rankings.js')
 
           html_files = sorted(root.glob('*.html'))
           for path in html_files:
