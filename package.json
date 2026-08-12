@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "build": "node scripts/build-all.mjs"
+    "build": "node scripts/build-all.mjs",
+    "qa": "npm run build && node scripts/qa.mjs"
   },
   "engines": {
     "node": ">=20"

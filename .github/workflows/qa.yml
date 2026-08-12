@@ -4,90 +4,23 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: mission-rated-qa-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   static-qa:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - name: Build production artifact
-        run: npm run build
-      - name: Validate release files and trust-safe HTML
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import json, pathlib, re, sys
-          root=pathlib.Path('.'); dist=root/'dist'
-          html_names=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html','community.html','buy-a-car.html','support.html']
-          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js','support-ui.js','auto-dealers.js','value-priority.js','live-trust-controls.js','discovery-sort.js','evidence-freshness.js']
-          errors=[]
-          for name in core:
-              if not (root/name).is_file(): errors.append(f'missing source release file: {name}')
-              if not (dist/name).is_file(): errors.append(f'missing built release file: dist/{name}')
-          try: json.loads((root/'vercel.json').read_text())
-          except Exception as exc: errors.append(f'invalid vercel.json: {exc}')
-          feedback=(root/'feedback.js').read_text() if (root/'feedback.js').exists() else ''
-          rankings=(root/'rankings.js').read_text() if (root/'rankings.js').exists() else ''
-          quick=(root/'quick-vote.js').read_text() if (root/'quick-vote.js').exists() else ''
-          reviews=(root/'reviews.js').read_text() if (root/'reviews.js').exists() else ''
-          lifestyle=(root/'lifestyle-nav.js').read_text() if (root/'lifestyle-nav.js').exists() else ''
-          support_ui=(root/'support-ui.js').read_text() if (root/'support-ui.js').exists() else ''
-          auto=(root/'auto-dealers.js').read_text() if (root/'auto-dealers.js').exists() else ''
-          trust=(root/'live-trust-controls.js').read_text() if (root/'live-trust-controls.js').exists() else ''
-          discovery=(root/'discovery-sort.js').read_text() if (root/'discovery-sort.js').exists() else ''
-          freshness=(root/'evidence-freshness.js').read_text() if (root/'evidence-freshness.js').exists() else ''
-          if 'submit-beta-feedback' not in feedback: errors.append('feedback endpoint missing')
-          if 'MR OPEN' not in rankings: errors.append('MR ranking logic missing')
-          if 'quick-rank-vote' not in quick or '▲' not in quick or '▼' not in quick: errors.append('quick sentiment controls missing')
-          if 'submit-item-review' not in reviews or 'Pending / Unverified' not in reviews: errors.append('review submission/trust UX missing')
-          if all(x not in lifestyle for x in ['LIVE','SUPPORT','SAVE']): errors.append('lifestyle navigation missing LIVE/SUPPORT/SAVE')
-          if '/support' not in lifestyle or '/buy-a-car' not in lifestyle or '/community' not in lifestyle: errors.append('lifestyle nav missing support/car/community routes')
-          if 'MR Building' not in support_ui or 'Official Source Verified' not in support_ui or 'supportQ' not in support_ui: errors.append('support hub missing MR trust/search UX')
-          for token in ['Official Source Verified','User Verified','Unsourced public ratings are suppressed','Military evidence first','MR Building']:
-              if token not in auto: errors.append(f'auto dealer trust UX missing {token}')
-          if 'public-auto-dealers' not in auto: errors.append('auto dealer live Supabase endpoint missing')
-          for token in ['Official source','Military value','Public rating','Fresh evidence','Newest source','Live better. Get support. Save more.','public-explore','mrEvidenceDate']:
-              if token not in trust: errors.append(f'live trust controls missing {token}')
-          if "age<=30" not in trust.replace(' ',''): errors.append('fresh evidence filter must enforce 30-day window')
-          if "className='mrFreshness'" in trust or 'className="mrFreshness"' in trust: errors.append('trust script must not shadow evidence-freshness badge class')
-          for token in ['Strongest military value','Highest sourced public rating','Most public reviews','Official-source evidence first','Strongest verified value','Most recently verified','MR Building','Public rating sourced','public-explore']:
-              if token not in discovery: errors.append(f'discovery sorting missing {token}')
-          for token in ['Evidence fresh','Evidence ${d}d old','Freshness reflects the newest stored source observation','public-explore']:
-              if token not in freshness: errors.append(f'evidence freshness UX missing {token}')
-          for name in html_names:
-              built=(dist/name).read_text() if (dist/name).exists() else ''
-              if '/feedback.js' not in built: errors.append(f'dist/{name} missing feedback.js')
-              if '/lifestyle-nav.js' not in built: errors.append(f'dist/{name} missing lifestyle-nav.js')
-          index=(dist/'index.html').read_text() if (dist/'index.html').exists() else ''
-          for script in ['/live-trust-controls.js','/value-priority.js','/discovery-sort.js','/evidence-freshness.js']:
-              if script not in index: errors.append(f'dist/index.html missing {script}')
-          if '/support-ui.js' not in (dist/'support.html').read_text(): errors.append('dist/support.html missing support-ui.js')
-          if '/auto-dealers.js' not in (dist/'buy-a-car.html').read_text(): errors.append('dist/buy-a-car.html missing auto-dealers.js')
-          for name in ['index.html','military-value.html','schools.html','bases.html']:
-              built=(dist/name).read_text() if (dist/name).exists() else ''
-              if '/evidence-freshness.js' not in built: errors.append(f'dist/{name} missing evidence-freshness.js')
-          for name in ['index.html','military-value.html','schools.html','bases.html','neighborhoods.html']:
-              built=(dist/name).read_text() if (dist/name).exists() else ''
-              if '/reviews.js' not in built: errors.append(f'dist/{name} missing reviews.js')
-          for path in sorted(root.glob('*.html')):
-              text=path.read_text(); low=text.lower()
-              if '<html' not in low or 'lang="en"' not in low: errors.append(f'{path}: missing lang')
-              if 'name="viewport"' not in low: errors.append(f'{path}: missing viewport')
-              if 'http://' in low: errors.append(f'{path}: insecure URL')
-              for match in re.finditer(r'<a\b[^>]*target=["\']_blank["\'][^>]*>',text,flags=re.I):
-                  tag=match.group(0).lower()
-                  if 'rel="noopener noreferrer"' not in tag and "rel='noopener noreferrer'" not in tag: errors.append(f'{path}: target blank missing rel')
-          sitemap=(root/'sitemap.xml').read_text() if (root/'sitemap.xml').exists() else ''
-          for route in ['/military-value','/schools','/bases','/neighborhoods','/community','/buy-a-car','/support']:
-              if route not in sitemap: errors.append(f'sitemap missing {route}')
-          if errors:
-              print('Mission Rated static QA failed:'); [print(' - '+x) for x in sorted(set(errors))]; sys.exit(1)
-          print('Mission Rated QA passed: fresh-evidence trust filtering, evidence freshness, evidence-aware sorting, lifestyle frontend, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
-          PY
+      - name: Build and validate release
+        run: npm run qa
