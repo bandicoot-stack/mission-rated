@@ -30,7 +30,7 @@ jobs:
 
           root = pathlib.Path('.')
           dist = root / 'dist'
-          core = ['index.html', 'military-value.html', 'schools.html', 'bases.html', 'sitemap.xml', 'robots.txt']
+          core = ['index.html', 'military-value.html', 'schools.html', 'bases.html', 'sitemap.xml', 'robots.txt', 'feedback.js']
           errors = []
 
           for name in core:
@@ -50,6 +50,15 @@ jobs:
                   errors.append('dist/release.json missing git_sha')
           except Exception as exc:
               errors.append(f'invalid dist/release.json: {exc}')
+
+          feedback = (root / 'feedback.js').read_text(encoding='utf-8') if (root / 'feedback.js').exists() else ''
+          built_index = (dist / 'index.html').read_text(encoding='utf-8') if (dist / 'index.html').exists() else ''
+          if 'submit-beta-feedback' not in feedback:
+              errors.append('feedback.js missing submit-beta-feedback endpoint')
+          if 'mrFeedbackButton' not in feedback:
+              errors.append('feedback.js missing feedback control')
+          if '/feedback.js' not in built_index:
+              errors.append('dist/index.html missing feedback.js')
 
           html_files = sorted(root.glob('*.html'))
           for path in html_files:
@@ -82,5 +91,5 @@ jobs:
                   print(f' - {error}')
               sys.exit(1)
 
-          print(f'Mission Rated QA passed for {len(html_files)} HTML pages and deterministic Vercel artifact.')
+          print(f'Mission Rated QA passed for {len(html_files)} HTML pages, feedback controls, and deterministic Vercel artifact.')
           PY
