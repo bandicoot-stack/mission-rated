@@ -25,8 +25,8 @@ jobs:
           python3 - <<'PY'
           import json, pathlib, re, sys
           root=pathlib.Path('.'); dist=root/'dist'
-          html_names=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html']
-          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js']
+          html_names=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html','community.html','buy-a-car.html']
+          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js']
           errors=[]
           for name in core:
               if not (root/name).is_file(): errors.append(f'missing source release file: {name}')
@@ -37,13 +37,19 @@ jobs:
           rankings=(root/'rankings.js').read_text() if (root/'rankings.js').exists() else ''
           quick=(root/'quick-vote.js').read_text() if (root/'quick-vote.js').exists() else ''
           reviews=(root/'reviews.js').read_text() if (root/'reviews.js').exists() else ''
+          lifestyle=(root/'lifestyle-nav.js').read_text() if (root/'lifestyle-nav.js').exists() else ''
           if 'submit-beta-feedback' not in feedback: errors.append('feedback endpoint missing')
           if 'MR OPEN' not in rankings: errors.append('MR ranking logic missing')
           if 'quick-rank-vote' not in quick or '▲' not in quick or '▼' not in quick: errors.append('quick sentiment controls missing')
           if 'submit-item-review' not in reviews or 'Pending / Unverified' not in reviews: errors.append('review submission/trust UX missing')
+          if all(x not in lifestyle for x in ['LIVE','SUPPORT','SAVE']): errors.append('lifestyle navigation missing LIVE/SUPPORT/SAVE')
+          if '/buy-a-car' not in lifestyle or '/community' not in lifestyle: errors.append('lifestyle nav missing car/community routes')
           for name in html_names:
               built=(dist/name).read_text() if (dist/name).exists() else ''
               if '/feedback.js' not in built: errors.append(f'dist/{name} missing feedback.js')
+              if '/lifestyle-nav.js' not in built: errors.append(f'dist/{name} missing lifestyle-nav.js')
+          for name in ['index.html','military-value.html','schools.html','bases.html','neighborhoods.html']:
+              built=(dist/name).read_text() if (dist/name).exists() else ''
               if '/reviews.js' not in built: errors.append(f'dist/{name} missing reviews.js')
           for path in sorted(root.glob('*.html')):
               text=path.read_text(); low=text.lower()
@@ -53,7 +59,10 @@ jobs:
               for match in re.finditer(r'<a\b[^>]*target=["\']_blank["\'][^>]*>',text,flags=re.I):
                   tag=match.group(0).lower()
                   if 'rel="noopener noreferrer"' not in tag and "rel='noopener noreferrer'" not in tag: errors.append(f'{path}: target blank missing rel')
+          sitemap=(root/'sitemap.xml').read_text() if (root/'sitemap.xml').exists() else ''
+          for route in ['/military-value','/schools','/bases','/neighborhoods','/community','/buy-a-car']:
+              if route not in sitemap: errors.append(f'sitemap missing {route}')
           if errors:
               print('Mission Rated static QA failed:'); [print(' - '+x) for x in sorted(set(errors))]; sys.exit(1)
-          print('Mission Rated QA passed: neighborhoods, reviews, sentiment, rankings, feedback, and release artifact.')
+          print('Mission Rated QA passed: full lifestyle frontend, reviews, rankings, trust states, mobile navigation, sitemap, and release artifact.')
           PY
