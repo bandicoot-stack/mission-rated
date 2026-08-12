@@ -14,6 +14,11 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build production artifact
+        run: npm run build
       - name: Validate release files and trust-safe HTML
         shell: bash
         run: |
@@ -24,17 +29,27 @@ jobs:
           import sys
 
           root = pathlib.Path('.')
-          core = ['index.html', 'military-value.html', 'schools.html', 'bases.html', 'vercel.json']
+          dist = root / 'dist'
+          core = ['index.html', 'military-value.html', 'schools.html', 'bases.html', 'sitemap.xml', 'robots.txt']
           errors = []
 
           for name in core:
               if not (root / name).is_file():
-                  errors.append(f'missing core release file: {name}')
+                  errors.append(f'missing source release file: {name}')
+              if not (dist / name).is_file():
+                  errors.append(f'missing built release file: dist/{name}')
 
           try:
               json.loads((root / 'vercel.json').read_text())
           except Exception as exc:
               errors.append(f'invalid vercel.json: {exc}')
+
+          try:
+              rel = json.loads((dist / 'release.json').read_text())
+              if not rel.get('git_sha'):
+                  errors.append('dist/release.json missing git_sha')
+          except Exception as exc:
+              errors.append(f'invalid dist/release.json: {exc}')
 
           html_files = sorted(root.glob('*.html'))
           for path in html_files:
@@ -67,5 +82,5 @@ jobs:
                   print(f' - {error}')
               sys.exit(1)
 
-          print(f'Mission Rated static QA passed for {len(html_files)} HTML pages and Vercel config.')
+          print(f'Mission Rated QA passed for {len(html_files)} HTML pages and deterministic Vercel artifact.')
           PY
