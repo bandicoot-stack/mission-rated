@@ -1,16 +1,8 @@
 import { mkdir, rm, copyFile, writeFile, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
-const files = [
-  'index.html',
-  'military-value.html',
-  'schools.html',
-  'bases.html',
-  'sitemap.xml',
-  'robots.txt',
-  'feedback.js',
-  'rankings.js'
-];
+const htmlFiles = ['index.html', 'military-value.html', 'schools.html', 'bases.html'];
+const files = [...htmlFiles, 'sitemap.xml', 'robots.txt', 'feedback.js', 'rankings.js'];
 
 await rm('dist', { recursive: true, force: true });
 await mkdir('dist', { recursive: true });
@@ -20,15 +12,13 @@ for (const file of files) {
   await copyFile(file, `dist/${file}`);
 }
 
-const indexPath = 'dist/index.html';
-let index = await readFile(indexPath, 'utf8');
-if (!index.includes('feedback.js')) {
-  index = index.replace('</body>', '<script src="/feedback.js" defer></script>\n</body>');
+for (const file of htmlFiles) {
+  const path = `dist/${file}`;
+  let html = await readFile(path, 'utf8');
+  if (!html.includes('feedback.js')) html = html.replace('</body>', '<script src="/feedback.js" defer></script>\n</body>');
+  if (!html.includes('rankings.js')) html = html.replace('</body>', '<script src="/rankings.js" defer></script>\n</body>');
+  await writeFile(path, html);
 }
-if (!index.includes('rankings.js')) {
-  index = index.replace('</body>', '<script src="/rankings.js" defer></script>\n</body>');
-}
-await writeFile(indexPath, index);
 
 const sha = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || 'local';
 const release = {
