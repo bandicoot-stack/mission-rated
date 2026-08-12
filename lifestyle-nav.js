@@ -8,7 +8,7 @@ const style=document.createElement('style');style.id='mrLifestyleNavStyle';style
 const p=location.pathname.replace(/\/$/,'')||'/';
 const items=[
  {href:'/neighborhoods',icon:'⌂',label:'LIVE',match:['/neighborhoods']},
- {href:'/bases',icon:'✚',label:'SUPPORT',match:['/bases','/schools']},
+ {href:'/support',icon:'✚',label:'SUPPORT',match:['/support','/bases','/schools']},
  {href:'/military-value',icon:'$',label:'SAVE',match:['/military-value']},
  {href:'/community',icon:'★',label:'REVIEWS',match:['/community']},
  {href:'/buy-a-car',icon:'▣',label:'CARS',match:['/buy-a-car']}
