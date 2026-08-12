@@ -26,7 +26,7 @@ jobs:
           import json, pathlib, re, sys
           root=pathlib.Path('.'); dist=root/'dist'
           html_names=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html','community.html','buy-a-car.html','support.html']
-          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js','support-ui.js','auto-dealers.js','value-priority.js','live-trust-controls.js','discovery-sort.js']
+          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js','support-ui.js','auto-dealers.js','value-priority.js','live-trust-controls.js','discovery-sort.js','evidence-freshness.js']
           errors=[]
           for name in core:
               if not (root/name).is_file(): errors.append(f'missing source release file: {name}')
@@ -42,6 +42,7 @@ jobs:
           auto=(root/'auto-dealers.js').read_text() if (root/'auto-dealers.js').exists() else ''
           trust=(root/'live-trust-controls.js').read_text() if (root/'live-trust-controls.js').exists() else ''
           discovery=(root/'discovery-sort.js').read_text() if (root/'discovery-sort.js').exists() else ''
+          freshness=(root/'evidence-freshness.js').read_text() if (root/'evidence-freshness.js').exists() else ''
           if 'submit-beta-feedback' not in feedback: errors.append('feedback endpoint missing')
           if 'MR OPEN' not in rankings: errors.append('MR ranking logic missing')
           if 'quick-rank-vote' not in quick or '▲' not in quick or '▼' not in quick: errors.append('quick sentiment controls missing')
@@ -56,15 +57,20 @@ jobs:
               if token not in trust: errors.append(f'live trust controls missing {token}')
           for token in ['Strongest military value','Highest sourced public rating','Most public reviews','Official-source evidence first','Strongest verified value','Most recently verified','MR Building','Public rating sourced','public-explore']:
               if token not in discovery: errors.append(f'discovery sorting missing {token}')
+          for token in ['Evidence fresh','Evidence ${d}d old','Freshness reflects the newest stored source observation','public-explore']:
+              if token not in freshness: errors.append(f'evidence freshness UX missing {token}')
           for name in html_names:
               built=(dist/name).read_text() if (dist/name).exists() else ''
               if '/feedback.js' not in built: errors.append(f'dist/{name} missing feedback.js')
               if '/lifestyle-nav.js' not in built: errors.append(f'dist/{name} missing lifestyle-nav.js')
           index=(dist/'index.html').read_text() if (dist/'index.html').exists() else ''
-          for script in ['/live-trust-controls.js','/value-priority.js','/discovery-sort.js']:
+          for script in ['/live-trust-controls.js','/value-priority.js','/discovery-sort.js','/evidence-freshness.js']:
               if script not in index: errors.append(f'dist/index.html missing {script}')
           if '/support-ui.js' not in (dist/'support.html').read_text(): errors.append('dist/support.html missing support-ui.js')
           if '/auto-dealers.js' not in (dist/'buy-a-car.html').read_text(): errors.append('dist/buy-a-car.html missing auto-dealers.js')
+          for name in ['index.html','military-value.html','schools.html','bases.html']:
+              built=(dist/name).read_text() if (dist/name).exists() else ''
+              if '/evidence-freshness.js' not in built: errors.append(f'dist/{name} missing evidence-freshness.js')
           for name in ['index.html','military-value.html','schools.html','bases.html','neighborhoods.html']:
               built=(dist/name).read_text() if (dist/name).exists() else ''
               if '/reviews.js' not in built: errors.append(f'dist/{name} missing reviews.js')
@@ -81,5 +87,5 @@ jobs:
               if route not in sitemap: errors.append(f'sitemap missing {route}')
           if errors:
               print('Mission Rated static QA failed:'); [print(' - '+x) for x in sorted(set(errors))]; sys.exit(1)
-          print('Mission Rated QA passed: evidence-aware sorting, lifestyle frontend, trust filters, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
+          print('Mission Rated QA passed: evidence freshness, evidence-aware sorting, lifestyle frontend, trust filters, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
           PY
