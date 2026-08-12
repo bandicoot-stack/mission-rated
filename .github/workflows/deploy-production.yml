@@ -1,0 +1,39 @@
+name: Mission Rated Production Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mission-rated-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_TEAM_ID: team_keaLn1aS3rp2RW0ewC2SwKJV
+      VERCEL_PROJECT_NAME: mission-rated-beta
+      VERCEL_TARGET: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require Vercel deployment credential
+        shell: bash
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Missing repository secret VERCEL_TOKEN. Add a Vercel access token to GitHub Actions secrets once; no other deploy inputs are required."
+            exit 1
+          fi
+      - name: Build deterministic release
+        run: npm run build
+      - name: Deploy exact target/name/files payload and verify production
+        run: node scripts/deploy-vercel.mjs
