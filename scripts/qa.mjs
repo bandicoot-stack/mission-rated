@@ -55,7 +55,7 @@ requireTokens(reviews,['submit-item-review','Pending / Unverified'],'reviews');
 requireTokens(lifestyle,['LIVE','SUPPORT','SAVE','/support','/buy-a-car','/community'],'lifestyle navigation');
 requireTokens(lifestyleHome,['Live better.','Support','Buy a Car','Events','Neighborhoods'],'lifestyle home');
 requireTokens(supportUi,['MR Building','Official Source Verified','supportQ'],'support hub');
-requireTokens(auto,['Official Source Verified','User Verified','Unsourced public ratings are suppressed','Military evidence first','public-auto-dealers','External ratings never become Mission Rated scores.','Building'],'auto dealer trust UX');
+requireTokens(auto,['Official Source Verified','Official Website','User Verified','Unsourced public ratings are suppressed','Military evidence first','Freshest evidence','public-auto-dealers','External ratings never become Mission Rated scores.','Rating observed','Evidence observed','Building'],'auto dealer trust UX');
 requireTokens(trust,['Official source','Military value','Public rating','Fresh evidence','Newest source','Live better. Get support. Save more.','public-explore','mrEvidenceDate'],'live trust controls');
 if(!trust.replaceAll(' ','').includes('age<=30')) errors.push('fresh evidence filter must enforce 30-day window');
 if(trust.includes("className='mrFreshness'")||trust.includes('className="mrFreshness"')) errors.push('trust script must not shadow evidence-freshness badge class');
