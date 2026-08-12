@@ -8,7 +8,8 @@ const files = [
   'bases.html',
   'sitemap.xml',
   'robots.txt',
-  'feedback.js'
+  'feedback.js',
+  'rankings.js'
 ];
 
 await rm('dist', { recursive: true, force: true });
@@ -23,8 +24,11 @@ const indexPath = 'dist/index.html';
 let index = await readFile(indexPath, 'utf8');
 if (!index.includes('feedback.js')) {
   index = index.replace('</body>', '<script src="/feedback.js" defer></script>\n</body>');
-  await writeFile(indexPath, index);
 }
+if (!index.includes('rankings.js')) {
+  index = index.replace('</body>', '<script src="/rankings.js" defer></script>\n</body>');
+}
+await writeFile(indexPath, index);
 
 const sha = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || 'local';
 const release = {
