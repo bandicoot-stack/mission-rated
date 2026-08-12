@@ -53,8 +53,10 @@ jobs:
           for token in ['Official Source Verified','User Verified','Unsourced public ratings are suppressed','Military evidence first','MR Building']:
               if token not in auto: errors.append(f'auto dealer trust UX missing {token}')
           if 'public-auto-dealers' not in auto: errors.append('auto dealer live Supabase endpoint missing')
-          for token in ['Official source','Military value','Public rating','Evidence checked','Live better. Get support. Save more.','public-explore']:
+          for token in ['Official source','Military value','Public rating','Fresh evidence','Newest source','Live better. Get support. Save more.','public-explore','mrEvidenceDate']:
               if token not in trust: errors.append(f'live trust controls missing {token}')
+          if "age<=30" not in trust.replace(' ',''): errors.append('fresh evidence filter must enforce 30-day window')
+          if "className='mrFreshness'" in trust or 'className="mrFreshness"' in trust: errors.append('trust script must not shadow evidence-freshness badge class')
           for token in ['Strongest military value','Highest sourced public rating','Most public reviews','Official-source evidence first','Strongest verified value','Most recently verified','MR Building','Public rating sourced','public-explore']:
               if token not in discovery: errors.append(f'discovery sorting missing {token}')
           for token in ['Evidence fresh','Evidence ${d}d old','Freshness reflects the newest stored source observation','public-explore']:
@@ -87,5 +89,5 @@ jobs:
               if route not in sitemap: errors.append(f'sitemap missing {route}')
           if errors:
               print('Mission Rated static QA failed:'); [print(' - '+x) for x in sorted(set(errors))]; sys.exit(1)
-          print('Mission Rated QA passed: evidence freshness, evidence-aware sorting, lifestyle frontend, trust filters, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
+          print('Mission Rated QA passed: fresh-evidence trust filtering, evidence freshness, evidence-aware sorting, lifestyle frontend, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
           PY
