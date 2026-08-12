@@ -5,4 +5,6 @@
   <url><loc>https://mission-rated-beta.vercel.app/schools</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://mission-rated-beta.vercel.app/bases</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
   <url><loc>https://mission-rated-beta.vercel.app/neighborhoods</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://mission-rated-beta.vercel.app/community</loc><changefreq>daily</changefreq><priority>0.85</priority></url>
+  <url><loc>https://mission-rated-beta.vercel.app/buy-a-car</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
 </urlset>
