@@ -3,12 +3,12 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 const root='.';
 const dist='dist';
 const errors=[];
-const htmlNames=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html','community.html','buy-a-car.html','support.html','business.html'];
+const htmlNames=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html','community.html','buy-a-car.html','support.html','business.html','events.html'];
 const releaseFiles=[
   ...htmlNames,
   'sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js',
   'support-ui.js','auto-dealers.js','provenance.js','car-embed.js','support-embed.js','value-priority.js','live-trust-controls.js',
-  'discovery-sort.js','detail-links.js','evidence-freshness.js','evidence-coverage.js'
+  'discovery-sort.js','detail-links.js','evidence-freshness.js','evidence-coverage.js','lifestyle-home.js','mobile-browse.js'
 ];
 
 const read=(path)=>existsSync(path)?readFileSync(path,'utf8'):'';
@@ -27,18 +27,21 @@ const rankings=read('rankings.js');
 const quick=read('quick-vote.js');
 const reviews=read('reviews.js');
 const lifestyle=read('lifestyle-nav.js');
+const lifestyleHome=read('lifestyle-home.js');
 const supportUi=read('support-ui.js');
 const auto=read('auto-dealers.js');
 const trust=read('live-trust-controls.js');
 const discovery=read('discovery-sort.js');
 const freshness=read('evidence-freshness.js');
 const coverage=read('evidence-coverage.js');
+const mobile=read('mobile-browse.js');
 
 requireTokens(feedback,['submit-beta-feedback'],'feedback');
 requireTokens(rankings,['MR OPEN'],'rankings');
 requireTokens(quick,['quick-rank-vote','▲','▼'],'quick sentiment controls');
 requireTokens(reviews,['submit-item-review','Pending / Unverified'],'reviews');
 requireTokens(lifestyle,['LIVE','SUPPORT','SAVE','/support','/buy-a-car','/community'],'lifestyle navigation');
+requireTokens(lifestyleHome,['Live better.','Support','Buy a Car','Events','Neighborhoods'],'lifestyle home');
 requireTokens(supportUi,['MR Building','Official Source Verified','supportQ'],'support hub');
 requireTokens(auto,['Official Source Verified','User Verified','Unsourced public ratings are suppressed','Military evidence first','public-auto-dealers','External ratings never become Mission Rated scores.','Building'],'auto dealer trust UX');
 requireTokens(trust,['Official source','Military value','Public rating','Fresh evidence','Newest source','Live better. Get support. Save more.','public-explore','mrEvidenceDate'],'live trust controls');
@@ -47,13 +50,14 @@ if(trust.includes("className='mrFreshness'")||trust.includes('className="mrFresh
 requireTokens(discovery,['Strongest military value','Highest sourced public rating','Most public reviews','Official-source evidence first','Strongest verified value','Most recently verified','MR Building','Public rating sourced','public-explore'],'discovery sorting');
 requireTokens(freshness,['Evidence fresh','Evidence ${d}d old','Freshness reflects the newest stored source observation','public-explore'],'evidence freshness UX');
 requireTokens(coverage,['public-explore'],'evidence coverage UX');
+requireTokens(mobile,['Clear filters','content-visibility:auto','safe-area-inset-bottom','Filters update results instantly'],'mobile browse UX');
 
 for(const name of htmlNames){
   const built=read(`${dist}/${name}`);
-  requireTokens(built,['/feedback.js','/lifestyle-nav.js'],`dist/${name}`);
+  requireTokens(built,['/feedback.js','/lifestyle-nav.js','/mobile-browse.js'],`dist/${name}`);
 }
 
-requireTokens(read(`${dist}/index.html`),['/live-trust-controls.js','/value-priority.js','/discovery-sort.js','/evidence-freshness.js','/evidence-coverage.js'],'dist/index.html');
+requireTokens(read(`${dist}/index.html`),['/live-trust-controls.js','/value-priority.js','/discovery-sort.js','/evidence-freshness.js','/evidence-coverage.js','/lifestyle-home.js'],'dist/index.html');
 requireTokens(read(`${dist}/support.html`),['/support-ui.js','/support-embed.js'],'dist/support.html');
 requireTokens(read(`${dist}/buy-a-car.html`),['/auto-dealers.js','/car-embed.js'],'dist/buy-a-car.html');
 for(const name of ['index.html','military-value.html','schools.html','bases.html']) requireTokens(read(`${dist}/${name}`),['/evidence-freshness.js','/detail-links.js'],`dist/${name}`);
@@ -73,7 +77,7 @@ for(const name of readdirSync(root).filter((name)=>name.endsWith('.html')).sort(
 }
 
 const sitemap=read('sitemap.xml');
-for(const route of ['/military-value','/schools','/bases','/neighborhoods','/community','/buy-a-car','/support']) if(!sitemap.includes(route)) errors.push(`sitemap missing ${route}`);
+for(const route of ['/military-value','/schools','/bases','/neighborhoods','/community','/buy-a-car','/support','/events']) if(!sitemap.includes(route)) errors.push(`sitemap missing ${route}`);
 
 if(errors.length){
   console.error('Mission Rated QA failed:');
@@ -81,4 +85,4 @@ if(errors.length){
   process.exit(1);
 }
 
-console.log('Mission Rated QA passed: build artifact, trust states, sourced dealer discovery, support, reviews, evidence freshness, routing, mobile navigation, and release files.');
+console.log('Mission Rated QA passed: build artifact, trust states, sourced dealer discovery, support, reviews, evidence freshness, lifestyle/events routing, mobile browse UX, and release files.');
