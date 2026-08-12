@@ -1,0 +1,50 @@
+name: Mission Rated Production Verification
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mission-rated-production
+  cancel-in-progress: true
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Wait for Vercel production to publish this commit
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+          RELEASE_URL: https://mission-rated-beta.vercel.app/release.json
+        run: |
+          set -euo pipefail
+          echo "Waiting for production SHA $EXPECTED_SHA"
+          for attempt in $(seq 1 24); do
+            body="$(curl -fsS --max-time 10 -H 'Cache-Control: no-cache' "$RELEASE_URL?check=$EXPECTED_SHA" 2>/dev/null || true)"
+            live_sha="$(printf '%s' "$body" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("git_sha", ""))' 2>/dev/null || true)"
+            if [ "$live_sha" = "$EXPECTED_SHA" ]; then
+              echo "Production verified at $EXPECTED_SHA"
+              exit 0
+            fi
+            echo "Attempt $attempt/24: production reports '${live_sha:-no release marker yet}'"
+            sleep 15
+          done
+          echo "Production did not converge to GitHub SHA $EXPECTED_SHA within 6 minutes."
+          echo "Check Vercel project Git connection: bandicoot-stack/mission-rated, production branch main."
+          exit 1
+
+      - name: Smoke test production routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in / /military-value /schools /bases /release.json; do
+            code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://mission-rated-beta.vercel.app$path")"
+            test "$code" = "200" || { echo "$path returned $code"; exit 1; }
+          done
+          echo "Production route smoke test passed."
