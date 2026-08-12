@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { dirname, join, normalize } from 'node:path';
 
 const root='.';
 const dist='dist';
@@ -14,6 +15,17 @@ const releaseFiles=[
 const read=(path)=>existsSync(path)?readFileSync(path,'utf8'):'';
 const requireFile=(path,label=path)=>{ if(!existsSync(path)) errors.push(`missing ${label}`); };
 const requireTokens=(text,tokens,label)=>{ for(const token of tokens) if(!text.includes(token)) errors.push(`${label} missing ${token}`); };
+const stripTarget=(target)=>String(target||'').split('#',1)[0].split('?',1)[0];
+const isExternal=(target)=>/^(?:https?:|mailto:|tel:|data:|javascript:|\/\/)/i.test(target);
+const candidatesForLocal=(htmlName,target)=>{
+  const clean=stripTarget(target);
+  if(!clean || clean.startsWith('#') || isExternal(clean) || clean.includes('${')) return [];
+  const relative=clean.startsWith('/')?clean.slice(1):normalize(join(dirname(htmlName),clean));
+  if(!relative) return ['index.html'];
+  if(relative.endsWith('/')) return [join(relative,'index.html')];
+  if(/\.[A-Za-z0-9]+$/.test(relative)) return [relative];
+  return [relative,`${relative}.html`,join(relative,'index.html')];
+};
 
 for(const name of releaseFiles){
   requireFile(name,`source release file: ${name}`);
@@ -74,6 +86,11 @@ for(const name of readdirSync(root).filter((name)=>name.endsWith('.html')).sort(
     const lower=tag.toLowerCase();
     if(!/rel=["'][^"']*noopener[^"']*["']/.test(lower)) errors.push(`${name}: target blank missing noopener`);
   }
+  for(const match of text.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)){
+    const target=match[1];
+    const candidates=candidatesForLocal(name,target);
+    if(candidates.length && !candidates.some((candidate)=>existsSync(candidate))) errors.push(`${name}: broken local target ${target}`);
+  }
 }
 
 const sitemap=read('sitemap.xml');
@@ -85,4 +102,4 @@ if(errors.length){
   process.exit(1);
 }
 
-console.log('Mission Rated QA passed: build artifact, trust states, sourced dealer discovery, support, reviews, evidence freshness, lifestyle/events routing, mobile browse UX, and release files.');
+console.log('Mission Rated QA passed: build artifact, internal link integrity, trust states, sourced dealer discovery, support, reviews, evidence freshness, lifestyle/events routing, mobile browse UX, and release files.');
