@@ -2,7 +2,7 @@ import { mkdir, rm, copyFile, writeFile, readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 
 const htmlFiles = ['index.html', 'military-value.html', 'schools.html', 'bases.html', 'neighborhoods.html', 'community.html', 'buy-a-car.html'];
-const files = [...htmlFiles, 'sitemap.xml', 'robots.txt', 'feedback.js', 'rankings.js', 'quick-vote.js', 'reviews.js', 'community.js'];
+const files = [...htmlFiles, 'sitemap.xml', 'robots.txt', 'feedback.js', 'rankings.js', 'quick-vote.js', 'reviews.js', 'community.js', 'lifestyle-nav.js'];
 
 await rm('dist', { recursive: true, force: true });
 await mkdir('dist', { recursive: true });
@@ -13,6 +13,7 @@ for (const file of htmlFiles) {
  if(!html.includes('rankings.js')&&!['neighborhoods.html','community.html','buy-a-car.html'].includes(file)) html=html.replace('</body>','<script src="/rankings.js" defer></script>\n</body>');
  if(!html.includes('quick-vote.js')&&!['neighborhoods.html','community.html','buy-a-car.html'].includes(file)) html=html.replace('</body>','<script src="/quick-vote.js" defer></script>\n</body>');
  if(!html.includes('reviews.js')&&!['community.html','buy-a-car.html'].includes(file)) html=html.replace('</body>','<script src="/reviews.js" defer></script>\n</body>');
+ if(!html.includes('lifestyle-nav.js')) html=html.replace('</body>','<script src="/lifestyle-nav.js" defer></script>\n</body>');
  await writeFile(path,html);
 }
 const sha=process.env.VERCEL_GIT_COMMIT_SHA||process.env.GITHUB_SHA||'local';
