@@ -26,7 +26,7 @@ jobs:
           import json, pathlib, re, sys
           root=pathlib.Path('.'); dist=root/'dist'
           html_names=['index.html','military-value.html','schools.html','bases.html','neighborhoods.html','community.html','buy-a-car.html','support.html']
-          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js','support-ui.js','auto-dealers.js']
+          core=html_names+['sitemap.xml','robots.txt','feedback.js','rankings.js','quick-vote.js','reviews.js','community.js','lifestyle-nav.js','support-ui.js','auto-dealers.js','value-priority.js','live-trust-controls.js']
           errors=[]
           for name in core:
               if not (root/name).is_file(): errors.append(f'missing source release file: {name}')
@@ -40,6 +40,7 @@ jobs:
           lifestyle=(root/'lifestyle-nav.js').read_text() if (root/'lifestyle-nav.js').exists() else ''
           support_ui=(root/'support-ui.js').read_text() if (root/'support-ui.js').exists() else ''
           auto=(root/'auto-dealers.js').read_text() if (root/'auto-dealers.js').exists() else ''
+          trust=(root/'live-trust-controls.js').read_text() if (root/'live-trust-controls.js').exists() else ''
           if 'submit-beta-feedback' not in feedback: errors.append('feedback endpoint missing')
           if 'MR OPEN' not in rankings: errors.append('MR ranking logic missing')
           if 'quick-rank-vote' not in quick or '▲' not in quick or '▼' not in quick: errors.append('quick sentiment controls missing')
@@ -50,10 +51,15 @@ jobs:
           for token in ['Official Source Verified','User Verified','Unsourced public ratings are suppressed','Military evidence first','MR Building']:
               if token not in auto: errors.append(f'auto dealer trust UX missing {token}')
           if 'public-auto-dealers' not in auto: errors.append('auto dealer live Supabase endpoint missing')
+          for token in ['Official source','Military value','Public rating','Evidence checked','Live better. Get support. Save more.','public-explore']:
+              if token not in trust: errors.append(f'live trust controls missing {token}')
           for name in html_names:
               built=(dist/name).read_text() if (dist/name).exists() else ''
               if '/feedback.js' not in built: errors.append(f'dist/{name} missing feedback.js')
               if '/lifestyle-nav.js' not in built: errors.append(f'dist/{name} missing lifestyle-nav.js')
+          index=(dist/'index.html').read_text() if (dist/'index.html').exists() else ''
+          if '/live-trust-controls.js' not in index: errors.append('dist/index.html missing live-trust-controls.js')
+          if '/value-priority.js' not in index: errors.append('dist/index.html missing value-priority.js')
           if '/support-ui.js' not in (dist/'support.html').read_text(): errors.append('dist/support.html missing support-ui.js')
           if '/auto-dealers.js' not in (dist/'buy-a-car.html').read_text(): errors.append('dist/buy-a-car.html missing auto-dealers.js')
           for name in ['index.html','military-value.html','schools.html','bases.html','neighborhoods.html']:
@@ -72,5 +78,5 @@ jobs:
               if route not in sitemap: errors.append(f'sitemap missing {route}')
           if errors:
               print('Mission Rated static QA failed:'); [print(' - '+x) for x in sorted(set(errors))]; sys.exit(1)
-          print('Mission Rated QA passed: lifestyle frontend, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
+          print('Mission Rated QA passed: lifestyle frontend, trust filters, sourced dealer discovery, support, reviews, trust states, mobile navigation, sitemap, and release artifact.')
           PY
