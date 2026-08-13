@@ -1,12 +1,13 @@
 (()=>{
 'use strict';
-const PATHS=['/','/index.html','/military-value.html','/schools.html','/bases.html','/buy-a-car.html','/support.html','/neighborhoods.html','/community.html'];
-if(!PATHS.includes(location.pathname))return;
+const ROUTES=new Set(['/','/military-value','/schools','/bases','/buy-a-car','/support','/neighborhoods','/community','/medical','/events','/sources']);
+const route=(()=>{let p=location.pathname.replace(/\/+$/,'')||'/';if(p.endsWith('.html'))p=p.slice(0,-5)||'/';return p})();
+if(!ROUTES.has(route))return;
 function css(){if(document.getElementById('mrMobileBrowseStyle'))return;const s=document.createElement('style');s.id='mrMobileBrowseStyle';s.textContent=`
 .mrMobileReset{display:none;position:fixed;right:14px;bottom:76px;z-index:90;border:1px solid #00d8e8;background:#062536;color:#a9f7ff;border-radius:999px;padding:10px 13px;font-size:9px;font-weight:950;box-shadow:0 10px 32px #0008;cursor:pointer}.mrMobileReset.show{display:inline-flex;align-items:center;gap:6px}.mrMobileReset span{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:999px;background:#00d8e8;color:#03202b;font-size:8px}.mrMobileHint{display:none;font-size:8px;color:#78939f;margin:5px 0 0}
 @media(max-width:700px){.mrMobileHint{display:block}.search,.controls,.mrAutoFilters{position:relative}.search input,.search select,.controls input,.controls select,.mrAutoFilters input,.mrAutoFilters select{min-height:44px}.tabrow{scroll-snap-type:x proximity}.tab{scroll-snap-align:start}.card{content-visibility:auto;contain-intrinsic-size:220px}.links{gap:6px}.links a,.links button,.btn,.source{min-height:40px}.mrMobileReset{bottom:max(74px,calc(env(safe-area-inset-bottom) + 66px))}}
 `;document.head.appendChild(s)}
-function candidates(){return [...document.querySelectorAll('input[type="search"],input:not([type]),select')].filter(el=>{if(el.closest('.mrReviewModal'))return false;const id=(el.id||'').toLowerCase();const n=(el.name||'').toLowerCase();return /q|search|filter|category|city|sort|rating|benefit|type/.test(id+' '+n)||el.closest('.search,.controls,.mrAutoFilters')})}
+function candidates(){return [...document.querySelectorAll('input[type="search"],input:not([type]),select')].filter(el=>{if(el.closest('.mrReviewModal'))return false;const id=(el.id||'').toLowerCase();const n=(el.name||'').toLowerCase();return /q|search|filter|category|city|sort|rating|benefit|type|level|perf|purple|service/.test(id+' '+n)||el.closest('.search,.controls,.mrAutoFilters')})}
 function active(el){if(el.tagName==='SELECT')return el.selectedIndex>0&&el.value!==''&&el.value!=='all'&&el.value!=='military'&&el.value!=='value';return String(el.value||'').trim()!==''}
 function fire(el){el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}))}
 function resetOne(el){if(el.tagName==='SELECT'){const preferred=[...el.options].find(o=>o.value===''||o.value==='all'||o.value==='military'||o.value==='value');el.value=preferred?preferred.value:el.options[0]?.value||''}else el.value='';fire(el)}
