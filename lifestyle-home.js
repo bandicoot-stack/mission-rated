@@ -3,10 +3,10 @@
 if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
 function run(){
  const sub=document.querySelector('.hero .sub');if(sub)sub.textContent='Live better. Get support. Save more.';
- const p=document.querySelector('.hero p');if(p)p.textContent='Military lifestyle intelligence for everyday life: trusted places, verified savings, schools, installation support, neighborhoods, events, community reviews, and car-buying help. Mission Rated never invents a score when evidence is thin.';
+ const p=document.querySelector('.hero p');if(p)p.textContent='Military lifestyle intelligence for everyday life: trusted places, verified savings, medical care, schools, installation support, neighborhoods, events, community reviews, and car-buying help. Mission Rated never invents a score when evidence is thin.';
  const eyebrow=document.querySelector('.hero .eyebrow');if(eyebrow)eyebrow.textContent='HAMPTON ROADS • LIVE • SUPPORT • SAVE';
  const links=document.querySelector('.hero .viewlinks');if(links){
-   const wanted=[['/?view=support','Support'],['/?view=cars','Buy a Car'],['/events','Events'],['/community','Community Reviews'],['/neighborhoods','Neighborhoods'],['/sources','Trust & Sources']];
+   const wanted=[['/medical','Medical / TRICARE'],['/?view=support','Support'],['/?view=cars','Buy a Car'],['/events','Events'],['/community','Community Reviews'],['/neighborhoods','Neighborhoods'],['/sources','Trust & Sources']];
    for(const [href,label] of wanted){if(![...links.querySelectorAll('a')].some(a=>a.getAttribute('href')===href)){const a=document.createElement('a');a.href=href;a.textContent=label+' ↗';links.appendChild(a)}}
  }
  const tabrow=document.querySelector('.tabrow');
