@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-08-13T11:45:00Z",
+  "purpose": "Authoritative-source ingestion queue for Mission Rated. Records here are source-verified candidates only and are not user-verified or MR-rated.",
+  "candidates": [
+    {
+      "entity_type": "business",
+      "slug": "norfolk-admirals",
+      "name": "Norfolk Admirals",
+      "category": "Sports & Entertainment",
+      "website_url": "https://norfolkadmirals.com/",
+      "phone": "757-640-1212",
+      "address_line1": "201 E Brambleton Ave",
+      "city": "Norfolk",
+      "state": "VA",
+      "postal_code": "23510",
+      "official_source_url": "https://norfolkadmirals.com/tickets/discount-tickets",
+      "source_checked_at": "2026-08-13T11:40:00Z",
+      "database_precheck": {
+        "project_ref": "vquwdypidgjmxnhhdbol",
+        "existing_business_count": 0
+      },
+      "official_verification": {
+        "verification_type": "official_source",
+        "status": "verified",
+        "user_verified": false
+      },
+      "military_offer": {
+        "title": "$5 off Norfolk Admirals tickets",
+        "offer_type": "discount",
+        "offer_value_text": "$5 off per ticket",
+        "eligibility": "Active-duty military personnel and veterans",
+        "terms": "Verify military affiliation through ID.me online, or present a valid military or VA ID at the Norfolk Scope box office.",
+        "starts_at": null,
+        "ends_at": null,
+        "source_url": "https://norfolkadmirals.com/tickets/discount-tickets",
+        "official_source": true
+      },
+      "mr_score": null,
+      "mr_status": "Building",
+      "notes": "Do not infer community reputation from the military discount. No public rating or review sample is included unless separately sourced."
+    }
+  ]
+}
