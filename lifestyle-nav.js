@@ -3,13 +3,14 @@
 if(document.getElementById('mrLifestyleNav'))return;
 const style=document.createElement('style');style.id='mrLifestyleNavStyle';style.textContent=`
 #mrLifestyleNav{display:none}.mr-embed-frame{width:100%;height:900px;border:0;border-radius:14px;background:#02101d}.mr-embed-note{border-left:3px solid #00e5ff;background:#071d2c;color:#9fb3bd;padding:10px 12px;font-size:10px;line-height:1.45;margin-bottom:12px}
-@media(max-width:700px){body{padding-bottom:74px}#mrLifestyleNav{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:9998;display:grid;grid-template-columns:repeat(6,1fr);gap:3px;padding:6px;background:#03111ff2;border:1px solid #2c536a;border-radius:16px;box-shadow:0 12px 36px #0009;backdrop-filter:blur(14px)}#mrLifestyleNav a{min-width:0;padding:8px 2px;border-radius:10px;color:#9fb6c1;text-decoration:none;text-align:center;font-size:7px;font-weight:850;line-height:1.2}#mrLifestyleNav a b{display:block;color:#f4f8fa;font-size:13px;margin-bottom:2px}#mrLifestyleNav a[aria-current=page]{background:#092b3b;color:#7defff;box-shadow:inset 0 0 0 1px #1e6078}#mrLifestyleNav a:focus-visible{outline:2px solid #ffd36d;outline-offset:2px}}
+@media(max-width:700px){body{padding-bottom:74px}#mrLifestyleNav{position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:9998;display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:6px;background:#03111ff2;border:1px solid #2c536a;border-radius:16px;box-shadow:0 12px 36px #0009;backdrop-filter:blur(14px)}#mrLifestyleNav a{min-width:0;padding:8px 1px;border-radius:10px;color:#9fb6c1;text-decoration:none;text-align:center;font-size:6.5px;font-weight:850;line-height:1.2}#mrLifestyleNav a b{display:block;color:#f4f8fa;font-size:13px;margin-bottom:2px}#mrLifestyleNav a[aria-current=page]{background:#092b3b;color:#7defff;box-shadow:inset 0 0 0 1px #1e6078}#mrLifestyleNav a:focus-visible{outline:2px solid #ffd36d;outline-offset:2px}}
 `;document.head.appendChild(style);
 const p=location.pathname.replace(/\/$/,'')||'/',params=new URLSearchParams(location.search),liveView=params.get('view');
 const items=[
  {href:'/neighborhoods',icon:'⌂',label:'LIVE',match:['/neighborhoods']},
  {href:'/?view=events',icon:'♪',label:'EVENTS',match:['/events']},
  {href:'/?view=support',icon:'✚',label:'SUPPORT',match:['/support']},
+ {href:'/medical',icon:'+',label:'CARE',match:['/medical']},
  {href:'/military-value',icon:'$',label:'SAVE',match:['/military-value']},
  {href:'/community',icon:'★',label:'REVIEWS',match:['/community']},
  {href:'/?view=cars',icon:'▣',label:'CARS',match:[]}
