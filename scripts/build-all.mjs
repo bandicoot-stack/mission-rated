@@ -1,11 +1,17 @@
 import './build.mjs';
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
 
-for (const file of ['school.html','installation.html','detail-links.js']) await copyFile(file, `dist/${file}`);
+for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js']) await copyFile(file, `dist/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
   if (!html.includes('detail-links.js')) html = html.replace('</body>', '<script src="/detail-links.js" defer></script>\n</body>');
   await writeFile(path, html);
 }
-console.log('Mission Rated detail pages added to release');
+for (const file of ['index.html','military-value.html']) {
+  const path = `dist/${file}`;
+  let html = await readFile(path, 'utf8');
+  if (!html.includes('deal-expiry.js')) html = html.replace('</body>', '<script src="/deal-expiry.js" defer></script>\n</body>');
+  await writeFile(path, html);
+}
+console.log('Mission Rated detail pages and offer-expiry intelligence added to release');
