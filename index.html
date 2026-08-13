@@ -49,5 +49,6 @@ fetch(API,{headers:{accept:'application/json'}}).then(r=>{if(!r.ok)throw Error(r
 $('q').oninput=renderCurrent;$('category').onchange=renderBusinesses;$('city').onchange=renderBusinesses;document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{view=b.dataset.view;document.querySelectorAll('.tab').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-selected',String(active))});document.querySelectorAll('.section').forEach(s=>s.hidden=s.id!==view);$('category').disabled=view!=='places';$('city').disabled=view!=='places';renderCurrent()});
 })();
 </script>
+<script src="quick-vote.js" defer></script>
 </body>
 </html>
