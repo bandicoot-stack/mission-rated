@@ -14,4 +14,10 @@ for (const file of ['index.html','military-value.html']) {
   if (!html.includes('deal-expiry.js')) html = html.replace('</body>', '<script src="/deal-expiry.js" defer></script>\n</body>');
   await writeFile(path, html);
 }
-console.log('Mission Rated detail pages and offer-expiry intelligence added to release');
+for (const file of ['business.html','school.html','installation.html']) {
+  const path = `dist/${file}`;
+  let html = await readFile(path, 'utf8');
+  if (!html.includes('quick-vote.js')) html = html.replace('</body>', '<script src="/quick-vote.js" defer></script>\n</body>');
+  await writeFile(path, html);
+}
+console.log('Mission Rated detail pages, lived-experience voting, and offer-expiry intelligence added to release');
