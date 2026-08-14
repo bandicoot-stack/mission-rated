@@ -30,6 +30,7 @@ document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
+  if(el.id==='mrShareAction'||/^↗?\s*share\b/.test(text))return send('share_action',ctx);
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
