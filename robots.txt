@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mission-rated-beta.vercel.app/sitemap.xml
+Sitemap: https://missionratedhq.com/sitemap.xml
