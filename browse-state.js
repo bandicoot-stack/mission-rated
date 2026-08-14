@@ -1,9 +1,9 @@
 (()=>{
 'use strict';
-const PATHS=['/','/index.html','/military-value.html','/schools.html','/bases.html','/buy-a-car.html','/support.html','/neighborhoods.html','/community.html','/events.html','/sources.html'];
-if(!PATHS.includes(location.pathname))return;
+const PATHS=['/','/index.html','/military-value','/military-value.html','/schools','/schools.html','/bases','/bases.html','/buy-a-car','/buy-a-car.html','/support','/support.html','/medical','/medical.html','/neighborhoods','/neighborhoods.html','/community','/community.html','/events','/events.html','/sources','/sources.html'];
+if(!PATHS.includes(location.pathname.replace(/\/$/,'')||'/'))return;
 const PREFIX='mr_';let restoring=false,timer=null;
-function candidates(){return [...document.querySelectorAll('input[type="search"],input:not([type]),select')].filter(el=>{if(el.closest('.mrReviewModal'))return false;const text=((el.id||'')+' '+(el.name||'')).toLowerCase();return /q|search|filter|category|city|sort|rating|benefit|type/.test(text)||el.closest('.search,.controls,.mrAutoFilters')})}
+function candidates(){return [...document.querySelectorAll('input[type="search"],input:not([type]),select')].filter(el=>{if(el.closest('.mrReviewModal'))return false;const text=((el.id||'')+' '+(el.name||'')).toLowerCase();return /q|search|filter|category|city|sort|rating|benefit|type|evidence|service|performance|purple|level/.test(text)||el.closest('.search,.controls,.mrAutoFilters,.mrSortRow')})}
 function key(el,i){return PREFIX+String(el.id||el.name||`filter${i}`).replace(/[^a-zA-Z0-9_-]/g,'_')}
 function defaultValue(el){return el.tagName==='SELECT'?(el.options[0]?.value||''):''}
 function emit(el){el.dispatchEvent(new Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}))}
