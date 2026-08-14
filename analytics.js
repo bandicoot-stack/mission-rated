@@ -5,6 +5,7 @@ const productionHosts=new Set(['www.missionratedhq.com','missionratedhq.com','mi
 if(!productionHosts.has(location.hostname))return;
 const clean=s=>String(s??'').trim();
 const qs=new URLSearchParams(location.search);
+const embedded=(()=>{try{return window.self!==window.top||qs.get('embedded')==='1'}catch{return true}})();
 const session=(()=>{try{let v=sessionStorage.getItem('mr_analytics_session');if(!v){v=crypto.randomUUID();sessionStorage.setItem('mr_analytics_session',v)}return v}catch{return null}})();
 const referrerHost=(()=>{try{return document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):null}catch{return null}})();
 const acquisition={utm_source:qs.get('utm_source'),utm_medium:qs.get('utm_medium'),utm_campaign:qs.get('utm_campaign')};
@@ -22,7 +23,9 @@ const send=(eventName,extra={})=>{
   const payload={event_name:eventName,path:location.pathname||'/',session_id:session,referrer_host:referrerHost,...acquisition,...extra};
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'omit'}).catch(()=>{})}catch{}
 };
-send('page_view');
+// Embedded Mission Rated views are UI composition, not independent navigation. Keep
+// click/conversion tracking active inside them, but do not inflate traffic/page-view metrics.
+if(!embedded)send('page_view');
 document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
