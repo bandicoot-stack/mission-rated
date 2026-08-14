@@ -21,7 +21,7 @@ jobs:
         shell: bash
         env:
           EXPECTED_SHA: ${{ github.sha }}
-          RELEASE_URL: https://mission-rated-beta.vercel.app/release.json
+          RELEASE_URL: https://missionratedhq.com/release.json
         run: |
           set -euo pipefail
           echo "Waiting for production SHA $EXPECTED_SHA"
@@ -43,8 +43,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for path in / /military-value /schools /bases /release.json; do
-            code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://mission-rated-beta.vercel.app$path")"
+          for path in / /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
+            code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://missionratedhq.com$path")"
             test "$code" = "200" || { echo "$path returned $code"; exit 1; }
           done
           echo "Production route smoke test passed."
