@@ -9,6 +9,13 @@ function run(){
    const wanted=[['/medical','Medical / TRICARE'],['/?view=support','Support'],['/?view=cars','Buy a Car'],['/events','Events'],['/community','Community Reviews'],['/neighborhoods','Neighborhoods'],['/sources','Trust & Sources']];
    for(const [href,label] of wanted){if(![...links.querySelectorAll('a')].some(a=>a.getAttribute('href')===href)){const a=document.createElement('a');a.href=href;a.textContent=label+' ↗';links.appendChild(a)}}
  }
+ const hero=document.querySelector('.hero .wrap,.hero');
+ if(hero&&!document.getElementById('mrGrowthShare')){
+   const box=document.createElement('div');box.id='mrGrowthShare';box.innerHTML='<div><b>Know a military family in Hampton Roads?</b><span>Send them Mission Rated — the fastest way to help the community grow.</span></div><button id="mrShareAction" type="button">↗ Share Mission Rated</button>';
+   hero.appendChild(box);
+   const btn=box.querySelector('#mrShareAction');
+   btn.addEventListener('click',async()=>{const url=new URL(location.href);url.searchParams.set('utm_source','share');url.searchParams.set('utm_medium','referral');url.searchParams.set('utm_campaign','community_growth');const data={title:'Mission Rated',text:'Military-friendly places, savings, schools, medical care, events, and local support in Hampton Roads.',url:url.toString()};try{if(navigator.share){await navigator.share(data);btn.textContent='✓ Shared';return}await navigator.clipboard.writeText(data.url);btn.textContent='✓ Link copied'}catch{try{await navigator.clipboard.writeText(data.url);btn.textContent='✓ Link copied'}catch{btn.textContent='Copy link unavailable'}}setTimeout(()=>btn.textContent='↗ Share Mission Rated',2200)});
+ }
  const tabrow=document.querySelector('.tabrow');
  let carTab=document.querySelector('.tab[data-view="cars"]');
  if(tabrow&&!carTab){carTab=document.createElement('button');carTab.className='tab';carTab.dataset.view='cars';carTab.setAttribute('aria-selected','false');carTab.textContent='Buy a Car';tabrow.appendChild(carTab)}
@@ -28,7 +35,7 @@ function run(){
  if(carTab)carTab.addEventListener('click',activateCars);
  window.addEventListener('message',e=>{if(e.origin!==location.origin||e.data?.type!=='mr-car-height')return;const frame=document.getElementById('mrCarFrame');if(frame&&Number(e.data.height)>0)frame.style.height=Math.max(700,Number(e.data.height))+'px'});
  if(new URLSearchParams(location.search).get('view')==='cars')activateCars();
- const style=document.createElement('style');style.textContent='@media(max-width:640px){.viewlinks{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}.viewlinks a{display:flex;align-items:center;justify-content:center;min-height:40px;padding:8px;border:1px solid #31566b;border-radius:9px;background:#061b2d;text-align:center}#mrCarFrame{min-height:1100px!important}}';document.head.appendChild(style);
+ const style=document.createElement('style');style.textContent='#mrGrowthShare{margin:18px 0 0;padding:13px 14px;border:1px solid #31566b;border-radius:12px;background:linear-gradient(135deg,#082235,#061923);display:flex;align-items:center;justify-content:space-between;gap:14px}#mrGrowthShare b{display:block;font-size:12px;color:#f4f8fa;margin-bottom:3px}#mrGrowthShare span{display:block;font-size:9px;line-height:1.45;color:#9fb6c1}#mrShareAction{appearance:none;border:1px solid #1e8aa1;background:#07384b;color:#c8f8ff;border-radius:9px;padding:10px 13px;font-size:9px;font-weight:900;white-space:nowrap;cursor:pointer}#mrShareAction:hover{border-color:#00e5ff}@media(max-width:640px){.viewlinks{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}.viewlinks a{display:flex;align-items:center;justify-content:center;min-height:40px;padding:8px;border:1px solid #31566b;border-radius:9px;background:#061b2d;text-align:center}#mrGrowthShare{align-items:stretch;flex-direction:column}#mrShareAction{min-height:44px;font-size:10px;width:100%}#mrCarFrame{min-height:1100px!important}}';document.head.appendChild(style);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();
