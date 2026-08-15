@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T22:38:00Z",
+  "generated_at": "2026-08-15T23:47:47Z",
   "purpose": "Authoritative-source ingestion queue for Mission Rated. Records here are source-verified candidates only and are not user-verified or MR-rated.",
   "candidates": [
     {
@@ -71,6 +71,95 @@
       "mr_score": null,
       "mr_status": "Building",
       "notes": "Verified against the Virginia Zoo's official Hours & Prices page on 2026-08-15. Do not infer a community rating or review score from this benefit record."
+    },
+    {
+      "entity_type": "business",
+      "slug": "virginia-aquarium-marine-science-center",
+      "name": "Virginia Aquarium & Marine Science Center",
+      "category": "Family & Attractions",
+      "website_url": "https://virginiaaquarium.com/",
+      "phone": "757-385-3474",
+      "address_line1": "717 General Booth Blvd",
+      "city": "Virginia Beach",
+      "state": "VA",
+      "postal_code": "23451",
+      "official_source_url": "https://virginiaaquarium.com/blog/membership-guide",
+      "source_checked_at": "2026-08-15T23:47:47Z",
+      "official_verification": {
+        "verification_type": "official_source",
+        "status": "verified",
+        "user_verified": false
+      },
+      "military_offer": {
+        "title": "10% off Virginia Aquarium memberships",
+        "offer_type": "discount",
+        "offer_value_text": "10% off memberships",
+        "eligibility": "Military members with valid United States Armed Forces ID card",
+        "terms": "Membership must be purchased in person. Purchaser must show a valid U.S. Armed Forces ID card. Cannot be combined with other discounts or applied to gift certificates.",
+        "starts_at": null,
+        "ends_at": null,
+        "source_url": "https://virginiaaquarium.com/blog/membership-guide",
+        "official_source": true
+      },
+      "mr_score": null,
+      "mr_status": "Building",
+      "notes": "Verified against the Virginia Aquarium's official membership guide and contact page on 2026-08-15. This is a membership discount, not a general-admission discount."
+    },
+    {
+      "entity_type": "business",
+      "slug": "colonial-williamsburg",
+      "name": "Colonial Williamsburg",
+      "category": "Family & Attractions",
+      "website_url": "https://www.colonialwilliamsburg.org/",
+      "official_source_url": "https://www.colonialwilliamsburg.org/visit/tickets-passes/military-visitors/",
+      "source_checked_at": "2026-08-15T23:47:47Z",
+      "official_verification": {
+        "verification_type": "official_source",
+        "status": "verified",
+        "user_verified": false
+      },
+      "military_offer": {
+        "title": "15% off Colonial Williamsburg admission or annual passes",
+        "offer_type": "discount",
+        "offer_value_text": "15% off",
+        "eligibility": "Active-duty U.S. military, Reservists, National Guard personnel, retired military, veterans, and up to three direct dependents",
+        "terms": "15% off Single-day admission tickets or Annual Passes for the eligible service member/veteran and up to three direct dependents. Valid proof of service is required. Tickets must be purchased at a Colonial Williamsburg Ticket Office. Cannot be combined with other Colonial Williamsburg ticketing offers; exclusions apply to other ticket configurations and special programming.",
+        "starts_at": null,
+        "ends_at": null,
+        "source_url": "https://www.colonialwilliamsburg.org/visit/tickets-passes/military-visitors/",
+        "official_source": true
+      },
+      "mr_score": null,
+      "mr_status": "Building",
+      "notes": "Verified against Colonial Williamsburg's official Military Visitors page on 2026-08-15. Seasonal complimentary-admission promotions are intentionally not encoded as evergreen benefits."
+    },
+    {
+      "entity_type": "business",
+      "slug": "busch-gardens-williamsburg",
+      "name": "Busch Gardens Williamsburg",
+      "category": "Family & Attractions",
+      "website_url": "https://buschgardens.com/williamsburg/",
+      "official_source_url": "https://buschgardens.com/williamsburg/tickets/military/active-duty/",
+      "source_checked_at": "2026-08-15T23:47:47Z",
+      "official_verification": {
+        "verification_type": "official_source",
+        "status": "verified",
+        "user_verified": false
+      },
+      "military_offer": {
+        "title": "Waves of Honor complimentary admission",
+        "offer_type": "complimentary_admission",
+        "offer_value_text": "One complimentary admission per year for the eligible service member and up to three direct dependents",
+        "eligibility": "U.S. Active-Duty Military, Activated or Drilling Reservists, and National Guardsmen currently serving; direct dependents subject to program rules",
+        "terms": "Offer requires online military verification through ID.me. Eligible military personnel and up to three direct dependents may receive one complimentary admission per year to a participating park. Busch Gardens Williamsburg tickets for the 2026 offer must be redeemed by November 8, 2026. Program exclusions and identity requirements apply.",
+        "starts_at": null,
+        "ends_at": "2026-11-08",
+        "source_url": "https://buschgardens.com/williamsburg/tickets/military/active-duty/",
+        "official_source": true
+      },
+      "mr_score": null,
+      "mr_status": "Building",
+      "notes": "Verified against Busch Gardens Williamsburg's official military pages on 2026-08-15. Expiration is recorded because the 2026 complimentary ticket has a fixed redemption deadline. Separate discounted-ticket and veteran offers should be modeled independently if ingested."
     }
   ]
 }
