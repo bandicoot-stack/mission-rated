@@ -37,5 +37,17 @@ document.addEventListener('click',e=>{
   if(/feedback|suggest.*improvement|report.*issue/.test(text))return send('feedback_action',ctx);
   if(/verify offer source|tricare evidence|rating source|public rating source|source ↗/.test(text))return send('offer_source_click',ctx);
   if(/^https:\/\//i.test(href)&&(/official website|business website|provider website|visit website/.test(text)))return send('official_website_click',ctx);
+  // Measure which Mission Rated discovery surfaces actually pull users deeper into the
+  // product. Keep the destination coarse (path/view only) and avoid collecting query text.
+  if(href&&!/^https?:\/\//i.test(href)&&!href.startsWith('#')&&!href.startsWith('javascript:')){
+    try{
+      const dest=new URL(href,location.href);
+      if(dest.origin===location.origin){
+        const view=dest.searchParams.get('view');
+        return send('internal_navigation',{...ctx,destination:view?`${dest.pathname}?view=${view}`:dest.pathname});
+      }
+    }catch{}
+  }
+  if(el.matches?.('[data-view]'))return send('internal_navigation',{...ctx,destination:`view:${clean(el.dataset.view)}`});
 },true);
 })();
