@@ -1,0 +1,29 @@
+{
+  "record_type": "verified_place_and_military_benefit",
+  "status": "verified_for_ingestion",
+  "verified_at": "2026-08-15",
+  "place": {
+    "slug": "back-bay-national-wildlife-refuge",
+    "name": "Back Bay National Wildlife Refuge",
+    "category": "Outdoor Recreation",
+    "address": "4005 Sandpiper Road, Virginia Beach, VA 23456",
+    "phone": "757-301-7329",
+    "official_url": "https://www.fws.gov/refuge/back-bay",
+    "source_url": "https://www.fws.gov/refuge/back-bay/visit-us",
+    "relationship_note": "Official FWS visitor information identifies Back Bay NWR as a route used by visitors hiking or biking toward False Cape State Park."
+  },
+  "military_benefit": {
+    "title": "America the Beautiful pass waives seasonal vehicle entrance fee",
+    "value": "$5 seasonal vehicle entrance fee waived for passholders",
+    "season": "April 1 through October 31",
+    "eligibility": "Current U.S. military members and dependents qualify for the free Military Annual Pass; veterans and Gold Star Family members qualify for the free Military Lifetime Pass.",
+    "refuge_source": "https://www.fws.gov/refuge/back-bay/summer-events",
+    "eligibility_source": "https://www.nps.gov/planyourvisit/passes.htm",
+    "verification_note": "FWS states the $5 vehicle fee is waived for America the Beautiful passholders. NPS lists Military Annual and Military Lifetime passes as free for the stated eligible groups."
+  },
+  "provenance": {
+    "authoritative": true,
+    "source_owners": ["U.S. Fish & Wildlife Service", "U.S. National Park Service"],
+    "license_action": "No third-party/restricted dataset accepted; facts recorded from public federal first-party pages."
+  }
+}
