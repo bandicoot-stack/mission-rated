@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T21:45:00Z",
+  "generated_at": "2026-08-15T22:38:00Z",
   "purpose": "Authoritative-source ingestion queue for Mission Rated. Records here are source-verified candidates only and are not user-verified or MR-rated.",
   "candidates": [
     {
@@ -38,6 +38,39 @@
       "mr_score": null,
       "mr_status": "Building",
       "notes": "Reverified against the official Norfolk Admirals discount page on 2026-08-15. Do not infer community reputation from the military discount. No public rating or review sample is included unless separately sourced."
+    },
+    {
+      "entity_type": "business",
+      "slug": "virginia-zoo",
+      "name": "Virginia Zoo",
+      "category": "Family & Attractions",
+      "website_url": "https://virginiazoo.org/",
+      "phone": "757-441-2374",
+      "address_line1": "3500 Granby St",
+      "city": "Norfolk",
+      "state": "VA",
+      "postal_code": "23504",
+      "official_source_url": "https://virginiazoo.org/hours-prices/",
+      "source_checked_at": "2026-08-15T22:38:00Z",
+      "official_verification": {
+        "verification_type": "official_source",
+        "status": "verified",
+        "user_verified": false
+      },
+      "military_offer": {
+        "title": "$2 off Virginia Zoo general admission",
+        "offer_type": "discount",
+        "offer_value_text": "$2 off general admission",
+        "eligibility": "Military guests with valid proof of discount qualification",
+        "terms": "Discounted admission is listed by the Virginia Zoo for military guests. Proof of discount qualification is required; otherwise the ticket is upgraded to full-price general admission.",
+        "starts_at": null,
+        "ends_at": null,
+        "source_url": "https://virginiazoo.org/hours-prices/",
+        "official_source": true
+      },
+      "mr_score": null,
+      "mr_status": "Building",
+      "notes": "Verified against the Virginia Zoo's official Hours & Prices page on 2026-08-15. Do not infer a community rating or review score from this benefit record."
     }
   ]
 }
