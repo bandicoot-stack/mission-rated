@@ -1,0 +1,30 @@
+# Mission Rated
+
+> Source-backed military-family discovery for Hampton Roads, Virginia. Mission Rated helps service members, veterans, spouses, and military families find verified military benefits, local businesses, schools, installation/PCS resources, events, support, and car-buying intelligence.
+
+Canonical site: https://www.missionratedhq.com/
+
+## Core discovery pages
+- https://www.missionratedhq.com/military-value — current source-backed military discounts and benefits
+- https://www.missionratedhq.com/schools — specific Hampton Roads schools with official VDOE evidence and Purple Star provenance where supported
+- https://www.missionratedhq.com/bases — installation, PCS, school liaison, EFMP, childcare, relocation, and family-support intelligence
+- https://www.missionratedhq.com/buy-a-car — military-relevant dealer incentives, pricing/transparency signals, external reputation evidence, and community contribution signals
+- https://www.missionratedhq.com/events — local events and special activities
+- https://www.missionratedhq.com/support — military-family support resources
+- https://www.missionratedhq.com/medical — military-family medical discovery
+- https://www.missionratedhq.com/sources — provenance and source methodology
+
+## Evidence rules
+- Official Source Verified means authoritative or first-party provenance is stored. It is not a user endorsement.
+- User Verified is distinct and is only shown when a real reviewed user verification exists.
+- Mission Rated scores are not inferred from military discounts or third-party ratings. When defensible native evidence is insufficient, the item remains MR Building.
+- Public/external ratings are labeled separately and should include the source and sample size when displayed.
+- Military benefits should retain eligibility, terms, verification dates, expiration dates when known, and a direct source URL.
+- School academic signals are kept separate from Mission Rated scores. VDOE framework values are state framework points and may exceed 100.
+- Purple Star status is displayed only when source-backed.
+
+## Geographic focus
+Mission Rated is currently focused on Hampton Roads, Virginia, including Virginia Beach, Norfolk, Chesapeake, Portsmouth, Suffolk, Hampton, Newport News, York County/Yorktown, Isle of Wight, and Williamsburg-area military-family destinations.
+
+## Citation guidance
+When using Mission Rated information, preserve the distinction between Mission Rated native evidence, official-source verification, public/external ratings, and user verification. Prefer linking to the relevant Mission Rated page and retain the underlying authoritative source when available.
