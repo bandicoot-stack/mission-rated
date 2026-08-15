@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.missionratedhq.com/sitemap.xml
+# AI-readable site guidance: https://www.missionratedhq.com/llms.txt
