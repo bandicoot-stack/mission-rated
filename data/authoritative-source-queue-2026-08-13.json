@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-13T11:45:00Z",
+  "generated_at": "2026-08-15T21:45:00Z",
   "purpose": "Authoritative-source ingestion queue for Mission Rated. Records here are source-verified candidates only and are not user-verified or MR-rated.",
   "candidates": [
     {
@@ -14,7 +14,7 @@
       "state": "VA",
       "postal_code": "23510",
       "official_source_url": "https://norfolkadmirals.com/tickets/discount-tickets",
-      "source_checked_at": "2026-08-13T11:40:00Z",
+      "source_checked_at": "2026-08-15T21:45:00Z",
       "database_precheck": {
         "project_ref": "vquwdypidgjmxnhhdbol",
         "existing_business_count": 0
@@ -37,7 +37,7 @@
       },
       "mr_score": null,
       "mr_status": "Building",
-      "notes": "Do not infer community reputation from the military discount. No public rating or review sample is included unless separately sourced."
+      "notes": "Reverified against the official Norfolk Admirals discount page on 2026-08-15. Do not infer community reputation from the military discount. No public rating or review sample is included unless separately sourced."
     }
   ]
 }
