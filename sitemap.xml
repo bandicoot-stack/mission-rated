@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.missionratedhq.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.missionratedhq.com/savings</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>https://www.missionratedhq.com/military-value</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
   <url><loc>https://www.missionratedhq.com/support</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
   <url><loc>https://www.missionratedhq.com/medical</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
