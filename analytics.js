@@ -23,22 +23,19 @@ const send=(eventName,extra={})=>{
   const payload={event_name:eventName,path:location.pathname||'/',session_id:session,referrer_host:referrerHost,...acquisition,...extra};
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'omit'}).catch(()=>{})}catch{}
 };
-// Embedded Mission Rated views are UI composition, not independent navigation. Keep
-// click/conversion tracking active inside them, but do not inflate traffic/page-view metrics.
 if(!embedded)send('page_view');
 document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
+  if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
   if(el.id==='mrShareAction'||/^↗?\s*share\b/.test(text))return send('share_action',ctx);
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
   if(/feedback|suggest.*improvement|report.*issue/.test(text))return send('feedback_action',ctx);
-  if(/verify offer source|tricare evidence|rating source|public rating source|source ↗/.test(text))return send('offer_source_click',ctx);
+  if(/verify offer source|verify source|tricare evidence|rating source|public rating source|source ↗/.test(text))return send('offer_source_click',ctx);
   if(/^https:\/\//i.test(href)&&(/official website|business website|provider website|visit website/.test(text)))return send('official_website_click',ctx);
-  // In-page discovery tabs are buttons, so record them before link-only navigation logic.
-  // Keep the destination coarse and never collect search/filter text.
   const viewEl=el.closest?.('[data-view]');
   if(viewEl?.dataset?.view)return send('internal_navigation',{...ctx,destination:`view:${clean(viewEl.dataset.view)}`});
   if(href&&!/^https?:\/\//i.test(href)&&!href.startsWith('#')&&!href.startsWith('javascript:')){
