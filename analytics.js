@@ -23,6 +23,7 @@ const send=(eventName,extra={})=>{
   const payload={event_name:eventName,path:location.pathname||'/',session_id:session,referrer_host:referrerHost,...acquisition,...extra};
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'omit'}).catch(()=>{})}catch{}
 };
+window.mrTrack=send;
 if(!embedded)send('page_view');
 document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
