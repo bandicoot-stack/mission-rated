@@ -30,4 +30,5 @@ for (const file of ['business.html','school.html','installation.html']) {
   for(const asset of ['local-intel-embeds.js','instagram-connect.js']) if(!html.includes(asset)) html=html.replace('</body>',`<script src="/${asset}" defer></script>\n</body>`);
   await writeFile(path,html);
 }
-console.log('Mission Rated homepage priorities, Labor Day, Local Intel embeds and Instagram creator connection added to release');
+await import('./ai-discovery.mjs');
+console.log('Mission Rated homepage priorities, Labor Day, Local Intel, Instagram connection and AI discovery metadata added to release');
