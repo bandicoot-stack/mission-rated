@@ -26,12 +26,15 @@
     <article class="card"><span class="badge">LOCAL DISCOVERY</span><h3>Local Intel</h3><p class="muted">Public local content and useful Hampton Roads discoveries curated for military families.</p><div class="links"><a class="btn" href="/local-intel.html">Open local intel →</a></div></article>`;
 
   const dealCard=(d,label)=>{const b=d.business||{},u=safe(d.source_url)||safe(b.website_url);return `<article class="card hot"><div class="badges"><span class="badge good">${label}</span>${d.recurrence_label?`<span class="badge">${esc(d.recurrence_label)}</span>`:''}</div><h3>${esc(b.name||d.title||'Military savings')}</h3><div class="offer">${esc(d.offer_value_text||d.title||'Military savings')}</div><p class="muted">${esc(d.description||d.terms||'Source-backed military savings.')}</p><div class="links">${u?`<a class="btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">Use this deal ↗</a>`:''}</div></article>`};
+  const hamptonRoads=new Set(['chesapeake','hampton','newport news','norfolk','poquoson','portsmouth','suffolk','virginia beach','williamsburg','yorktown']);
+  const isLocal=d=>{const b=d.business||{};return String(b.state||'').trim().toUpperCase()==='VA'&&hamptonRoads.has(String(b.city||'').trim().toLowerCase())};
   const render=(data)=>{
     const specific=data.today_specific||[],all=data.everyday||[];
-    const localDeals=[...specific,...all].filter((d,i,a)=>a.findIndex(x=>String(x.id||x.title)===String(d.id||d.title))===i).slice(0,12);
+    const pool=[...specific,...all].filter((d,i,a)=>a.findIndex(x=>String(x.id||x.title)===String(d.id||d.title))===i);
+    const localDeals=pool.filter(isLocal).slice(0,12);
     const todayDeals=(specific.length?specific:all).slice(0,9);
     today.querySelector('#todayGrid').innerHTML=todayDeals.length?todayDeals.map(d=>dealCard(d,specific.length?'TODAY':'AVAILABLE TODAY')).join(''):'<div class="empty">No verified deals are available right now.</div>';
-    local.querySelector('#local-dealsGrid').innerHTML=localDeals.length?localDeals.map(d=>dealCard(d,'LOCAL DEAL')).join(''):'<div class="empty">Local deal coverage is still building.</div>';
+    local.querySelector('#local-dealsGrid').innerHTML=localDeals.length?localDeals.map(d=>dealCard(d,'LOCAL DEAL')).join(''):'<div class="empty">No verified Hampton Roads deals are available right now. Local coverage is still building.</div>';
     everyday.querySelector('#everyday-dealsGrid').innerHTML=all.length?all.slice(0,12).map(d=>dealCard(d,'EVERYDAY DEAL')).join(''):'<div class="empty">Everyday military deal coverage is still building.</div>';
   };
 
