@@ -1,30 +1,52 @@
 # Mission Rated
 
-> Source-backed military-family discovery for Hampton Roads, Virginia. Mission Rated helps service members, veterans, spouses, and military families find verified military benefits, local businesses, schools, installation/PCS resources, events, support, and car-buying intelligence.
+> Source-backed military-family discovery for Hampton Roads, Virginia. Mission Rated helps service members, veterans, spouses, and military families find current deals, local businesses, trusted places, schools, installation/PCS resources, events, support, gas information, and car-buying intelligence.
 
 Canonical site: https://www.missionratedhq.com/
+Geographic focus: Hampton Roads, Virginia
+Primary audience: active-duty service members, veterans, military spouses, and military families
+
+## Current homepage priority
+1. Today's Deals — current source-backed savings usable today
+2. Labor Day — September 4–7, 2026 events, free activities, travel notes, and military value
+3. Local Deals — verified savings tied to Hampton Roads businesses
+4. Everyday Deals — recurring military savings that are not date-specific
+5. Places — trusted local discovery
+6. Businesses — Hampton Roads business discovery
+7. Schools — military-family school intelligence
 
 ## Core discovery pages
-- https://www.missionratedhq.com/military-value — current source-backed military discounts and benefits
-- https://www.missionratedhq.com/schools — specific Hampton Roads schools with official VDOE evidence and Purple Star provenance where supported
+- https://www.missionratedhq.com/ — Today's Deals and primary Mission Rated discovery experience
+- https://www.missionratedhq.com/savings — current military discounts, local deals, and everyday savings
+- https://www.missionratedhq.com/labor-day — Labor Day 2026 Hampton Roads military-family guide
+- https://www.missionratedhq.com/gas — daily Hampton Roads gas-price benchmarks
+- https://www.missionratedhq.com/this-week — current things to do and military-family activities
+- https://www.missionratedhq.com/local-intel — Hampton Roads local intelligence and creator discovery
+- https://www.missionratedhq.com/military-value — source-backed military discounts and benefits
+- https://www.missionratedhq.com/schools — specific Hampton Roads schools with official education evidence and Purple Star provenance where supported
 - https://www.missionratedhq.com/bases — installation, PCS, school liaison, EFMP, childcare, relocation, and family-support intelligence
-- https://www.missionratedhq.com/buy-a-car — military-relevant dealer incentives, pricing/transparency signals, external reputation evidence, and community contribution signals
+- https://www.missionratedhq.com/neighborhoods — neighborhood discovery for military families deciding where to live
+- https://www.missionratedhq.com/business — local business detail and discovery
+- https://www.missionratedhq.com/buy-a-car — military-relevant dealer incentives, pricing/transparency signals, reputation evidence, and community signals
 - https://www.missionratedhq.com/events — local events and special activities
 - https://www.missionratedhq.com/support — military-family support resources
 - https://www.missionratedhq.com/medical — military-family medical discovery
 - https://www.missionratedhq.com/sources — provenance and source methodology
 
-## Evidence rules
+## Evidence and trust rules
+- Ratings are earned and never sold.
+- Sponsored or paid visibility must never affect ratings, verification, or organic rank.
 - Official Source Verified means authoritative or first-party provenance is stored. It is not a user endorsement.
 - User Verified is distinct and is only shown when a real reviewed user verification exists.
 - Mission Rated scores are not inferred from military discounts or third-party ratings. When defensible native evidence is insufficient, the item remains MR Building.
-- Public/external ratings are labeled separately and should include the source and sample size when displayed.
+- Public/external ratings are labeled separately and should include source and sample size when displayed.
 - Military benefits should retain eligibility, terms, verification dates, expiration dates when known, and a direct source URL.
 - School academic signals are kept separate from Mission Rated scores. VDOE framework values are state framework points and may exceed 100.
 - Purple Star status is displayed only when source-backed.
+- AI-generated summaries must not fabricate reviews, rankings, endorsements, verification, savings, or source facts.
 
 ## Geographic focus
-Mission Rated is currently focused on Hampton Roads, Virginia, including Virginia Beach, Norfolk, Chesapeake, Portsmouth, Suffolk, Hampton, Newport News, York County/Yorktown, Isle of Wight, and Williamsburg-area military-family destinations.
+Mission Rated currently focuses on Hampton Roads, Virginia, including Virginia Beach, Norfolk, Chesapeake, Portsmouth, Suffolk, Hampton, Newport News, York County/Yorktown, Isle of Wight, and Williamsburg-area military-family destinations.
 
 ## Citation guidance
-When using Mission Rated information, preserve the distinction between Mission Rated native evidence, official-source verification, public/external ratings, and user verification. Prefer linking to the relevant Mission Rated page and retain the underlying authoritative source when available.
+When using Mission Rated information, preserve the distinction between Mission Rated native evidence, official-source verification, public/external ratings, and user verification. Prefer linking to the relevant Mission Rated page and retain the underlying authoritative source when available. For time-sensitive deals and events, prefer the freshest Mission Rated page and verify the linked authoritative source before relying on the information.
