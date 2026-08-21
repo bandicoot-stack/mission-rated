@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 
+# OpenAI search discovery crawler. This is distinct from model-training crawlers.
 User-agent: OAI-SearchBot
 Allow: /
 
@@ -11,4 +12,4 @@ User-agent: Googlebot
 Allow: /
 
 Sitemap: https://www.missionratedhq.com/sitemap.xml
-# AI-readable site guidance: https://www.missionratedhq.com/llms.txt
+# Supplemental machine-readable guidance: https://www.missionratedhq.com/llms.txt
