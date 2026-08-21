@@ -1,7 +1,7 @@
 import './build.mjs';
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
 
-for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','labor-day.html','local-intel.html','local-intel-embeds.js','instagram-connect.js']) await copyFile(file, `dist/${file}`);
+for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','labor-day.html','local-intel.html','local-intel-embeds.js','instagram-connect.js','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
@@ -31,4 +31,4 @@ for (const file of ['business.html','school.html','installation.html']) {
   await writeFile(path,html);
 }
 await import('./ai-discovery.mjs');
-console.log('Mission Rated homepage priorities, Labor Day, Local Intel, Instagram connection and AI discovery metadata added to release');
+console.log('Mission Rated homepage priorities, Labor Day, Local Intel, Instagram connection, IndexNow key and AI discovery metadata added to release');
