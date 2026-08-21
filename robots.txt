@@ -1,5 +1,14 @@
 User-agent: *
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
 Sitemap: https://www.missionratedhq.com/sitemap.xml
 # AI-readable site guidance: https://www.missionratedhq.com/llms.txt
