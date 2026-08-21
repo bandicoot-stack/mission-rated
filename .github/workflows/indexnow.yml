@@ -1,0 +1,44 @@
+name: IndexNow Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - '*.js'
+      - 'sitemap.xml'
+      - 'llms.txt'
+      - 'robots.txt'
+      - 'scripts/**'
+      - 'supabase/**'
+      - '99012cfad8c2e9d0d3cc9683bb7afaba.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Wait for production key file
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://www.missionratedhq.com/99012cfad8c2e9d0d3cc9683bb7afaba.txt'
+          for attempt in {1..18}; do
+            body="$(curl -fsSL "$url" || true)"
+            if [ "$body" = '99012cfad8c2e9d0d3cc9683bb7afaba' ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'IndexNow key file was not visible on production after deploy window.' >&2
+          exit 1
+      - name: Notify IndexNow
+        run: node scripts/indexnow.mjs
