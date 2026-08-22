@@ -54,7 +54,9 @@ document.addEventListener('submit',e=>{
   const action=clean(form.getAttribute('action')).toLowerCase();
   const email=form.querySelector('input[type="email"],input[name*="email" i]');
   const isWeekendBrief=form.dataset?.weekendBrief==='true'||/weekend[\s_-]*brief/.test(idClass)||/weekend brief/.test(text)||(/subscribe|newsletter/.test(`${idClass} ${action} ${text}`)&&!!email);
-  if(isWeekendBrief)send('weekend_brief_signup',{signup_surface:clean(form.dataset?.signupSurface)||location.pathname||'unknown'});
+  // Submission only proves intent. A confirmed signup must be emitted by the
+  // subscription success path after the authoritative subscriber write succeeds.
+  if(isWeekendBrief)send('weekend_brief_signup_attempt',{signup_surface:clean(form.dataset?.signupSurface)||location.pathname||'unknown'});
 },true);
 document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
