@@ -9,11 +9,16 @@ const required=[
   'BUSINESS SITE',
   'mrDealAction',
   'data-deal-action="get-deal"',
-  'data-deal-source="verified-source"'
+  'data-deal-source="verified-source"',
+  'searchText=',
+  'filterDeals=',
+  "searchInput?.addEventListener('input'",
+  'data-clear-deal-search',
+  'No deals match'
 ];
 const errors=required.filter(token=>!source.includes(token));
 if(errors.length){
-  console.error('Homepage deal CTA QA failed:');
+  console.error('Homepage deal CTA/search QA failed:');
   for(const token of errors) console.error(` - missing ${token}`);
   process.exit(1);
 }
@@ -25,4 +30,8 @@ if(!source.includes('!source&&website')){
   console.error('Homepage deal CTA QA failed: business-site fallback must only render when no offer source exists.');
   process.exit(1);
 }
-console.log('Homepage deal CTA QA passed: source-backed actions, business-site fallback, and conversion hook are explicit.');
+if(!source.includes('todayDeals=filterDeals(todayBase)')||!source.includes('everydayDeals=filterDeals(all)')||!source.includes('filterDeals(pool.filter(isLocal))')){
+  console.error('Homepage deal search QA failed: Today, Local, and Everyday deal grids must all use the visible homepage query.');
+  process.exit(1);
+}
+console.log('Homepage deal QA passed: trust actions and functional search/clear behavior are explicit.');
