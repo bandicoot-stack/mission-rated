@@ -30,7 +30,12 @@ if(!source.includes('!source&&website')){
   console.error('Homepage deal CTA QA failed: business-site fallback must only render when no offer source exists.');
   process.exit(1);
 }
-if(!source.includes('todayDeals=filterDeals(todayBase)')||!source.includes('everydayDeals=filterDeals(all)')||!source.includes('filterDeals(pool.filter(isLocal))')){
+const searchCoverage=[
+  'todayDeals=filterDeals(todayBase)',
+  'localDeals=filterDeals(shuffle(pool.filter(isLocal)))',
+  'everydayDeals=filterDeals(shuffle(all))'
+];
+if(searchCoverage.some(token=>!source.includes(token))){
   console.error('Homepage deal search QA failed: Today, Local, and Everyday deal grids must all use the visible homepage query.');
   process.exit(1);
 }
