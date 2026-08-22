@@ -29,6 +29,12 @@ const send=(eventName,extra={})=>{
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'omit'}).catch(()=>{})}catch{}
 };
 window.mrTrack=send;
+// Call only after the authoritative subscriber write succeeds. This keeps the
+// growth scorecard from treating submit attempts, duplicates, or provider
+// failures as confirmed subscribers.
+window.mrTrackWeekendBriefSuccess=(signupSurface=location.pathname||'unknown')=>{
+  send('weekend_brief_signup_confirmed',{signup_surface:clean(signupSurface)||'unknown'});
+};
 window.mrReferralUrl=(url=location.href)=>{
   try{
     const dest=new URL(url,location.href);
