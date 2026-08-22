@@ -5,6 +5,12 @@ const productionHosts=new Set(['www.missionratedhq.com','missionratedhq.com','mi
 if(!productionHosts.has(location.hostname))return;
 const clean=s=>String(s??'').trim();
 const qs=new URLSearchParams(location.search);
+try{
+  const analyticsMode=qs.get('mr_analytics');
+  if(analyticsMode==='off')localStorage.setItem('mr_analytics_optout','1');
+  if(analyticsMode==='on')localStorage.removeItem('mr_analytics_optout');
+  if(localStorage.getItem('mr_analytics_optout')==='1')return;
+}catch{}
 const embedded=(()=>{try{return window.self!==window.top||qs.get('embedded')==='1'}catch{return true}})();
 const getId=(key,storage)=>{try{let v=storage.getItem(key);if(!v){v=crypto.randomUUID();storage.setItem(key,v)}return v}catch{return null}};
 const session=getId('mr_analytics_session',sessionStorage);
@@ -54,8 +60,6 @@ document.addEventListener('submit',e=>{
   const action=clean(form.getAttribute('action')).toLowerCase();
   const email=form.querySelector('input[type="email"],input[name*="email" i]');
   const isWeekendBrief=form.dataset?.weekendBrief==='true'||/weekend[\s_-]*brief/.test(idClass)||/weekend brief/.test(text)||(/subscribe|newsletter/.test(`${idClass} ${action} ${text}`)&&!!email);
-  // Submission only proves intent. A confirmed signup must be emitted by the
-  // subscription success path after the authoritative subscriber write succeeds.
   if(isWeekendBrief)send('weekend_brief_signup_attempt',{signup_surface:clean(form.dataset?.signupSurface)||location.pathname||'unknown'});
 },true);
 document.addEventListener('click',e=>{
@@ -63,8 +67,6 @@ document.addEventListener('click',e=>{
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
   if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
-  // Do not count a share-button click as a completed share. deal-share.js emits
-  // share_action only after native sharing or clipboard copy actually succeeds.
   if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
