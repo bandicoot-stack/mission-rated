@@ -12,7 +12,7 @@
   shell.className='mrBrief';
   shell.id='mrWeekendBrief';
   shell.setAttribute('aria-label','Weekend Brief signup');
-  shell.innerHTML=`<div class="mrBriefCard"><div class="mrBriefEyebrow">YOUR WEEKEND BRIEF</div><h2>Be part of our story.</h2><p>Sign up and we’ll bring your Weekend Brief right to you — useful military-family finds, local deals, events, and what’s worth knowing around Hampton Roads.</p><form class="mrBriefForm" id="mrBriefForm"><input id="mrBriefEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@email.com" aria-label="Email address" required><input class="mrBriefTrap" name="company" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Bring me the Brief</button></form><p class="mrBriefFine">No spam. Just the useful stuff. Unsubscribe anytime.</p><div class="mrBriefStatus" id="mrBriefStatus" role="status" aria-live="polite"></div></div>`;
+  shell.innerHTML=`<div class="mrBriefCard"><div class="mrBriefEyebrow">YOUR WEEKEND BRIEF</div><h2>Be part of our story.</h2><p>Sign up and we’ll bring your Weekend Brief right to you — useful military-family finds, local deals, events, and what’s worth knowing around Hampton Roads.</p><form class="mrBriefForm" id="mrBriefForm" data-weekend-brief="true" data-signup-surface="homepage-weekend-brief"><input id="mrBriefEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@email.com" aria-label="Email address" required><input class="mrBriefTrap" name="company" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Bring me the Brief</button></form><p class="mrBriefFine">No spam. Just the useful stuff. Unsubscribe anytime.</p><div class="mrBriefStatus" id="mrBriefStatus" role="status" aria-live="polite"></div></div>`;
 
   const main=document.querySelector('main');
   if (main) main.insertAdjacentElement('afterend',shell); else document.body.appendChild(shell);
@@ -35,7 +35,10 @@
       if(!res.ok||!body.ok) throw new Error(body.error||'signup_failed');
       form.reset();
       status.textContent='You’re in. Your Weekend Brief is headed your way.';
-      window.mrTrack?.('weekend_brief_signup','homepage');
+      // This event is emitted only after the authoritative signup endpoint confirms success.
+      // Keep the payload structured so the growth scorecard can distinguish attempts from
+      // confirmed subscriptions without collecting the subscriber email in analytics.
+      window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:'homepage-weekend-brief'});
     }catch{
       status.className='mrBriefStatus bad';
       status.textContent='Couldn’t sign you up just now. Please try again.';
