@@ -44,16 +44,50 @@ Deno.serve(async (req: Request) => {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 
-  const { error } = await supabase.from("weekend_brief_subscribers").upsert({
+  // Consent is sticky: a public signup must never silently reactivate an address
+  // that was explicitly unsubscribed. Active duplicates remain idempotent.
+  const { data: existing, error: lookupError } = await supabase
+    .from("weekend_brief_subscribers")
+    .select("status")
+    .eq("email_normalized", email)
+    .maybeSingle();
+
+  if (lookupError) {
+    console.error("weekend_brief_signup_lookup_failed", { code: lookupError.code });
+    return json({ ok: false, error: "signup_failed" }, 500, headers);
+  }
+
+  if (existing?.status === "unsubscribed") {
+    return json({ ok: false, error: "resubscribe_required" }, 409, headers);
+  }
+
+  if (existing?.status === "active") {
+    return json({ ok: true, already_subscribed: true }, 200, headers);
+  }
+
+  const now = new Date().toISOString();
+  const { error } = await supabase.from("weekend_brief_subscribers").insert({
     email,
     source,
     installation,
     status: "active",
-    consented_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }, { onConflict: "email_normalized" });
+    consented_at: now,
+    updated_at: now
+  });
 
   if (error) {
+    // A concurrent first signup can win the unique constraint. Treat that as
+    // idempotent only after verifying the resulting row is active.
+    if (error.code === "23505") {
+      const { data: raced } = await supabase
+        .from("weekend_brief_subscribers")
+        .select("status")
+        .eq("email_normalized", email)
+        .maybeSingle();
+      if (raced?.status === "active") return json({ ok: true, already_subscribed: true }, 200, headers);
+      if (raced?.status === "unsubscribed") return json({ ok: false, error: "resubscribe_required" }, 409, headers);
+    }
+
     console.error("weekend_brief_signup_failed", { code: error.code });
     return json({ ok: false, error: "signup_failed" }, 500, headers);
   }
