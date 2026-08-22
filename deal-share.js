@@ -22,11 +22,14 @@ const share=async({url=location.href,title='Mission Rated military deal',text='C
     }else{
       const input=document.createElement('textarea');
       input.value=shareUrl;input.setAttribute('readonly','');input.style.position='fixed';input.style.opacity='0';
-      document.body.appendChild(input);input.select();document.execCommand('copy');input.remove();
+      document.body.appendChild(input);
+      input.select();
+      const copied=document.execCommand('copy');
+      input.remove();
+      if(!copied)throw new Error('copy_failed');
     }
-    // Track only the successful share outcome and stable target identifiers.
-    // Do not send the generated URL: it can contain referral/query context that
-    // is unnecessary for measuring the growth loop and should stay client-side.
+    // Track only a confirmed native share or successful clipboard copy and only
+    // stable target identifiers. Never count a button click or failed fallback.
     if(typeof window.mrTrack==='function')window.mrTrack('share_action',{target_type:targetType,target_id:targetId,share_method:method});
     return {ok:true,method,url:shareUrl};
   }catch(err){
