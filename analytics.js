@@ -38,6 +38,10 @@ window.mrTrack=send;
 window.mrReferralUrl=(url=location.href)=>{
   try{
     const dest=new URL(url,location.href);
+    // Referral IDs are pseudonymous analytics identifiers. Keep them on
+    // Mission Rated links only so sharing an external merchant/source URL can
+    // never disclose a visitor identifier to a third party.
+    if(dest.origin!==location.origin)return dest.toString();
     if(visitor)dest.searchParams.set('mr_ref',visitor);
     if(!dest.searchParams.get('utm_source'))dest.searchParams.set('utm_source','mission-rated-share');
     if(!dest.searchParams.get('utm_medium'))dest.searchParams.set('utm_medium','referral');
