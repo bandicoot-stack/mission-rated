@@ -47,6 +47,15 @@ if(!embedded){
     localStorage.setItem('mr_last_visit',String(now));
   }catch{}
 }
+document.addEventListener('submit',e=>{
+  const form=e.target;if(!(form instanceof HTMLFormElement))return;
+  const text=clean(form.textContent).toLowerCase();
+  const idClass=`${clean(form.id)} ${clean(form.className)}`.toLowerCase();
+  const action=clean(form.getAttribute('action')).toLowerCase();
+  const email=form.querySelector('input[type="email"],input[name*="email" i]');
+  const isWeekendBrief=form.dataset?.weekendBrief==='true'||/weekend[\s_-]*brief/.test(idClass)||/weekend brief/.test(text)||(/subscribe|newsletter/.test(`${idClass} ${action} ${text}`)&&!!email);
+  if(isWeekendBrief)send('weekend_brief_signup',{signup_surface:clean(form.dataset?.signupSurface)||location.pathname||'unknown'});
+},true);
 document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
