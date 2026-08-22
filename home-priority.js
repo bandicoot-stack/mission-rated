@@ -3,8 +3,9 @@
   const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/today-deals';
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
-  const main=document.querySelector('main.main'),tabs=document.querySelector('.tabrow');
+  const main=document.querySelector('main.main'),tabs=document.querySelector('.tabrow'),searchInput=document.getElementById('q');
   if(!main||!tabs) return;
+  let dealData=null;
 
   const existingBusinesses=document.getElementById('places');
   const existingSchools=document.getElementById('schools');
@@ -35,14 +36,20 @@
   };
   const hamptonRoads=new Set(['chesapeake','hampton','newport news','norfolk','poquoson','portsmouth','suffolk','virginia beach','williamsburg','yorktown']);
   const isLocal=d=>{const b=d.business||{};return String(b.state||'').trim().toUpperCase()==='VA'&&hamptonRoads.has(String(b.city||'').trim().toLowerCase())};
+  const searchText=d=>{const b=d.business||{};return [b.name,b.city,b.category,d.title,d.offer_value_text,d.description,d.terms,d.recurrence_label].filter(Boolean).join(' ').toLowerCase()};
+  const filterDeals=rows=>{const q=String(searchInput?.value||'').trim().toLowerCase();return q?rows.filter(d=>searchText(d).includes(q)):rows};
+  const emptySearch=()=>{const q=String(searchInput?.value||'').trim();return q?`<div class="empty">No deals match “${esc(q)}”. <button type="button" class="btn" data-clear-deal-search>Clear search</button></div>`:''};
+  const bindClear=()=>document.querySelectorAll('[data-clear-deal-search]').forEach(btn=>btn.addEventListener('click',()=>{if(!searchInput)return;searchInput.value='';searchInput.focus();render(dealData||{})}));
   const render=(data)=>{
+    dealData=data;
     const specific=data.today_specific||[],all=data.everyday||[];
     const pool=[...specific,...all].filter((d,i,a)=>a.findIndex(x=>String(x.id||x.title)===String(d.id||d.title))===i);
-    const localDeals=pool.filter(isLocal).slice(0,12);
-    const todayDeals=(specific.length?specific:all).slice(0,9);
-    today.querySelector('#todayGrid').innerHTML=todayDeals.length?todayDeals.map(d=>dealCard(d,specific.length?'TODAY':'AVAILABLE TODAY')).join(''):'<div class="empty">No verified deals are available right now.</div>';
-    local.querySelector('#local-dealsGrid').innerHTML=localDeals.length?localDeals.map(d=>dealCard(d,'LOCAL DEAL')).join(''):'<div class="empty">No verified Hampton Roads deals are available right now. Local coverage is still building.</div>';
-    everyday.querySelector('#everyday-dealsGrid').innerHTML=all.length?all.slice(0,12).map(d=>dealCard(d,'EVERYDAY DEAL')).join(''):'<div class="empty">Everyday military deal coverage is still building.</div>';
+    const localDeals=filterDeals(pool.filter(isLocal)).slice(0,12);
+    const todayBase=(specific.length?specific:all),todayDeals=filterDeals(todayBase).slice(0,9),everydayDeals=filterDeals(all).slice(0,12);
+    today.querySelector('#todayGrid').innerHTML=todayDeals.length?todayDeals.map(d=>dealCard(d,specific.length?'TODAY':'AVAILABLE TODAY')).join(''):emptySearch()||'<div class="empty">No verified deals are available right now.</div>';
+    local.querySelector('#local-dealsGrid').innerHTML=localDeals.length?localDeals.map(d=>dealCard(d,'LOCAL DEAL')).join(''):emptySearch()||'<div class="empty">No verified Hampton Roads deals are available right now. Local coverage is still building.</div>';
+    everyday.querySelector('#everyday-dealsGrid').innerHTML=everydayDeals.length?everydayDeals.map(d=>dealCard(d,'EVERYDAY DEAL')).join(''):emptySearch()||'<div class="empty">Everyday military deal coverage is still building.</div>';
+    bindClear();
   };
 
   const order=[['today','Today’s Deals'],['labor-day','Labor Day'],['local-deals','Local Deals'],['everyday-deals','Everyday Deals'],['places','Places'],['businesses','Businesses'],['schools','Schools']];
@@ -50,6 +57,7 @@
   const show=id=>{document.querySelectorAll('main.main > .section').forEach(s=>s.hidden=s.id!==id);tabs.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.view===id;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});};
   order.forEach(([id,label])=>{const b=document.createElement('button');b.className='tab';b.dataset.view=id;b.setAttribute('aria-selected','false');b.textContent=label;b.addEventListener('click',()=>{if(id==='labor-day'){location.href='/labor-day.html';return}show(id)});tabs.appendChild(b)});
   show('today');
+  searchInput?.addEventListener('input',()=>{if(dealData)render(dealData)});
   document.getElementById('mrTodayDeals')?.remove();
   document.getElementById('mrLaborDay')?.remove();
   fetch(API,{headers:{accept:'application/json'}}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{if(j?.ok)render(j)}).catch(()=>{today.querySelector('#todayGrid').innerHTML='<div class="empty">Today’s deals are temporarily unavailable.</div>';local.querySelector('#local-dealsGrid').innerHTML='<div class="empty">Local deals are temporarily unavailable.</div>';everyday.querySelector('#everyday-dealsGrid').innerHTML='<div class="empty">Everyday deals are temporarily unavailable.</div>'});
