@@ -68,7 +68,7 @@ document.addEventListener('click',e=>{
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
   if(/feedback|suggest.*improvement|report.*issue/.test(text))return send('feedback_action',ctx);
-  if(/verify offer source|verify source|tricare evidence|rating source|public rating source|source ↗/.test(text))return send('offer_source_click',ctx);
+  if(/verify (military )?offer( source)?|verify source|tricare evidence|rating source|public rating source|source ↗/.test(text))return send('offer_source_click',ctx);
   if(/^https:\/\//i.test(href)&&(/official website|business website|provider website|visit website/.test(text)))return send('official_website_click',ctx);
   const viewEl=el.closest?.('[data-view]');
   if(viewEl?.dataset?.view)return send('internal_navigation',{...ctx,destination:`view:${clean(viewEl.dataset.view)}`});
