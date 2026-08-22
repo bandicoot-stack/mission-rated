@@ -31,6 +31,7 @@ Buy a Car is an integrated Mission Rated journey rather than a separate product 
 - Paid placements are clearly disclosed.
 - Research-backed facts retain source/provenance signals.
 - AI-assisted enrichment must not create unsupported facts, reviews, rankings, endorsements, or verification.
+- Homepage deal cards distinguish the stored offer source from the business website: source-backed primary actions are labeled as verification/use actions, while business-site-only fallbacks do not imply source verification.
 
 ## Discovery contract
 

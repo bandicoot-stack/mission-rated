@@ -25,7 +25,14 @@
     <article class="card"><span class="badge official">WHAT’S HAPPENING</span><h3>This Week</h3><p class="muted">Source-backed local events, family activities and military life opportunities.</p><div class="links"><a class="btn" href="/this-week.html">See this week →</a></div></article>
     <article class="card"><span class="badge">LOCAL DISCOVERY</span><h3>Local Intel</h3><p class="muted">Public local content and useful Hampton Roads discoveries curated for military families.</p><div class="links"><a class="btn" href="/local-intel.html">Open local intel →</a></div></article>`;
 
-  const dealCard=(d,label)=>{const b=d.business||{},u=safe(d.source_url)||safe(b.website_url);return `<article class="card hot"><div class="badges"><span class="badge good">${label}</span>${d.recurrence_label?`<span class="badge">${esc(d.recurrence_label)}</span>`:''}</div><h3>${esc(b.name||d.title||'Military savings')}</h3><div class="offer">${esc(d.offer_value_text||d.title||'Military savings')}</div><p class="muted">${esc(d.description||d.terms||'Source-backed military savings.')}</p><div class="links">${u?`<a class="btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">Use this deal ↗</a>`:''}</div></article>`};
+  const dealCard=(d,label)=>{
+    const b=d.business||{},source=safe(d.source_url),website=safe(b.website_url),id=esc(d.id||'');
+    const sourceAction=source?`<a class="btn mrDealAction" data-deal-action="get-deal" data-deal-source="verified-source" href="${esc(source)}" target="_blank" rel="noopener noreferrer">Verify & use deal ↗</a>`:'';
+    const websiteAction=website&&website!==source?`<a class="btn" href="${esc(website)}" target="_blank" rel="noopener noreferrer">Official website ↗</a>`:'';
+    const fallbackAction=!source&&website?`<a class="btn" href="${esc(website)}" target="_blank" rel="noopener noreferrer">Visit business ↗</a>`:'';
+    const trustCue=source?'<span class="badge official">SOURCE-BACKED</span>':'<span class="badge">BUSINESS SITE</span>';
+    return `<article class="card hot"${id?` data-id="${id}"`:''}${source?' data-deal-source="verified-source"':''}><div class="badges"><span class="badge good">${label}</span>${trustCue}${d.recurrence_label?`<span class="badge">${esc(d.recurrence_label)}</span>`:''}</div><h3>${esc(b.name||d.title||'Military savings')}</h3><div class="offer">${esc(d.offer_value_text||d.title||'Military savings')}</div><p class="muted">${esc(d.description||d.terms||'Source-backed military savings.')}</p><div class="links">${sourceAction}${websiteAction}${fallbackAction}</div></article>`;
+  };
   const hamptonRoads=new Set(['chesapeake','hampton','newport news','norfolk','poquoson','portsmouth','suffolk','virginia beach','williamsburg','yorktown']);
   const isLocal=d=>{const b=d.business||{};return String(b.state||'').trim().toUpperCase()==='VA'&&hamptonRoads.has(String(b.city||'').trim().toLowerCase())};
   const render=(data)=>{
