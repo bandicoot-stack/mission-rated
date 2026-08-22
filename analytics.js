@@ -63,7 +63,9 @@ document.addEventListener('click',e=>{
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
   if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
-  if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return send('share_action',{...ctx,share_url:window.mrReferralUrl(href&&href!=='#'?href:location.href)});
+  // Do not count a share-button click as a completed share. deal-share.js emits
+  // share_action only after native sharing or clipboard copy actually succeeds.
+  if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
