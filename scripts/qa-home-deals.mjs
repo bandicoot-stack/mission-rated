@@ -31,11 +31,11 @@ if(!source.includes('!source&&website')){
   process.exit(1);
 }
 const searchCoverage=[
-  /todayDeals=filterDeals\(todayBase\)/,
-  /everydayDeals=filterDeals\([^)]*all[^)]*\)/,
-  /localDeals=filterDeals\([^)]*pool\.filter\(isLocal\)[^)]*\)/
+  'todayDeals=filterDeals(todayBase)',
+  'localDeals=filterDeals(shuffle(pool.filter(isLocal)))',
+  'everydayDeals=filterDeals(shuffle(all))'
 ];
-if(searchCoverage.some(pattern=>!pattern.test(source))){
+if(searchCoverage.some(token=>!source.includes(token))){
   console.error('Homepage deal search QA failed: Today, Local, and Everyday deal grids must all use the visible homepage query.');
   process.exit(1);
 }
