@@ -32,10 +32,16 @@
     try{
       const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,company,source:'homepage-weekend-brief'})});
       const body=await res.json().catch(()=>({}));
+      if(res.status===409&&body.error==='resubscribe_required'){
+        status.className='mrBriefStatus bad';
+        status.textContent='This address was previously unsubscribed. We won’t reactivate it without a separate confirmation.';
+        window.mrTrack?.('weekend_brief_resubscribe_required','homepage');
+        return;
+      }
       if(!res.ok||!body.ok) throw new Error(body.error||'signup_failed');
       form.reset();
-      status.textContent='You’re in. Your Weekend Brief is headed your way.';
-      window.mrTrack?.('weekend_brief_signup','homepage');
+      status.textContent=body.already_subscribed?'You’re already subscribed to the Weekend Brief.':'You’re in. Your Weekend Brief is headed your way.';
+      window.mrTrack?.(body.already_subscribed?'weekend_brief_already_subscribed':'weekend_brief_signup','homepage');
     }catch{
       status.className='mrBriefStatus bad';
       status.textContent='Couldn’t sign you up just now. Please try again.';
