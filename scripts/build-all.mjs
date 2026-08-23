@@ -1,7 +1,9 @@
 import './build.mjs';
-import { copyFile, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, readFile, writeFile, mkdir } from 'node:fs/promises';
 
+await mkdir('dist/assets',{recursive:true});
 for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js','labor-day.html','fall.html','fall-mission-rated.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','deal-share.js','featured.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
+for (const file of ['yorktown-primary.webp','yorktown-secondary.webp']) await copyFile(`assets/${file}`, `dist/assets/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
@@ -40,4 +42,4 @@ for (const file of ['business.html','school.html','installation.html']) {
   await writeFile(path,html);
 }
 await import('./ai-discovery.mjs');
-console.log('Mission Rated homepage priorities, prominent Featured Partners, cleaned GUI, deterministic Featured landing, Fall Deals & Finds with MR attributes, Labor Day archive, Local Intel, Instagram connection, deal sharing, IndexNow key and AI discovery metadata added to release');
+console.log('Mission Rated homepage priorities, prominent Featured Partners, cleaned GUI, deterministic Featured landing, Yorktown partner assets, Fall Deals & Finds with MR attributes, Labor Day archive, Local Intel, Instagram connection, deal sharing, IndexNow key and AI discovery metadata added to release');
