@@ -1,6 +1,7 @@
-(()=>{
+(async()=>{
 'use strict';
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
 const day=v=>v?String(v).slice(0,10):'';
