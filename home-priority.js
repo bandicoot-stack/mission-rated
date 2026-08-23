@@ -1,7 +1,7 @@
 (()=>{
   if(!['/','/index.html'].includes(location.pathname)) return;
   const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/today-deals';
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
   const main=document.querySelector('main.main'),tabs=document.querySelector('.tabrow'),searchInput=document.getElementById('q');
   if(!main||!tabs) return;
@@ -69,10 +69,10 @@
     bindClear();
   };
 
-  const order=[['today','Today’s Deals'],['labor-day','Labor Day'],['local-deals','Local Deals'],['everyday-deals','Everyday Deals'],['places','Places'],['businesses','Businesses'],['schools','Schools']];
+  const order=[['today','Today’s Deals'],['fall','Fall Deals & Finds'],['local-deals','Local Deals'],['everyday-deals','Everyday Deals'],['places','Places'],['businesses','Businesses'],['schools','Schools']];
   tabs.innerHTML='';
   const show=id=>{document.querySelectorAll('main.main > .section').forEach(s=>s.hidden=s.id!==id);tabs.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.view===id;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});};
-  order.forEach(([id,label])=>{const b=document.createElement('button');b.className='tab';b.dataset.view=id;b.setAttribute('aria-selected','false');b.textContent=label;b.addEventListener('click',()=>{if(id==='labor-day'){location.href='/labor-day.html';return}show(id)});tabs.appendChild(b)});
+  order.forEach(([id,label])=>{const b=document.createElement('button');b.className='tab';b.dataset.view=id;b.setAttribute('aria-selected','false');b.textContent=label;b.addEventListener('click',()=>{if(id==='fall'){location.href='/fall.html';return}show(id)});tabs.appendChild(b)});
   show('today');
   searchInput?.addEventListener('input',()=>{if(dealData)render(dealData)});
   document.getElementById('mrTodayDeals')?.remove();
