@@ -1,6 +1,7 @@
-(()=>{
+(async()=>{
 'use strict';
-const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-medical';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const API=SUPABASE_FUNCTIONS_ROOT+'public-medical';
 let providers=new Map();
 const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
