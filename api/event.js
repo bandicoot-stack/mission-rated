@@ -34,7 +34,10 @@ export default function handler(req, res) {
     utm_source: clean(body.utm_source, 80),
     utm_medium: clean(body.utm_medium, 80),
     utm_campaign: clean(body.utm_campaign, 120),
-    referral_code: clean(body.referral_code, 120),
+    // Referral links are generated from a pseudonymous UUID in analytics.js.
+    // Accept only that shape so arbitrary query-string values cannot pollute
+    // referral attribution or become free-form data in analytics logs.
+    referral_code: cleanUuid(body.referral_code),
     session_id: cleanUuid(body.session_id),
     visitor_id: cleanUuid(body.visitor_id),
     referrer_host: cleanHost(body.referrer_host),
@@ -76,7 +79,7 @@ function cleanUuid(value) {
 }
 
 function cleanHost(value) {
-  const v = String(value || '').trim().toLowerCase().replace(/^www\./, '');
+  const v = String(value || '').trim().toLowerCase().replace(/^www\./,'');
   return /^[a-z0-9.-]{1,253}$/.test(v) ? v : '';
 }
 
