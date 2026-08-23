@@ -73,7 +73,7 @@
   tabs.innerHTML='';
   const show=id=>{document.querySelectorAll('main.main > .section').forEach(s=>s.hidden=s.id!==id);tabs.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.view===id;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});};
   order.forEach(([id,label])=>{const b=document.createElement('button');b.className='tab';b.dataset.view=id;b.setAttribute('aria-selected','false');b.textContent=label;b.addEventListener('click',()=>{if(id==='fall'){location.href='/fall.html';return}show(id)});tabs.appendChild(b)});
-  show('today');
+  show('featured');
   searchInput?.addEventListener('input',()=>{if(dealData)render(dealData)});
   document.getElementById('mrTodayDeals')?.remove();
   document.getElementById('mrLaborDay')?.remove();
