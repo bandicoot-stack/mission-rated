@@ -1,5 +1,6 @@
-(()=>{'use strict';
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+(async()=>{'use strict';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const AUTO=ROOT+'public-auto-dealers',VOTES=ROOT+'public-quick-rank-votes',SUBMIT=ROOT+'quick-rank-vote';
 let dealers=[],people=[],voteMap=new Map();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
