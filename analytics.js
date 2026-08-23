@@ -1,6 +1,9 @@
 (()=>{
 'use strict';
-const ENDPOINT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/product-event';
+// Keep browser analytics on the same origin. The server endpoint owns the
+// event allowlist/sanitization boundary and can evolve without exposing a
+// direct third-party ingestion URL in every client.
+const ENDPOINT='/api/event';
 const productionHosts=new Set(['www.missionratedhq.com','missionratedhq.com','mission-rated-beta.vercel.app']);
 if(!productionHosts.has(location.hostname))return;
 const clean=s=>String(s??'').trim();
@@ -32,7 +35,7 @@ const targetContext=el=>{
 };
 const send=(eventName,extra={})=>{
   const payload={event_name:eventName,path:location.pathname||'/',session_id:session,visitor_id:visitor,referrer_host:referrerHost,...acquisition,...extra};
-  try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'omit'}).catch(()=>{})}catch{}
+  try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'same-origin'}).catch(()=>{})}catch{}
 };
 window.mrTrack=send;
 window.mrReferralUrl=(url=location.href)=>{
