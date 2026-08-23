@@ -1,7 +1,7 @@
 import './build.mjs';
 import { copyFile, readFile, writeFile } from 'node:fs/promises';
 
-for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-home.js','gui-cleanup.js','labor-day.html','fall.html','fall-mission-rated.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','deal-share.js','featured.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
+for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js','labor-day.html','fall.html','fall-mission-rated.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','deal-share.js','featured.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
@@ -16,6 +16,7 @@ for (const file of ['index.html','military-value.html']) {
   if (file === 'index.html' && !html.includes('home-priority.js')) html = html.replace('</body>', '<script src="/home-priority.js" defer></script>\n</body>');
   if (file === 'index.html' && !html.includes('featured-home.js')) html = html.replace('</body>', '<script src="/featured-home.js" defer></script>\n</body>');
   if (file === 'index.html' && !html.includes('gui-cleanup.js')) html = html.replace('</body>', '<script src="/gui-cleanup.js" defer></script>\n</body>');
+  if (file === 'index.html' && !html.includes('featured-landing-fix.js')) html = html.replace('</body>', '<script src="/featured-landing-fix.js" defer></script>\n</body>');
   await writeFile(path, html);
 }
 for (const file of ['business.html','school.html','installation.html']) {
@@ -39,4 +40,4 @@ for (const file of ['business.html','school.html','installation.html']) {
   await writeFile(path,html);
 }
 await import('./ai-discovery.mjs');
-console.log('Mission Rated homepage priorities, prominent Featured Partners, cleaned GUI, Fall Deals & Finds with MR attributes, Labor Day archive, Local Intel, Instagram connection, deal sharing, IndexNow key and AI discovery metadata added to release');
+console.log('Mission Rated homepage priorities, prominent Featured Partners, cleaned GUI, deterministic Featured landing, Fall Deals & Finds with MR attributes, Labor Day archive, Local Intel, Instagram connection, deal sharing, IndexNow key and AI discovery metadata added to release');
