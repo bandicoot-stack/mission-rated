@@ -6,6 +6,61 @@
 const ENDPOINT='/api/event';
 const productionHosts=new Set(['www.missionratedhq.com','missionratedhq.com','mission-rated-beta.vercel.app']);
 if(!productionHosts.has(location.hostname))return;
+
+// Global feedback control. This lives in analytics.js because that bundle is
+// shared broadly across Mission Rated and avoids relying on blocker-sensitive
+// filenames such as feedback.js. Existing page-specific feedback UI wins when
+// present, so this is safe to load alongside older pages during rollout.
+function ensureGlobalFeedback(){
+  if(document.getElementById('mrFeedbackButton'))return;
+  const FEEDBACK_ENDPOINT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/submit-beta-feedback';
+  const style=document.createElement('style');
+  style.id='mrGlobalFeedbackStyle';
+  style.textContent=`
+    #mrFeedbackButton{position:fixed!important;right:14px!important;bottom:20px!important;top:auto!important;left:auto!important;z-index:2147483000!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;min-height:54px!important;padding:14px 17px!important;border:2px solid #8ef5ff!important;border-radius:999px!important;background:#00e5ff!important;color:#02101d!important;font:900 12px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;box-shadow:0 14px 38px #000a,0 0 0 4px #00e5ff24!important;cursor:pointer!important}
+    #mrGlobalFeedbackModal{position:fixed;inset:0;z-index:2147483001;display:none;align-items:flex-end;justify-content:center;background:#000b;padding:16px}
+    #mrGlobalFeedbackModal.open{display:flex}
+    #mrGlobalFeedbackModal .mr-gf-sheet{width:min(540px,100%);max-height:90vh;overflow:auto;background:#061725;color:#f5f8fa;border:1px solid #355d73;border-radius:18px;padding:18px;box-shadow:0 25px 80px #000d;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    #mrGlobalFeedbackModal .mr-gf-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    #mrGlobalFeedbackModal h2{margin:2px 0 5px;font-size:20px}
+    #mrGlobalFeedbackModal p{margin:0;color:#a8bbc5;font-size:11px;line-height:1.45}
+    #mrGlobalFeedbackModal .mr-gf-close{border:0;background:transparent;color:#fff;font-size:26px;min-width:44px;min-height:44px;cursor:pointer}
+    #mrGlobalFeedbackModal .mr-gf-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+    #mrGlobalFeedbackModal .mr-gf-choice{min-height:44px;border:1px solid #345c72;border-radius:9px;background:#082238;color:#e6f1f5;font-weight:850;cursor:pointer}
+    #mrGlobalFeedbackModal .mr-gf-choice.active{border-color:#00e5ff;background:#0a3b4e;color:#8ef5ff}
+    #mrGlobalFeedbackModal select,#mrGlobalFeedbackModal textarea,#mrGlobalFeedbackModal input{width:100%;margin-top:10px;padding:12px;border:1px solid #426176;border-radius:9px;background:#061b2d;color:#fff;font:inherit}
+    #mrGlobalFeedbackModal textarea{min-height:100px;resize:vertical}
+    #mrGlobalFeedbackModal .mr-gf-send{width:100%;min-height:44px;margin-top:12px;border:1px solid #00e5ff;border-radius:9px;background:#00e5ff;color:#02101d;font-weight:900;cursor:pointer}
+    @media(max-width:640px){#mrFeedbackButton{right:12px!important;bottom:calc(82px + env(safe-area-inset-bottom))!important;min-height:52px!important;padding:13px 16px!important}#mrGlobalFeedbackModal{padding:0}#mrGlobalFeedbackModal .mr-gf-sheet{border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom))}}
+  `;
+  document.head.appendChild(style);
+
+  const button=document.createElement('button');
+  button.id='mrFeedbackButton';button.type='button';button.textContent='💬 Give Feedback';button.setAttribute('aria-label','Give feedback');button.setAttribute('aria-haspopup','dialog');
+  document.body.appendChild(button);
+
+  const modal=document.createElement('div');
+  modal.id='mrGlobalFeedbackModal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');
+  modal.innerHTML=`<div class="mr-gf-sheet"><div class="mr-gf-top"><div><div style="font-size:8px;font-weight:900;color:#00e5ff">PUBLIC BETA • NO LOGIN</div><h2>Help make Mission Rated better.</h2><p>Tell us what worked, what did not, or what is missing on this page.</p></div><button class="mr-gf-close" type="button" aria-label="Close feedback">×</button></div><div class="mr-gf-choices"><button class="mr-gf-choice" type="button" data-v="yes">👍 Yes</button><button class="mr-gf-choice" type="button" data-v="partly">😐 Partly</button><button class="mr-gf-choice" type="button" data-v="no">👎 No</button></div><select class="mr-gf-category" aria-label="Feedback category"><option value="general">General experience</option><option value="data_issue">Wrong / outdated data</option><option value="military_discount">Military discount</option><option value="missing_info">Something is missing</option><option value="bug">Something is broken</option><option value="other">Other</option></select><textarea maxlength="1200" placeholder="Anything we should fix or add? (optional)"></textarea><input class="mr-gf-email" type="email" maxlength="180" autocomplete="email" placeholder="Email (optional, only if you'd like a reply)"><button class="mr-gf-send" type="button">Send feedback</button></div>`;
+  document.body.appendChild(modal);
+
+  let helpful='';
+  const close=()=>{modal.classList.remove('open');document.body.style.overflow=''};
+  button.addEventListener('click',()=>{modal.classList.add('open');document.body.style.overflow='hidden'});
+  modal.querySelector('.mr-gf-close').addEventListener('click',close);
+  modal.addEventListener('click',e=>{if(e.target===modal)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close()});
+  modal.querySelectorAll('.mr-gf-choice').forEach(c=>c.addEventListener('click',()=>{modal.querySelectorAll('.mr-gf-choice').forEach(x=>x.classList.remove('active'));c.classList.add('active');helpful=c.dataset.v||''}));
+  modal.querySelector('.mr-gf-send').addEventListener('click',async()=>{
+    const note=modal.querySelector('textarea').value.trim();
+    const category=modal.querySelector('.mr-gf-category').value;
+    if(!helpful&&!note){alert('Tap Yes, Partly, or No — or add a short note.');return}
+    const sendButton=modal.querySelector('.mr-gf-send');sendButton.disabled=true;sendButton.textContent='Sending…';
+    const payload={feedback_type:category==='data_issue'?'data_issue':'general',helpful,category,message:note,item_name:document.title,contact_email:modal.querySelector('.mr-gf-email').value,page_path:location.pathname,website:''};
+    try{const r=await fetch(FEEDBACK_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});if(!r.ok)throw new Error(String(r.status));sendButton.textContent='✓ Thank you';setTimeout(close,900)}catch{alert('We could not send that feedback. Please try again.');sendButton.textContent='Send feedback'}finally{setTimeout(()=>{sendButton.disabled=false;if(sendButton.textContent==='✓ Thank you')sendButton.textContent='Send feedback'},1200)}});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureGlobalFeedback,{once:true});else ensureGlobalFeedback();
+
 const clean=s=>String(s??'').trim();
 const qs=new URLSearchParams(location.search);
 try{

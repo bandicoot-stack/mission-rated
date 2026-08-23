@@ -44,6 +44,14 @@ Public pages intended for discovery should expose appropriate canonical URLs, ro
 - High-value next-step actions should be available without overwhelming the primary task.
 - Duplicate directions, repetitive source notices, and unnecessary visual clutter should be avoided.
 
+## Brand contract
+
+- `assets/mission-rated-logo.svg` is the canonical website logo asset.
+- Built pages use the shared brand renderer rather than page-specific logo image copies.
+- Source page headers retain readable Mission Rated fallback text if the shared enhancement cannot run.
+- The release build publishes the full `assets/` directory automatically so brand updates do not require a second build-configuration change.
+- Replacing the canonical logo must preserve accessible labeling and mobile-safe header sizing.
+
 ## Release contract
 
 Production-bound changes are expected to pass Mission Rated QA and Mission Rated Integration QA and receive production verification after deployment. Repository enforcement is tracked separately until branch/ruleset protection is enabled.
