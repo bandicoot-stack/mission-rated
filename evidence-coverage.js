@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
 if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/',API=ROOT+'public-explore',MEDICAL=ROOT+'public-medical';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT,API=ROOT+'public-explore',MEDICAL=ROOT+'public-medical';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
 function css(){if(document.getElementById('mrCoverageStyle'))return;const s=document.createElement('style');s.id='mrCoverageStyle';s.textContent=`
