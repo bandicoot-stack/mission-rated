@@ -18,6 +18,10 @@ const embedded=(()=>{try{return window.self!==window.top||qs.get('embedded')==='
 const getId=(key,storage)=>{try{let v=storage.getItem(key);if(!v){v=crypto.randomUUID();storage.setItem(key,v)}return v}catch{return null}};
 const session=getId('mr_analytics_session',sessionStorage);
 const visitor=getId('mr_analytics_visitor',localStorage);
+// Referral attribution uses a dedicated pseudonymous token rather than the
+// analytics visitor ID. A shared Mission Rated URL therefore cannot expose or
+// correlate the sender's internal visitor identifier.
+const referralToken=getId('mr_share_referral_token',localStorage);
 const referrerHost=(()=>{try{return document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):null}catch{return null}})();
 const currentAcquisition={utm_source:qs.get('utm_source'),utm_medium:qs.get('utm_medium'),utm_campaign:qs.get('utm_campaign')||qs.get('campaign'),referral_code:qs.get('mr_ref')||qs.get('ref')};
 const acquisition=(()=>{try{const key='mr_acquisition_first_touch',existing=JSON.parse(localStorage.getItem(key)||'null');if(existing)return existing;const has=Object.values(currentAcquisition).some(Boolean);if(has)localStorage.setItem(key,JSON.stringify(currentAcquisition));return has?currentAcquisition:{}}catch{return currentAcquisition}})();
@@ -41,11 +45,10 @@ window.mrTrack=send;
 window.mrReferralUrl=(url=location.href)=>{
   try{
     const dest=new URL(url,location.href);
-    // Referral IDs are pseudonymous analytics identifiers. Keep them on
-    // Mission Rated links only so sharing an external merchant/source URL can
-    // never disclose a visitor identifier to a third party.
+    // Referral tokens stay on Mission Rated links only. External merchant or
+    // source URLs never receive either the referral token or visitor ID.
     if(dest.origin!==location.origin)return dest.toString();
-    if(visitor)dest.searchParams.set('mr_ref',visitor);
+    if(referralToken)dest.searchParams.set('mr_ref',referralToken);
     if(!dest.searchParams.get('utm_source'))dest.searchParams.set('utm_source','mission-rated-share');
     if(!dest.searchParams.get('utm_medium'))dest.searchParams.set('utm_medium','referral');
     return dest.toString();
