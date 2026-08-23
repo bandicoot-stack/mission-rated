@@ -1,15 +1,18 @@
 (()=>{
-  const marker='mr-featured-partners';
+  const marker='featured';
   if(document.getElementById(marker)) return;
   const main=document.querySelector('main.wrap.main');
   if(!main) return;
 
   const section=document.createElement('section');
   section.id=marker;
+  section.className='section';
+  section.hidden=true;
   section.setAttribute('aria-labelledby','mr-featured-title');
   section.innerHTML=`
     <style>
       #${marker}{margin:0 0 24px;border:1px solid #8d742a;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#0a2031,#071824);box-shadow:0 18px 55px #0005}
+      #${marker}[hidden]{display:none}
       #${marker} .mr-f-head{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:18px 20px;border-bottom:1px solid #745f28;background:linear-gradient(90deg,#172116,#092033)}
       #${marker} .mr-f-kicker{font-size:10px;font-weight:950;letter-spacing:.14em;color:#ffd36d}
       #${marker} h2{margin:5px 0 0;font-size:27px;line-height:1.05}
@@ -31,7 +34,7 @@
     </style>
     <div class="mr-f-head">
       <div><div class="mr-f-kicker">★ FEATURED PARTNERS</div><h2 id="mr-featured-title">Businesses stepping up for military families.</h2></div>
-      <a class="mr-f-all" href="/featured">VIEW FEATURED →</a>
+      <a class="mr-f-all" href="/featured">VIEW ALL FEATURED →</a>
     </div>
     <article class="mr-f-card">
       <div>
