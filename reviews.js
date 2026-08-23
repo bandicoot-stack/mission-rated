@@ -1,6 +1,7 @@
-(()=>{
+(async()=>{
 'use strict';
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const EXPLORE=ROOT+'public-explore',NEIGHBORHOODS=ROOT+'public-neighborhoods',REVIEWS=ROOT+'public-item-reviews',SUBMIT=ROOT+'submit-item-review';
 let maps={business:new Map(),school:new Map(),installation:new Map(),neighborhood:new Map()},aggregates=new Map();
 const key=(t,id)=>`${t}:${id}`;
