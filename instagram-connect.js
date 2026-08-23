@@ -1,5 +1,6 @@
-(()=>{
- const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1';
+(async()=>{
+ const {SUPABASE_FUNCTIONS_BASE}=await import('/lib/config.js');
+ const API=SUPABASE_FUNCTIONS_BASE;
  const main=document.querySelector('main.wrap'); if(!main) return;
  const panel=document.createElement('section');
  panel.className='panel'; panel.style.marginTop='20px';
