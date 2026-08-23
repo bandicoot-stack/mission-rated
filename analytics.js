@@ -11,9 +11,10 @@ if(!productionHosts.has(location.hostname))return;
 // shared broadly across Mission Rated and avoids relying on blocker-sensitive
 // filenames such as feedback.js. Existing page-specific feedback UI wins when
 // present, so this is safe to load alongside older pages during rollout.
-function ensureGlobalFeedback(){
+async function ensureGlobalFeedback(){
   if(document.getElementById('mrFeedbackButton'))return;
-  const FEEDBACK_ENDPOINT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/submit-beta-feedback';
+  const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+  const FEEDBACK_ENDPOINT=SUPABASE_FUNCTIONS_ROOT+'submit-beta-feedback';
   const style=document.createElement('style');
   style.id='mrGlobalFeedbackStyle';
   style.textContent=`
