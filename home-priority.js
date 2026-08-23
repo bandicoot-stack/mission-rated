@@ -69,7 +69,7 @@
     bindClear();
   };
 
-  const order=[['today','Today’s Deals'],['fall','Fall Deals & Finds'],['local-deals','Local Deals'],['everyday-deals','Everyday Deals'],['places','Places'],['businesses','Businesses'],['schools','Schools']];
+  const order=[['featured','★ Featured Partners'],['today','Today’s Deals'],['fall','Fall Deals & Finds'],['local-deals','Local Deals'],['everyday-deals','Everyday Deals'],['places','Places'],['businesses','Businesses'],['schools','Schools']];
   tabs.innerHTML='';
   const show=id=>{document.querySelectorAll('main.main > .section').forEach(s=>s.hidden=s.id!==id);tabs.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.view===id;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});};
   order.forEach(([id,label])=>{const b=document.createElement('button');b.className='tab';b.dataset.view=id;b.setAttribute('aria-selected','false');b.textContent=label;b.addEventListener('click',()=>{if(id==='fall'){location.href='/fall.html';return}show(id)});tabs.appendChild(b)});
