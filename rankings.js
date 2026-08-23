@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
-const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-explore';
-const RATINGS_API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-installation-ratings';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const API=SUPABASE_FUNCTIONS_ROOT+'public-explore';
+const RATINGS_API=SUPABASE_FUNCTIONS_ROOT+'public-installation-ratings';
 const clamp=(n,a=0,b=100)=>Math.max(a,Math.min(b,Number(n)||0));
 const pct=(rating,scale=5)=>clamp((Number(rating)||0)/(Number(scale)||5)*100);
 const confidence=n=>{n=Number(n)||0;return n>=500?1:n>=100?.9:n>=25?.8:n>=5?.65:n>0?.5:0};
