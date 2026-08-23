@@ -36,6 +36,7 @@ for (const field of [
 }
 
 requireToken(eventApi, 'isSameOriginBrowserRequest', 'server event endpoint must retain same-origin browser protection');
+requireToken(eventApi, 'if (!origin) return false', 'server event endpoint must reject originless metric submissions');
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
 if (/send\(['"]weekend_brief_signup_confirmed['"][^)]*\)/.test(analytics)) {
   errors.push('analytics.js must not confirm Weekend Brief signup from a generic browser submit handler');
@@ -52,4 +53,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: attribution, share outcomes, and signup attempt/confirmation contracts are guarded.');
+console.log('Growth measurement QA passed: attribution, share outcomes, signup contracts, and origin integrity are guarded.');
