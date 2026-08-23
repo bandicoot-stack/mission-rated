@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
 if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const API=ROOT+'public-explore',VOTES=ROOT+'public-quick-rank-votes',MEDICAL=ROOT+'public-medical';
 const norm=s=>String(s||'').trim().toLowerCase(),vkey=(t,id)=>`${t}:${id}`,day=v=>{const t=Date.parse(v||'');return Number.isFinite(t)?new Date(t).toISOString().slice(0,10):''};
 const validRating=d=>d?.public_rating?.rating!=null&&/^https:\/\//i.test(String(d?.public_rating?.source_url||''))&&Number(d?.public_rating?.sample_size)>0;
