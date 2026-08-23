@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for path in / /featured /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
+          for path in / /featured /assets/partners/yorktown-tools/logo.webp /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
             code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://www.missionratedhq.com$path")"
             test "$code" = "200" || { echo "$path returned $code"; exit 1; }
           done
@@ -63,17 +63,16 @@ jobs:
           cat > /tmp/visual-qa.cjs <<'EOF'
           const { chromium } = require('playwright');
 
-          const base = 'https://www.missionratedhq.com/?visual_qa=' + Date.now();
+          const base = 'https://www.missionratedhq.com';
           const viewports = [
             { name: 'mobile', width: 390, height: 844 },
             { name: 'desktop', width: 1440, height: 1000 },
           ];
 
-          function visible(el) {
-            if (!el) return false;
-            const s = getComputedStyle(el);
-            const r = el.getBoundingClientRect();
-            return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > 0 && r.width > 0 && r.height > 0;
+          function assertLogo(state, label) {
+            if (state.hostState !== 'loaded') throw new Error(`${label}: partner logo renderer state is ${state.hostState || 'missing'}`);
+            if (!state.complete || state.naturalWidth <= 0 || state.naturalHeight <= 0) throw new Error(`${label}: partner logo did not decode`);
+            if (!state.visible) throw new Error(`${label}: partner logo has no visible layout box`);
           }
 
           (async () => {
@@ -81,22 +80,34 @@ jobs:
             try {
               for (const vp of viewports) {
                 const page = await browser.newPage({ viewport: { width: vp.width, height: vp.height } });
-                await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+                await page.goto(`${base}/?visual_qa=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
                 await page.waitForTimeout(1500);
 
                 const state = await page.evaluate(() => {
+                  const visible = el => {
+                    if (!el) return false;
+                    const s = getComputedStyle(el);
+                    const r = el.getBoundingClientRect();
+                    return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > 0 && r.width > 0 && r.height > 0;
+                  };
+                  const logoState = slug => {
+                    const host = document.querySelector(`[data-partner-logo="${slug}"]`);
+                    const img = host?.querySelector('img');
+                    const rect = img?.getBoundingClientRect();
+                    return {
+                      hostState: host?.dataset.partnerLogoState || '',
+                      complete: Boolean(img?.complete),
+                      naturalWidth: img?.naturalWidth || 0,
+                      naturalHeight: img?.naturalHeight || 0,
+                      visible: Boolean(img && visible(img) && rect.width > 0 && rect.height > 0),
+                    };
+                  };
                   const active = document.querySelector('.tab.active')?.textContent?.trim() || '';
                   const featured = document.getElementById('featured');
                   const yorktown = [...document.querySelectorAll('body *')].some(el => visible(el) && /Yorktown Tools/i.test(el.textContent || ''));
                   const huntClub = [...document.querySelectorAll('body *')].some(el => visible(el) && /Hunt Club Farm/i.test(el.textContent || ''));
                   const todayHero = [...document.querySelectorAll('body *')].some(el => visible(el) && /How to save money today\./i.test(el.textContent || ''));
-                  return {
-                    active,
-                    featuredVisible: visible(featured),
-                    yorktown,
-                    huntClub,
-                    todayHero,
-                  };
+                  return { active, featuredVisible: visible(featured), yorktown, huntClub, todayHero, logo: logoState('yorktown-tools') };
                 });
 
                 console.log(vp.name, state);
@@ -105,12 +116,31 @@ jobs:
                 if (!state.yorktown) throw new Error(`${vp.name}: Yorktown Tools is not visible in Featured`);
                 if (state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm leaked into Featured landing`);
                 if (state.todayHero) throw new Error(`${vp.name}: Today's Deals promo leaked above Featured landing`);
+                assertLogo(state.logo, `${vp.name} homepage`);
 
+                await page.goto(`${base}/featured?visual_qa=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+                await page.waitForTimeout(500);
+                const featuredPageLogo = await page.evaluate(() => {
+                  const host = document.querySelector('[data-partner-logo="yorktown-tools"]');
+                  const img = host?.querySelector('img');
+                  const style = img ? getComputedStyle(img) : null;
+                  const rect = img?.getBoundingClientRect();
+                  return {
+                    hostState: host?.dataset.partnerLogoState || '',
+                    complete: Boolean(img?.complete),
+                    naturalWidth: img?.naturalWidth || 0,
+                    naturalHeight: img?.naturalHeight || 0,
+                    visible: Boolean(img && style?.display !== 'none' && style?.visibility !== 'hidden' && rect.width > 0 && rect.height > 0),
+                  };
+                });
+                assertLogo(featuredPageLogo, `${vp.name} featured page`);
+
+                await page.goto(`${base}/?visual_qa_tabs=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
                 const todayTab = page.locator('.tab[data-view="today"]');
                 if (await todayTab.count()) {
                   await todayTab.click();
                   await page.waitForTimeout(500);
-                  const todayActive = await page.locator('.tab[data-view="today"]').evaluate(el => el.classList.contains('active'));
+                  const todayActive = await todayTab.evaluate(el => el.classList.contains('active'));
                   if (!todayActive) throw new Error(`${vp.name}: Today's Deals tab did not activate`);
                 }
 
@@ -125,4 +155,4 @@ jobs:
           });
           EOF
           NODE_PATH="$PWD/node_modules" node /tmp/visual-qa.cjs
-          echo "Visual production QA passed at mobile and desktop viewports; no screenshots retained."
+          echo "Visual production QA passed at mobile and desktop viewports; partner logos decoded successfully and no screenshots retained."
