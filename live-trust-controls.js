@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
 if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
-const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-explore';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const API=SUPABASE_FUNCTIONS_ROOT+'public-explore';
 const norm=s=>String(s||'').trim().toLowerCase(),DAY=86400000;
 let businesses=new Map(),deals=new Map(),state={official:false,military:false,rating:false,fresh:false},applying=false;
 const freshest=d=>[d?.source_checked_at,d?.best_military_offer?.verified_at,d?.public_rating?.observed_at].filter(Boolean).sort((a,b)=>Date.parse(b)-Date.parse(a))[0]||null;
