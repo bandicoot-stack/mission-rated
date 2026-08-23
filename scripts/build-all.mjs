@@ -3,7 +3,7 @@ import { copyFile, readFile, writeFile, mkdir } from 'node:fs/promises';
 
 await mkdir('dist/assets',{recursive:true});
 for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js','labor-day.html','fall.html','fall-mission-rated.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','deal-share.js','featured.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
-for (const file of ['yorktown-primary.webp','yorktown-secondary.webp']) await copyFile(`assets/${file}`, `dist/assets/${file}`);
+for (const file of ['yorktown-primary.webp','yorktown-secondary.webp','yorktown-patriot-approved.webp']) await copyFile(`assets/${file}`, `dist/assets/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
