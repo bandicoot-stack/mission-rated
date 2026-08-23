@@ -37,13 +37,17 @@
     try{
       const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,company,source:signupSurface})});
       const body=await res.json().catch(()=>({}));
+      if(res.status===409&&body.error==='resubscribe_required'){
+        status.className='mrBriefStatus bad';
+        status.textContent='This address was previously unsubscribed. We won’t reactivate it without a separate confirmation.';
+        window.mrTrack?.('weekend_brief_resubscribe_required',{signup_surface:signupSurface});
+        return;
+      }
       if(!res.ok||!body.ok) throw new Error(body.error||'signup_failed');
       form.reset();
-      status.textContent='You’re in. Your Weekend Brief is headed your way.';
-      // This event is emitted only after the authoritative signup endpoint confirms success.
-      // Keep the payload structured so the growth scorecard can distinguish attempts from
-      // confirmed subscriptions without collecting the subscriber email in analytics.
-      window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:signupSurface});
+      status.textContent=body.already_subscribed?'You’re already subscribed to the Weekend Brief.':'You’re in. Your Weekend Brief is headed your way.';
+      // Confirmed signup is emitted only after the authoritative endpoint reports active success.
+      window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:signupSurface,already_subscribed:Boolean(body.already_subscribed)});
     }catch{
       status.className='mrBriefStatus bad';
       status.textContent='Couldn’t sign you up just now. Please try again.';
