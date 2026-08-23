@@ -1,5 +1,6 @@
-(()=>{'use strict';
-const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-explore';
+(async()=>{'use strict';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const API=SUPABASE_FUNCTIONS_ROOT+'public-explore';
 const norm=s=>String(s||'').trim().toLowerCase();
 const fmt=v=>{if(!v)return'';const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})};
 const days=v=>{if(!v)return null;const d=new Date(v);if(Number.isNaN(d.getTime()))return null;return Math.ceil((d.getTime()-Date.now())/86400000)};
