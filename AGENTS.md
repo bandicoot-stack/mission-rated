@@ -41,6 +41,19 @@ For material changes:
 9. Verify production after deployment.
 10. Update `specs/current/` to match shipped reality.
 
+## Preview deployment discipline
+
+Vercel previews are a review resource, not a substitute for iterative engineering checks.
+
+- GitHub QA should run throughout implementation.
+- Batch related implementation work before requesting browser review instead of treating every commit as a preview milestone.
+- Use `[skip preview]` in the commit message for intermediate branch commits when a Vercel browser preview would not provide useful review value.
+- Do not use `[skip preview]` on the final review-ready commit when a browser preview is required.
+- Spec-only, documentation-only, Markdown-only, and GitHub-workflow-only branch changes are automatically ignored by the repo-owned Vercel preview gate.
+- Runtime-impacting changes build previews by default unless explicitly marked `[skip preview]`.
+- `main`/production deployments must never be skipped by preview optimization.
+- Never skip the final browser/production verification required by the change spec.
+
 ## Scope discipline
 
 If implementation reveals a new product decision, stop expanding scope and record it as an unresolved question or follow-on change. Never silently turn an implementation detail into permanent product policy.

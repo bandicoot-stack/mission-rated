@@ -15,6 +15,23 @@
 
 The repository `vercel.json` also declares the build/output contract so project settings and source control stay aligned.
 
+## Preview deployment optimization
+
+The repository owns its Vercel Ignored Build Step through `vercel.json` → `ignoreCommand` → `scripts/vercel-ignore-build.mjs`.
+
+Preview behavior:
+- `main` and Vercel production always build.
+- Branch commits marked `[skip preview]` are ignored by Vercel so intermediate engineering work does not consume a preview deployment.
+- Branch changes containing only `specs/**`, `docs/**`, `.github/**`, or Markdown files are ignored automatically.
+- Runtime-impacting or unknown changes build by default.
+- Missing/ambiguous Git comparison state fails safe by building.
+
+Recommended engineering rhythm:
+
+`edit → GitHub QA → batch/fix with [skip preview] as needed → review-ready commit → one useful Vercel preview → PR/merge → one production deploy → production verification`
+
+Do not use `[skip preview]` to bypass browser review when the change's acceptance criteria require a preview. It is only for intermediate work where a preview adds no decision value.
+
 ## Release behavior
 Every push to `main` should:
 1. Run Mission Rated QA in GitHub Actions.
