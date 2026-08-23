@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
 if(!/\/fall(?:\.html)?$/.test(location.pathname))return;
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const EXPLORE=ROOT+'public-explore',VOTES=ROOT+'public-quick-rank-votes',SUBMIT=ROOT+'quick-rank-vote';
 const FALL={
   'Historic Greenbrier Farms':{id:'4e05ea3f-84e2-4e44-89f7-fc7023e6aedf',name:'Historic Greenbrier Farms'},
