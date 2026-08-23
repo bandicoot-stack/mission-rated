@@ -1,7 +1,7 @@
 (()=>{
   if(!['/','/index.html'].includes(location.pathname)) return;
   const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/today-deals';
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
   const main=document.querySelector('main.main'),tabs=document.querySelector('.tabrow'),searchInput=document.getElementById('q');
   if(!main||!tabs) return;
