@@ -15,7 +15,7 @@ concurrency:
 jobs:
   verify-production:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - name: Wait for Vercel production to publish this commit
         shell: bash
@@ -43,8 +43,99 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for path in / /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
+          for path in / /featured /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
             code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://www.missionratedhq.com$path")"
             test "$code" = "200" || { echo "$path returned $code"; exit 1; }
           done
           echo "Production route smoke test passed."
+
+      - name: Install Chromium visual test runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Visual QA production landing page
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p visual-artifacts
+          cat > /tmp/visual-qa.cjs <<'EOF'
+          const { chromium } = require('playwright');
+
+          const base = 'https://www.missionratedhq.com/?visual_qa=' + Date.now();
+          const viewports = [
+            { name: 'mobile', width: 390, height: 844 },
+            { name: 'desktop', width: 1440, height: 1000 },
+          ];
+
+          function visible(el) {
+            if (!el) return false;
+            const s = getComputedStyle(el);
+            const r = el.getBoundingClientRect();
+            return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > 0 && r.width > 0 && r.height > 0;
+          }
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            try {
+              for (const vp of viewports) {
+                const page = await browser.newPage({ viewport: { width: vp.width, height: vp.height } });
+                await page.goto(base, { waitUntil: 'networkidle', timeout: 60000 });
+                await page.waitForTimeout(1500);
+
+                const state = await page.evaluate(() => {
+                  const active = document.querySelector('.tab.active')?.textContent?.trim() || '';
+                  const featured = document.getElementById('featured');
+                  const yorktown = [...document.querySelectorAll('body *')].some(el => visible(el) && /Yorktown Tools/i.test(el.textContent || ''));
+                  const huntClub = [...document.querySelectorAll('body *')].some(el => visible(el) && /Hunt Club Farm/i.test(el.textContent || ''));
+                  const todayHero = [...document.querySelectorAll('body *')].some(el => visible(el) && /How to save money today\./i.test(el.textContent || ''));
+                  return {
+                    active,
+                    featuredVisible: visible(featured),
+                    yorktown,
+                    huntClub,
+                    todayHero,
+                  };
+                });
+
+                console.log(vp.name, state);
+                if (!/Featured Partners/i.test(state.active)) throw new Error(`${vp.name}: Featured Partners is not the active landing tab`);
+                if (!state.featuredVisible) throw new Error(`${vp.name}: Featured section is not visible`);
+                if (!state.yorktown) throw new Error(`${vp.name}: Yorktown Tools is not visible in Featured`);
+                if (state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm leaked into Featured landing`);
+                if (state.todayHero) throw new Error(`${vp.name}: Today's Deals promo leaked above Featured landing`);
+
+                await page.screenshot({ path: `visual-artifacts/home-${vp.name}.png`, fullPage: true });
+
+                const todayTab = page.locator('.tab[data-view="today"]');
+                if (await todayTab.count()) {
+                  await todayTab.click();
+                  await page.waitForTimeout(500);
+                  const todayActive = await page.locator('.tab[data-view="today"]').evaluate(el => el.classList.contains('active'));
+                  if (!todayActive) throw new Error(`${vp.name}: Today's Deals tab did not activate`);
+                  await page.screenshot({ path: `visual-artifacts/today-${vp.name}.png`, fullPage: true });
+                }
+
+                await page.close();
+              }
+            } finally {
+              await browser.close();
+            }
+          })().catch(err => {
+            console.error(err);
+            process.exit(1);
+          });
+          EOF
+          NODE_PATH="$PWD/node_modules" node /tmp/visual-qa.cjs
+          echo "Visual production QA passed at mobile and desktop viewports."
+
+      - name: Upload production screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mission-rated-production-visual-${{ github.sha }}
+          path: visual-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
