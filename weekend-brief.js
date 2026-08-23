@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
   if (document.getElementById('mrWeekendBrief')) return;
 
-  const ENDPOINT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/weekend-brief-signup';
+  const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+  const ENDPOINT=SUPABASE_FUNCTIONS_ROOT+'weekend-brief-signup';
   const signupSurface=(()=>{
     const path=String(location.pathname||'/').replace(/[^a-zA-Z0-9/_\-.]/g,'').slice(0,80);
     return `weekend-brief:${path||'/'}`;
