@@ -5,6 +5,10 @@ const referralUrl=(url=location.href)=>{
   if(typeof window.mrReferralUrl==='function')return window.mrReferralUrl(url);
   try{
     const dest=new URL(url,location.href);
+    // Referral attribution belongs only on Mission Rated links. If analytics.js
+    // is unavailable, preserve the same privacy boundary as mrReferralUrl so a
+    // merchant/source URL is never decorated with Mission Rated tracking data.
+    if(dest.origin!==location.origin)return dest.toString();
     if(!dest.searchParams.get('utm_source'))dest.searchParams.set('utm_source','mission-rated-share');
     if(!dest.searchParams.get('utm_medium'))dest.searchParams.set('utm_medium','referral');
     return dest.toString();
