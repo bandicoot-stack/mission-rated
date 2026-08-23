@@ -1,9 +1,10 @@
 import './build.mjs';
-import { copyFile, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { copyFile, cp, readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 
 await mkdir('dist/assets',{recursive:true});
+await cp('assets','dist/assets',{recursive:true});
+await copyFile('brand.js','dist/brand.js');
 for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js','labor-day.html','fall.html','fall-mission-rated.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','deal-share.js','featured.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
-for (const file of ['yorktown-primary.webp','yorktown-secondary.webp','yorktown-patriot-approved.webp']) await copyFile(`assets/${file}`, `dist/assets/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
@@ -41,5 +42,11 @@ for (const file of ['business.html','school.html','installation.html']) {
   for(const asset of ['local-intel-embeds.js','instagram-connect.js']) if(!html.includes(asset)) html=html.replace('</body>',`<script src="/${asset}" defer></script>\n</body>`);
   await writeFile(path,html);
 }
+for (const file of (await readdir('dist')).filter(file=>file.endsWith('.html'))) {
+  const path=`dist/${file}`;
+  let html=await readFile(path,'utf8');
+  if(!html.includes('/brand.js')) html=html.replace('</body>','<script src="/brand.js" defer></script>\n</body>');
+  await writeFile(path,html);
+}
 await import('./ai-discovery.mjs');
-console.log('Mission Rated homepage priorities, prominent Featured Partners, cleaned GUI, deterministic Featured landing, Yorktown partner assets, Fall Deals & Finds with MR attributes, Labor Day archive, Local Intel, Instagram connection, deal sharing, IndexNow key and AI discovery metadata added to release');
+console.log('Mission Rated homepage priorities, centralized brand logo pipeline, prominent Featured Partners, cleaned GUI, deterministic Featured landing, automatic asset publishing, Fall Deals & Finds with MR attributes, Labor Day archive, Local Intel, Instagram connection, deal sharing, IndexNow key and AI discovery metadata added to release');
