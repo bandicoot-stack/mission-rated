@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
 const grid=document.getElementById('grid');if(!grid)return;
-const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-support';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const API=SUPABASE_FUNCTIONS_ROOT+'public-support';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
 const style=document.createElement('style');style.textContent='.supportSearch{display:grid;grid-template-columns:1fr auto auto;gap:7px;margin:0 0 12px}.supportSearch input{width:100%;padding:10px;border:1px solid #365e73;border-radius:9px;background:#031522;color:#fff}.supportSearch a{display:flex;align-items:center;text-decoration:none;border:1px solid #365e73;border-radius:9px;padding:0 10px;color:#bdeff5;font-size:9px;font-weight:850}.trustBadges{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0}.trustBadge{font-size:8px;font-weight:900;padding:4px 6px;border-radius:5px;border:1px solid #7b672f;color:#ffd36d;background:#1a1b17}.trustBadge.official{border-color:#167482;color:#80f1ff;background:#07323b}.supportStatus{font-size:8px;color:#829da8;margin:-5px 0 10px}@media(max-width:620px){.supportSearch{grid-template-columns:1fr 1fr}.supportSearch input{grid-column:1/-1}}';document.head.appendChild(style);
