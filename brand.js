@@ -7,7 +7,7 @@
     img.alt='Mission Rated';
     img.width=224;
     img.height=40;
-    img.dataset.mrBrandLogo='true';
+    img.setAttribute('data-mr-brand-logo','true');
     img.decoding='async';
     img.style.display='block';
     img.style.width='auto';
