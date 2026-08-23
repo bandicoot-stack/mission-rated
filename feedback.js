@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
   if (document.getElementById('mrFeedbackButton')) return;
 
-  const FEEDBACK_URL='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/submit-beta-feedback';
+  const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+  const FEEDBACK_URL=SUPABASE_FUNCTIONS_ROOT+'submit-beta-feedback';
   const css=`
   .mr-feedback-btn{position:fixed;right:0;top:58%;transform:translateY(-50%);z-index:10020;min-height:56px;border:2px solid #8ef5ff;border-right:0;background:#00e5ff;color:#02101d;border-radius:16px 0 0 16px;padding:15px 14px 15px 16px;font:900 12px/1 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.01em;box-shadow:0 14px 38px #0009,0 0 0 4px #00e5ff24,0 0 26px #00e5ff55;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s ease,box-shadow .15s ease}.mr-feedback-btn:hover,.mr-feedback-btn:focus-visible{transform:translateY(-50%) translateX(-3px) scale(1.03);box-shadow:0 18px 44px #000a,0 0 0 5px #00e5ff30,0 0 34px #00e5ff77}.mr-feedback-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
   .mr-feedback-modal{position:fixed;inset:0;z-index:11000;display:none;align-items:flex-end;justify-content:center;padding:16px;background:#000b}.mr-feedback-modal.open{display:flex}
@@ -30,14 +31,15 @@
   form.addEventListener('submit',async e=>{e.preventDefault();const message=modal.querySelector('#mrFeedbackMessage').value.trim();if(!helpful.value&&!message){alert('Tap Yes, Partly, or No — or add a short note.');modal.querySelector('.mr-feedback-choice').focus();return}const submit=modal.querySelector('#mrFeedbackSubmit');const original=submit.textContent;submit.disabled=true;submit.textContent='Sending…';const payload={feedback_type:modal.querySelector('#mrFeedbackCategory').value==='data_issue'?'data_issue':'general',helpful:helpful.value,category:modal.querySelector('#mrFeedbackCategory').value,message,item_name:document.title,contact_email:modal.querySelector('#mrFeedbackEmail').value,page_path:location.pathname,website:modal.querySelector('#mrFeedbackWebsite').value};try{const r=await fetch(FEEDBACK_URL,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});if(!r.ok)throw new Error(String(r.status));formState.hidden=true;success.hidden=false;setTimeout(close,1800)}catch{alert('We could not send that feedback. Please try again.')}finally{submit.disabled=false;submit.textContent=original)}});
 })();
 
-(()=>{
+(async()=>{
   'use strict';
   const surfaceByPath={'/gas.html':'gas','/business.html':'business','/military-value.html':'military_deals','/savings.html':'military_deals','/medical.html':'medical'};
   const path=location.pathname||'/',surface=surfaceByPath[path];
   if(!surface||document.getElementById('mrHelpful'))return;
   const key=`mr_helpful:${surface}:${path}`;
   try{if(localStorage.getItem(key))return}catch{}
-  const ENDPOINT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/product-event';
+  const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+  const ENDPOINT=SUPABASE_FUNCTIONS_ROOT+'product-event';
   const session=(()=>{try{let v=sessionStorage.getItem('mr_analytics_session');if(!v){v=crypto.randomUUID();sessionStorage.setItem('mr_analytics_session',v)}return v}catch{return null}})();
   const qs=new URLSearchParams(location.search);
   const referrerHost=(()=>{try{return document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):null}catch{return null}})();
