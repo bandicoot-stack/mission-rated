@@ -41,9 +41,13 @@ requireToken(eventApi, 'isSameOriginBrowserRequest', 'server event endpoint must
 requireToken(eventApi, 'if (!origin) return false', 'server event endpoint must reject originless metric submissions');
 requireToken(eventApi, 'referral_code: cleanUuid(body.referral_code)', 'referral attribution must accept only pseudonymous UUID tokens');
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
-if (/send\(['"]weekend_brief_signup_confirmed['"][^)]*\)/.test(analytics)) {
+const submitHandler = analytics.match(/document\.addEventListener\('submit',[\s\S]*?\},true\);/)?.[0] || '';
+if (!submitHandler) {
+  errors.push('analytics.js must retain a generic submit handler for Weekend Brief signup attempts');
+} else if (/send\(['"]weekend_brief_signup_confirmed['"]/.test(submitHandler)) {
   errors.push('analytics.js must not confirm Weekend Brief signup from a generic browser submit handler');
 }
+requireToken(analytics, 'window.mrConfirmWeekendBriefSignup', 'confirmed Weekend Brief conversion must remain behind the explicit authoritative-success helper');
 requireToken(weekendBriefSignup, 'existing?.status === "unsubscribed"', 'Weekend Brief backend must preserve explicit unsubscribe state');
 requireToken(weekendBriefSignup, 'resubscribe_required', 'Weekend Brief backend must return a distinct resubscribe-required state');
 requireToken(weekendBrief, "res.status===409&&body.error==='resubscribe_required'", 'Weekend Brief UI must handle resubscribe-required before generic success/error handling');
