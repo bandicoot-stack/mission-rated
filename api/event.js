@@ -35,6 +35,9 @@ export default function handler(req, res) {
     utm_medium: clean(body.utm_medium, 80),
     utm_campaign: clean(body.utm_campaign, 120),
     referral_code: clean(body.referral_code, 120),
+    session_id: cleanUuid(body.session_id),
+    visitor_id: cleanUuid(body.visitor_id),
+    referrer_host: cleanHost(body.referrer_host),
     days_since_last: boundedNumber(body.days_since_last, 0, 3650),
     ts: new Date().toISOString()
   };
@@ -60,6 +63,16 @@ function isSameOriginBrowserRequest(req) {
 
 function clean(value, max) {
   return String(value || '').replace(/[\r\n\t]/g, ' ').slice(0, max);
+}
+
+function cleanUuid(value) {
+  const v = String(value || '').toLowerCase();
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(v) ? v : '';
+}
+
+function cleanHost(value) {
+  const v = String(value || '').trim().toLowerCase().replace(/^www\./, '');
+  return /^[a-z0-9.-]{1,253}$/.test(v) ? v : '';
 }
 
 function boundedNumber(value, min, max) {
