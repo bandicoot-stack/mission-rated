@@ -1,5 +1,6 @@
-(()=>{
- const endpoint='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-local-intel-candidates';
+(async()=>{
+ const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+ const endpoint=SUPABASE_FUNCTIONS_ROOT+'public-local-intel-candidates';
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const grid=document.getElementById('candidateGrid'),count=document.getElementById('candidateCount');
  if(!grid||!count) return;
