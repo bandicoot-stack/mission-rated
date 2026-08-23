@@ -1,6 +1,7 @@
-(()=>{
+(async()=>{
 'use strict';
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const safeText=s=>String(s??'').trim();
 const key=s=>safeText(s).toLowerCase();
 const destination=x=>{
