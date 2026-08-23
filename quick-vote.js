@@ -1,6 +1,7 @@
-(()=>{
+(async()=>{
 'use strict';
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const EXPLORE=ROOT+'public-explore',VOTES=ROOT+'public-quick-rank-votes',SUBMIT=ROOT+'quick-rank-vote';
 let data=null,votes=new Map();
 const key=(t,id)=>`${t}:${id}`;
