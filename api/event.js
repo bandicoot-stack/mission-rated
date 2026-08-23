@@ -48,8 +48,13 @@ export default function handler(req, res) {
 }
 
 function isSameOriginBrowserRequest(req) {
+  // Growth metrics are only accepted from the Mission Rated browser client.
+  // Reject originless POSTs so curl/bots cannot trivially manufacture claims,
+  // shares, referrals, or signup events in the growth scorecard. Any future
+  // trusted server/provider confirmation path should use its own authenticated
+  // endpoint rather than weakening this browser-ingestion boundary.
   const origin = req.headers.origin;
-  if (!origin) return true;
+  if (!origin) return false;
 
   const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').toLowerCase();
   if (!host) return false;
