@@ -1,5 +1,6 @@
-(()=>{'use strict';
-const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-auto-dealers';
+(async()=>{'use strict';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const API=SUPABASE_FUNCTIONS_ROOT+'public-auto-dealers';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safe=u=>/^https:\/\//i.test(String(u||''))?String(u):'';
 const day=v=>{if(!v)return'';const d=new Date(v);return Number.isNaN(d.getTime())?'':d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})};
