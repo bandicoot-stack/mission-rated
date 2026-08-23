@@ -1,7 +1,8 @@
-(()=>{
+(async()=>{
 'use strict';
 if(document.getElementById('mrParticipationNote'))return;
-const ROOT='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/';
+const {SUPABASE_FUNCTIONS_ROOT}=await import('/lib/config.js');
+const ROOT=SUPABASE_FUNCTIONS_ROOT;
 const VOTES=ROOT+'public-quick-rank-votes';
 const style=document.createElement('style');
 style.textContent=`
