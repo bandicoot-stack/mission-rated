@@ -60,7 +60,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p visual-artifacts
           cat > /tmp/visual-qa.cjs <<'EOF'
           const { chromium } = require('playwright');
 
@@ -107,15 +106,12 @@ jobs:
                 if (state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm leaked into Featured landing`);
                 if (state.todayHero) throw new Error(`${vp.name}: Today's Deals promo leaked above Featured landing`);
 
-                await page.screenshot({ path: `visual-artifacts/home-${vp.name}.png`, fullPage: true });
-
                 const todayTab = page.locator('.tab[data-view="today"]');
                 if (await todayTab.count()) {
                   await todayTab.click();
                   await page.waitForTimeout(500);
                   const todayActive = await page.locator('.tab[data-view="today"]').evaluate(el => el.classList.contains('active'));
                   if (!todayActive) throw new Error(`${vp.name}: Today's Deals tab did not activate`);
-                  await page.screenshot({ path: `visual-artifacts/today-${vp.name}.png`, fullPage: true });
                 }
 
                 await page.close();
@@ -129,13 +125,4 @@ jobs:
           });
           EOF
           NODE_PATH="$PWD/node_modules" node /tmp/visual-qa.cjs
-          echo "Visual production QA passed at mobile and desktop viewports."
-
-      - name: Upload production screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: mission-rated-production-visual-${{ github.sha }}
-          path: visual-artifacts/
-          if-no-files-found: warn
-          retention-days: 14
+          echo "Visual production QA passed at mobile and desktop viewports; no screenshots retained."
