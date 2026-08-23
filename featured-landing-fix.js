@@ -1,6 +1,14 @@
 (()=>{
 'use strict';
 if(!['/','/index.html'].includes(location.pathname)) return;
+const isFeaturedActive=()=>document.querySelector('.tab[data-view="featured"]')?.classList.contains('active');
+const purgeLeakedHuntClub=()=>{
+  if(!isFeaturedActive()) return;
+  document.querySelectorAll('main.main article, main.main .card, main.main [data-id]').forEach(el=>{
+    if(el.closest('#featured')) return;
+    if(/hunt club farm/i.test(el.textContent||'')) el.remove();
+  });
+};
 function enforce(){
   const main=document.querySelector('main.main');
   const tabs=document.querySelector('.tabrow');
@@ -33,12 +41,11 @@ function enforce(){
     const active=tab.dataset.view==='featured';
     tab.classList.toggle('active',active);
     tab.setAttribute('aria-selected',active?'true':'false');
-    if(active){
-      tab.style.borderColor='#d0a93a';
-      tab.style.background='#ffd36d';
-      tab.style.color='#02101d';
-    }
+    if(active){tab.style.borderColor='#d0a93a';tab.style.background='#ffd36d';tab.style.color='#02101d';}
   });
+  purgeLeakedHuntClub();
+  const observer=new MutationObserver(()=>purgeLeakedHuntClub());
+  observer.observe(main,{childList:true,subtree:true});
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(enforce,80),{once:true});
 else setTimeout(enforce,80);
