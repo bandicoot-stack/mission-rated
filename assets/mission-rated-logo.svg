@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="224" height="40" viewBox="0 0 224 40" role="img" aria-labelledby="title desc">
+  <title id="title">Mission Rated</title>
+  <desc id="desc">Mission Rated wordmark with white Mission text, cyan Rated text, and a gold mission accent.</desc>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M2 5h3v30H2z" fill="#FFD36D" rx="1.5"/>
+    <text x="12" y="27" fill="#F5F8FA" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="900" letter-spacing="2.2">MISSION</text>
+    <text x="119" y="27" fill="#00E5FF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="900" letter-spacing="2.2">RATED</text>
+    <path d="M119 32h91" stroke="#FFD36D" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+  </g>
+</svg>
