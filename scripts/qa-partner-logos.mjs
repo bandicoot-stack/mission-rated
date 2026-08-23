@@ -53,8 +53,13 @@ for(const partner of partners){
   }
 }
 
+if(existsSync('assets')){
+  const legacyRootLogos=readdirSync('assets').filter(file=>partners.some(partner=>file.toLowerCase().includes(partner.slug.split('-')[0].toLowerCase()))&&supported.has(extname(file).toLowerCase()));
+  if(legacyRootLogos.length) fail(`legacy/conflicting partner logo files must move under assets/partners/<slug>/: ${legacyRootLogos.join(', ')}`);
+}
+
 const renderer=readText('partner-logo.js');
-for(const token of ['data.partnerLogoState','naturalWidth','mr-partner-logo-fallback','object-fit:contain']){
+for(const token of ['dataset.partnerLogoState','naturalWidth','mr-partner-logo-fallback','object-fit:contain']){
   if(!renderer.includes(token)) fail(`partner-logo.js missing renderer contract: ${token}`);
 }
 
