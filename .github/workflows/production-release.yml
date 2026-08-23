@@ -69,26 +69,6 @@ jobs:
             { name: 'desktop', width: 1440, height: 1000 },
           ];
 
-          function visible(el) {
-            if (!el) return false;
-            const s = getComputedStyle(el);
-            const r = el.getBoundingClientRect();
-            return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > 0 && r.width > 0 && r.height > 0;
-          }
-
-          function logoState(slug) {
-            const host = document.querySelector(`[data-partner-logo="${slug}"]`);
-            const img = host?.querySelector('img');
-            const rect = img?.getBoundingClientRect();
-            return {
-              hostState: host?.dataset.partnerLogoState || '',
-              complete: Boolean(img?.complete),
-              naturalWidth: img?.naturalWidth || 0,
-              naturalHeight: img?.naturalHeight || 0,
-              visible: Boolean(img && visible(img) && rect.width > 0 && rect.height > 0),
-            };
-          }
-
           function assertLogo(state, label) {
             if (state.hostState !== 'loaded') throw new Error(`${label}: partner logo renderer state is ${state.hostState || 'missing'}`);
             if (!state.complete || state.naturalWidth <= 0 || state.naturalHeight <= 0) throw new Error(`${label}: partner logo did not decode`);
@@ -104,6 +84,24 @@ jobs:
                 await page.waitForTimeout(1500);
 
                 const state = await page.evaluate(() => {
+                  const visible = el => {
+                    if (!el) return false;
+                    const s = getComputedStyle(el);
+                    const r = el.getBoundingClientRect();
+                    return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > 0 && r.width > 0 && r.height > 0;
+                  };
+                  const logoState = slug => {
+                    const host = document.querySelector(`[data-partner-logo="${slug}"]`);
+                    const img = host?.querySelector('img');
+                    const rect = img?.getBoundingClientRect();
+                    return {
+                      hostState: host?.dataset.partnerLogoState || '',
+                      complete: Boolean(img?.complete),
+                      naturalWidth: img?.naturalWidth || 0,
+                      naturalHeight: img?.naturalHeight || 0,
+                      visible: Boolean(img && visible(img) && rect.width > 0 && rect.height > 0),
+                    };
+                  };
                   const active = document.querySelector('.tab.active')?.textContent?.trim() || '';
                   const featured = document.getElementById('featured');
                   const yorktown = [...document.querySelectorAll('body *')].some(el => visible(el) && /Yorktown Tools/i.test(el.textContent || ''));
@@ -122,7 +120,19 @@ jobs:
 
                 await page.goto(`${base}/featured?visual_qa=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
                 await page.waitForTimeout(500);
-                const featuredPageLogo = await page.evaluate(() => logoState('yorktown-tools'));
+                const featuredPageLogo = await page.evaluate(() => {
+                  const host = document.querySelector('[data-partner-logo="yorktown-tools"]');
+                  const img = host?.querySelector('img');
+                  const style = img ? getComputedStyle(img) : null;
+                  const rect = img?.getBoundingClientRect();
+                  return {
+                    hostState: host?.dataset.partnerLogoState || '',
+                    complete: Boolean(img?.complete),
+                    naturalWidth: img?.naturalWidth || 0,
+                    naturalHeight: img?.naturalHeight || 0,
+                    visible: Boolean(img && style?.display !== 'none' && style?.visibility !== 'hidden' && rect.width > 0 && rect.height > 0),
+                  };
+                });
                 assertLogo(featuredPageLogo, `${vp.name} featured page`);
 
                 await page.goto(`${base}/?visual_qa_tabs=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
