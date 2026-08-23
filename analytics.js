@@ -42,6 +42,10 @@ const send=(eventName,extra={})=>{
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'same-origin'}).catch(()=>{})}catch{}
 };
 window.mrTrack=send;
+// Subscription integrations must call this only after the authoritative
+// signup provider/server confirms success. Form submission itself is merely an
+// attempt and must never be counted as a subscriber conversion.
+window.mrConfirmWeekendBriefSignup=(surface='unknown')=>send('weekend_brief_signup_confirmed',{signup_surface:clean(surface)||'unknown'});
 window.mrReferralUrl=(url=location.href)=>{
   try{
     const dest=new URL(url,location.href);
