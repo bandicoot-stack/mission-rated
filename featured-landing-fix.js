@@ -15,9 +15,16 @@ function enforce(){
     <div class="head"><div><h2>Featured Partners</h2><small>DIRECT MISSION RATED PARTNERS ONLY</small></div></div>
     <div class="context">Only businesses directly added through Mission Rated partnership outreach appear here. General military discounts, seasonal finds, and other listings stay in their normal tabs.</div>
     <div class="grid"><article class="card hot" style="grid-column:1/-1;border-color:#8d742a;background:linear-gradient(135deg,#102234,#081723)">
-      <div style="display:grid;grid-template-columns:minmax(0,240px) minmax(0,150px);gap:16px;align-items:center;margin-bottom:16px">
-        <img src="/assets/yorktown-primary.webp" alt="Yorktown Tools primary Y logo" style="width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:14px;background:#fff;border:2px solid #d0a93a">
-        <img src="/assets/yorktown-secondary.webp" alt="Yorktown Tools patriot secondary logo" style="width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:12px;background:#fff;border:1px solid #31566b;opacity:.96">
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+        <div style="max-width:360px;width:100%;background:#fff;border:2px solid #d0a93a;border-radius:16px;padding:10px;overflow:hidden">
+          <img src="https://yorktowntools.com/Yorktown.PNG" alt="Yorktown Tools primary Y logo" style="display:block;width:100%;height:auto;object-fit:contain" onerror="this.closest('div').style.display='none'">
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;max-width:360px;padding:8px 10px;border:1px solid #31566b;border-radius:12px;background:#071d2c">
+          <div style="width:82px;height:82px;flex:0 0 82px;background:#fff;border-radius:10px;overflow:hidden">
+            <img src="https://yorktowntools.com/hero.png" alt="Yorktown Tools patriot secondary logo" style="display:block;width:100%;height:100%;object-fit:contain" onerror="this.parentElement.style.display='none'">
+          </div>
+          <div><div style="font-size:10px;font-weight:900;color:#80f1ff;letter-spacing:.06em">SECONDARY BRAND MARK</div><div style="font-size:11px;color:#9fb4bd;margin-top:4px">Yorktown Tools patriot artwork</div></div>
+        </div>
       </div>
       <div class="badges"><span class="badge score">★ FEATURED PARTNER</span><span class="badge good">Veteran-owned</span><span class="badge official">Directly confirmed</span></div>
       <h3 style="font-size:24px">Yorktown Tools</h3><div class="offer" style="font-size:42px">10% OFF</div><div class="line"><b>Military Discount</b></div>
