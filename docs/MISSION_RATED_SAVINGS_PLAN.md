@@ -2,33 +2,37 @@
 
 ## Strategic thesis
 
-Mission Rated helps military families find trusted places, compare options, save money, and share lived experience.
+Mission Rated helps military families find trusted places, discover verified savings, and make better local decisions.
 
-**Consumer loop:** Find → Compare → Save → Review
+**Growth loop:** Verified deal → Discover → Claim / use → Document savings → Share → New user → Prove demand → Better deal
 
-**Primary beta market:** Hampton Roads
+**Primary market:** Hampton Roads
 
-**Governing priorities:**
-1. Find users.
-2. Get feedback.
-3. Let observed behavior and feedback determine what gets built next.
+**North-star:** **Documented dollars saved for military families.**
+
+Supporting first-milestone targets:
+- 1,000 Hampton Roads subscribers
+- 10 genuinely strong Mission Rated-exclusive local offers
+- 100 participating local businesses
+- $25,000 documented savings
+- measurable referral/share traffic and returning users
 
 ## Business model
 
-Keep the core consumer experience free for active-duty members, veterans, spouses, and military families.
+Keep the core military-family experience free.
 
 Revenue can come from:
 - Affiliate commissions on tracked deal links.
 - Referral / lead fees in high-value categories.
 - Clearly labeled sponsorships that never change ratings, verification, or organic rank.
-- Direct merchant military offers.
+- Direct merchant campaigns and exclusive offers.
 - Later business tools and subscriptions.
 
-Mission Rated must never sell ratings or allow payment to alter trust signals.
+Mission Rated must never sell ratings, verification, Mission Score, review treatment, or organic ranking influence.
 
 ## Savings layer
 
-Normalize offers from multiple sources into one Mission Rated experience:
+Normalize offers from multiple legitimate sources into one Mission Rated experience:
 - Military discounts
 - Local deals
 - Cashback / online offers
@@ -38,98 +42,109 @@ Normalize offers from multiple sources into one Mission Rated experience:
 - Benefits
 - Direct Mission Rated merchant offers
 
-Each offer should carry at minimum:
+Each published offer should carry, when applicable:
 - merchant
 - title
-- savings / offer summary
-- source
+- offer terms / savings summary
+- source URL
 - military-only flag
 - category
-- geography when relevant
+- geography
 - expiration / freshness
-- verified_at
+- verified_at / observed_at
 - affiliate / referral URL when allowed
 - disclosure metadata
+- exclusive status only when directly confirmed and attributable
+
+Keep these states separate: **verified**, **exclusive**, **sponsored**, and **affiliate**. None implies another.
+
+## Defensible savings policy
+
+Mission Rated may display or aggregate a dollar savings amount only when it is supported by defensible inputs such as:
+- verified regular price and verified military/deal price; or
+- a fixed-dollar discount explicitly stated in current offer terms; or
+- confirmed transaction/redemption data from an authoritative partner source.
+
+Do **not** convert percentage discounts into dollars without a supported purchase/base-price input. Do not count a deal view, click, claim intent, or share as realized savings.
+
+The community savings counter must aggregate documented savings records, not estimates or marketing projections. If the data is insufficient, show the verified offer terms without a dollar-saved claim.
+
+## Growth measurement contract
+
+Separate intent from confirmed outcomes:
+- deal view / click = engagement
+- claim action = redemption intent unless a trusted source confirms redemption
+- Weekend Brief submit = signup attempt
+- Weekend Brief provider/database success = confirmed subscriber
+- share action = completed native share or successful copy
+- referral visit = attributed arrival
+- documented savings = supported savings outcome only
+
+Growth reporting must not label browser intent events as confirmed conversions.
 
 ## Partnership stack
 
-### Active applications
-- CJ / Groupon
-- Rakuten Advertising
+Prioritize direct Hampton Roads businesses and veteran-owned / military-friendly partners that can create measurable consumer savings. Strategic/affiliate networks can supplement local inventory when approved and useful.
 
-### Next targets
-- Awin
-- Impact.com
-- Travelpayouts
-
-### Strategic relationship
-- ID.me
-
-Rank partners by:
-1. Savings value to users
-2. Military relevance
-3. Breadth and freshness of offers
-4. Integration effort
-5. Approval likelihood
-6. Revenue potential
+Rank opportunities by:
+1. Savings value to military families
+2. Offer quality / exclusivity potential
+3. Military relevance
+4. Audience fit and local density
+5. Speed to launch
+6. Attribution quality
+7. Revenue potential
 
 ## Product principles
 
 - Show the best user value, not the highest commission.
-- Clearly disclose affiliate relationships.
-- Keep sponsored placement distinct from Mission Rated ratings and verification.
+- Clearly disclose affiliate and sponsored relationships.
+- Keep sponsorship distinct from ratings, verification, exclusivity, and organic rank.
 - Preserve source provenance and deal freshness.
-- Never fabricate savings, reviews, verification, or popularity.
+- Never fabricate savings, reviews, verification, exclusivity, popularity, attribution, or partner relationships.
 - Prefer simple, fast Hampton Roads experiences over broad but thin coverage.
+- Build only what improves acquisition, activation, retention, trust, or documented savings during the Growth MVP.
 
-## Beta build sequence
+## Active Growth MVP sequence
 
-### Phase 1 — Savings foundation
-- Add a Mission Rated Savings destination.
-- Create a normalized offer model.
-- Support manually verified military deals first.
-- Add source / freshness / disclosure UI.
-- Instrument deal views and outbound clicks.
+### P0 — Make one deal loop work end to end
+- Explicit Mission Rated Exclusive state backed by partner confirmation.
+- Defensible savings calculation / ledger.
+- Deal click and claim-intent instrumentation.
+- Share / referral flow with same-origin attribution.
+- Weekend Brief attempt vs confirmed-success measurement.
+- Business QR / deep-link distribution assets.
+- Growth scorecard sourced from defensible events/outcomes.
 
-### Phase 2 — Affiliate ingestion
-- Connect approved CJ/Groupon and Rakuten programs using approved tracking mechanisms.
-- Deduplicate offers.
-- Distinguish military-only offers from generic affiliate deals.
-- Add expiration / stale-offer handling.
+### P1 — Improve retention and partner ROI
+- Saved deals / alerts.
+- Business-facing attributable demand summary.
+- Structured exclusive-offer submission / approval workflow.
+- Partner campaign reporting.
 
-### Phase 3 — Compare
-- Where multiple offers exist for the same merchant or activity, surface the best user value.
-- Do not rank by commission.
-- Test messaging such as “Check Mission Rated before you spend.”
+### Deferred
+Broad feature expansion or geography expansion that does not directly strengthen the Hampton Roads growth loop.
 
-### Phase 4 — Feedback loop
-- Ask users whether an offer worked.
-- Capture desired categories and missing merchants.
-- Track zero-result deal searches.
-- Use feedback to choose the next categories and merchants.
+## Growth scorecard
 
-### Phase 5 — Direct partnerships
-- Approach high-value Hampton Roads merchants with demonstrated user demand.
-- Pursue direct military offers and exclusive discounts.
-- Build the case for an ID.me strategic relationship using real usage and savings data.
-
-## North-star metrics
-
-- Active military-family users
-- Returning users
-- Deal searches
-- Deal views
-- Outbound deal clicks
-- Verified redemptions / conversions when network data is available
-- Estimated dollars saved
-- Feedback submissions
-- Reviews / community participation
-- Revenue per active user (later-stage metric)
+Track weekly:
+- unique Hampton Roads users
+- returning users
+- confirmed subscribers
+- verified deal views / outbound clicks
+- claim / redemption intents (labeled as intent)
+- confirmed redemptions when authoritative data exists
+- documented dollars saved
+- share / referral sessions
+- participating businesses
+- confirmed exclusive offers
+- top acquisition source / landing page
 
 ## Immediate execution priorities
 
-1. Wait for CJ/Groupon and Rakuten application decisions.
-2. Build the Savings foundation without depending on those approvals.
-3. Recruit Hampton Roads beta users around the savings proposition.
-4. Test which savings categories generate the strongest engagement.
-5. Apply learning before expanding features or geography.
+1. Close measurement-integrity gaps before using growth events as scorecard conversions.
+2. Land 10 strong Hampton Roads exclusive offers.
+3. Make Today’s Deals and seasonal hubs feed the same Weekend Brief + sharing loop.
+4. Give participating businesses QR/deep-link assets that turn offline traffic into attributable Mission Rated sessions.
+5. Publish the community savings counter only after documented savings records support it.
+6. Use observed engagement and documented savings to decide what to build next.
