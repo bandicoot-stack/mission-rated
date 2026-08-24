@@ -1,6 +1,8 @@
 # Mission Rated Agent Operating Rules
 
-All engineering agents working in this repository must read `MISSION_RATED_CONSTITUTION.md` and the relevant `specs/current/*` files before making material changes.
+All engineering agents working in this repository must read `PROJECT_CONTEXT.md`, `MISSION_RATED_CONSTITUTION.md`, and the relevant `specs/current/*` files before making material changes.
+
+`PROJECT_CONTEXT.md` explains durable founder intent, product vision, build strategy, growth strategy, and decision heuristics. Treat it as strategic direction, while `specs/current/*` remains the authoritative description of shipped behavior.
 
 ## Roles
 
@@ -30,7 +32,7 @@ All engineering agents working in this repository must read `MISSION_RATED_CONST
 
 For material changes:
 
-1. Read the constitution and current spec.
+1. Read the project context, constitution, and current spec.
 2. Create or update `specs/changes/<change-name>/proposal.md`.
 3. Add `design.md` if architecture/data/security/consent changes.
 4. Create `tasks.md`.
