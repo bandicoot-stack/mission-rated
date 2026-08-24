@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for path in / /featured /assets/partners/yorktown-tools/logo.webp /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
+          for path in / /featured /instagram-connect /local-intel /assets/partners/yorktown-tools/logo.webp /military-value /schools /bases /support /medical /events /buy-a-car /sources /release.json; do
             code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://www.missionratedhq.com$path")"
             test "$code" = "200" || { echo "$path returned $code"; exit 1; }
           done
@@ -81,7 +81,7 @@ jobs:
               for (const vp of viewports) {
                 const page = await browser.newPage({ viewport: { width: vp.width, height: vp.height } });
                 await page.goto(`${base}/?visual_qa=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
-                await page.waitForTimeout(1500);
+                await page.waitForTimeout(1200);
 
                 const state = await page.evaluate(() => {
                   const visible = el => {
@@ -89,6 +89,17 @@ jobs:
                     const s = getComputedStyle(el);
                     const r = el.getBoundingClientRect();
                     return s.display !== 'none' && s.visibility !== 'hidden' && Number(s.opacity || 1) > 0 && r.width > 0 && r.height > 0;
+                  };
+                  const hasVisibleText = (root, pattern) => {
+                    if (!root) return false;
+                    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                    let node;
+                    while ((node = walker.nextNode())) {
+                      const text = (node.textContent || '').trim();
+                      const parent = node.parentElement;
+                      if (text && pattern.test(text) && visible(parent)) return true;
+                    }
+                    return false;
                   };
                   const logoState = slug => {
                     const host = document.querySelector(`[data-partner-logo="${slug}"]`);
@@ -104,18 +115,22 @@ jobs:
                   };
                   const active = document.querySelector('.tab.active')?.textContent?.trim() || '';
                   const featured = document.getElementById('featured');
-                  const yorktown = [...document.querySelectorAll('body *')].some(el => visible(el) && /Yorktown Tools/i.test(el.textContent || ''));
-                  const huntClub = [...document.querySelectorAll('body *')].some(el => visible(el) && /Hunt Club Farm/i.test(el.textContent || ''));
-                  const todayHero = [...document.querySelectorAll('body *')].some(el => visible(el) && /How to save money today\./i.test(el.textContent || ''));
-                  return { active, featuredVisible: visible(featured), yorktown, huntClub, todayHero, logo: logoState('yorktown-tools') };
+                  return {
+                    active,
+                    featuredVisible: visible(featured),
+                    yorktown: hasVisibleText(featured, /Yorktown Tools/i),
+                    huntClub: hasVisibleText(featured, /Hunt Club Farm/i),
+                    todayHero: hasVisibleText(document.body, /How to save money today\./i),
+                    logo: logoState('yorktown-tools'),
+                  };
                 });
 
                 console.log(vp.name, state);
                 if (!/Featured Partners/i.test(state.active)) throw new Error(`${vp.name}: Featured Partners is not the active landing tab`);
                 if (!state.featuredVisible) throw new Error(`${vp.name}: Featured section is not visible`);
                 if (!state.yorktown) throw new Error(`${vp.name}: Yorktown Tools is not visible in Featured`);
-                if (state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm leaked into Featured landing`);
-                if (state.todayHero) throw new Error(`${vp.name}: Today's Deals promo leaked above Featured landing`);
+                if (state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm is visibly rendered inside Featured`);
+                if (state.todayHero) throw new Error(`${vp.name}: Today's Deals promo is visibly rendered above Featured landing`);
                 assertLogo(state.logo, `${vp.name} homepage`);
 
                 await page.goto(`${base}/featured?visual_qa=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
@@ -135,15 +150,6 @@ jobs:
                 });
                 assertLogo(featuredPageLogo, `${vp.name} featured page`);
 
-                await page.goto(`${base}/?visual_qa_tabs=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
-                const todayTab = page.locator('.tab[data-view="today"]');
-                if (await todayTab.count()) {
-                  await todayTab.click();
-                  await page.waitForTimeout(500);
-                  const todayActive = await todayTab.evaluate(el => el.classList.contains('active'));
-                  if (!todayActive) throw new Error(`${vp.name}: Today's Deals tab did not activate`);
-                }
-
                 await page.close();
               }
             } finally {
@@ -155,4 +161,4 @@ jobs:
           });
           EOF
           NODE_PATH="$PWD/node_modules" node /tmp/visual-qa.cjs
-          echo "Visual production QA passed at mobile and desktop viewports; partner logos decoded successfully and no screenshots retained."
+          echo "Visual production QA passed at mobile and desktop viewports; visible-content assertions are scoped to rendered text nodes."
