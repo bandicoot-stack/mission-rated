@@ -19,6 +19,25 @@
       location:'Yorktown, Virginia',
       verification:'Offer confirmed directly by Yorktown Tools on August 23, 2026.',
       terms:'Military eligibility required. Confirm final eligibility and any exclusions with Yorktown Tools at purchase or quote.'
+    },
+    {
+      slug:'compass-rose-realty-co',
+      name:'Compass Rose Realty Co.',
+      logo:'',
+      logoAlt:'Compass Rose Realty Co. logo',
+      offer:'$100 OFF',
+      offerLabel:'Home inspection',
+      veteranOwned:false,
+      directlyConfirmed:true,
+      description:'Compass Rose Realty Co. directly confirmed a $100 servicemember discount with Mission Rated for buyer home inspections or seller pre-listing home inspections. Featured placement does not affect ratings or rankings.',
+      featuredDescription:'Compass Rose Realty Co. directly confirmed this Mission Rated offer for servicemembers: $100 off a home inspection for buyers or a pre-listing home inspection for sellers.',
+      businessUrl:'https://www.compassroserealtyco.com/',
+      profileUrl:'',
+      featuredUrl:'/featured#compass-rose-realty-co',
+      phone:'757-362-9125',
+      location:'Chesapeake, Virginia',
+      verification:'Offer confirmed directly by Kristen Sessions, Principal Broker & Owner of Compass Rose Realty, on August 23, 2026.',
+      terms:'For servicemembers. $100 off home inspections for buyers or pre-listing home inspections for sellers. To redeem, tell Compass Rose Realty Co. you found the offer on Mission Rated.'
     }
   ];
   window.MRFeaturedPartners=Object.freeze({
