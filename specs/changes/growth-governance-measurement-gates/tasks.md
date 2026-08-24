@@ -1,6 +1,6 @@
 # Tasks: Growth Governance Measurement Gates
 
-- [ ] Inventory current Growth MVP event names, server allowlists, subscriber success handling, referral parameters, claim/redemption states, and savings inputs.
+- [x] Inventory current Growth MVP event names, server allowlists, subscriber success handling, referral parameters, claim/redemption states, and savings inputs. See `inventory.md`.
 - [ ] Define canonical event/state names that preserve attempt vs confirmed-outcome semantics.
 - [ ] Update Weekend Brief instrumentation so confirmed subscriber KPI is emitted/derived only after authoritative success.
 - [ ] Update analytics endpoint allowlist and sanitized metadata for share/referral/deal events.
