@@ -34,9 +34,9 @@
       businessUrl:'https://www.compassroserealtyco.com/',
       profileUrl:'',
       featuredUrl:'/featured#compass-rose-realty-co',
-      phone:'',
-      location:'',
-      verification:'Offer confirmed directly by Compass Rose Realty Co. on August 23, 2026.',
+      phone:'757-362-9125',
+      location:'Chesapeake, Virginia',
+      verification:'Offer confirmed directly by Kristen Sessions, Principal Broker & Owner of Compass Rose Realty, on August 23, 2026.',
       terms:'For servicemembers. $100 off home inspections for buyers or pre-listing home inspections for sellers. To redeem, tell Compass Rose Realty Co. you found the offer on Mission Rated.'
     }
   ];
