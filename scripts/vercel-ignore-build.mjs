@@ -1,13 +1,6 @@
 import { execFileSync } from 'node:child_process';
 
-const SAFE_PREVIEW_PATHS = [
-  path => path.startsWith('specs/'),
-  path => path.startsWith('docs/'),
-  path => path.startsWith('.github/'),
-  path => path.toLowerCase().endsWith('.md'),
-];
-
-export function decideVercelBuild({ env = {}, branch = '', commitMessage = '', changedFiles = null, gitContextValid = true } = {}) {
+export function decideVercelBuild({ env = {}, branch = '', commitMessage = '' } = {}) {
   const target = String(env.VERCEL_TARGET_ENV || env.VERCEL_ENV || '').toLowerCase();
   const ref = String(env.VERCEL_GIT_COMMIT_REF || branch || '');
 
@@ -15,24 +8,11 @@ export function decideVercelBuild({ env = {}, branch = '', commitMessage = '', c
     return { action: 'build', reason: 'production/main must always build' };
   }
 
-  if (/\[skip preview\]/i.test(commitMessage)) {
-    return { action: 'ignore', reason: 'commit explicitly marked [skip preview]' };
+  if (/\[preview\]/i.test(commitMessage)) {
+    return { action: 'build', reason: 'preview explicitly requested with [preview]' };
   }
 
-  if (!gitContextValid || !Array.isArray(changedFiles)) {
-    return { action: 'build', reason: 'unable to determine changed files safely' };
-  }
-
-  if (changedFiles.length === 0) {
-    return { action: 'ignore', reason: 'no changed files since previous deployment' };
-  }
-
-  const allNonRuntime = changedFiles.every(path => SAFE_PREVIEW_PATHS.some(match => match(path)));
-  if (allNonRuntime) {
-    return { action: 'ignore', reason: 'preview changes are documentation/spec/workflow metadata only' };
-  }
-
-  return { action: 'build', reason: 'runtime-impacting preview change detected' };
+  return { action: 'ignore', reason: 'preview deployments are opt-in to preserve Vercel build quota' };
 }
 
 function git(args) {
@@ -42,27 +22,18 @@ function git(args) {
 function runCli() {
   let branch = process.env.VERCEL_GIT_COMMIT_REF || '';
   let commitMessage = '';
-  let changedFiles = null;
-  let gitContextValid = true;
 
   try {
     if (!branch) branch = git(['branch', '--show-current']);
     commitMessage = git(['log', '-1', '--pretty=%B']);
-
-    const base = process.env.VERCEL_GIT_PREVIOUS_SHA || 'HEAD^';
-    git(['cat-file', '-e', `${base}^{commit}`]);
-    const output = git(['diff', '--name-only', base, 'HEAD']);
-    changedFiles = output ? output.split('\n').filter(Boolean) : [];
   } catch {
-    gitContextValid = false;
+    // If Git metadata is unavailable, non-production remains ignored by default.
   }
 
   const decision = decideVercelBuild({
     env: process.env,
     branch,
     commitMessage,
-    changedFiles,
-    gitContextValid,
   });
 
   console.log(`[vercel-ignore-build] ${decision.action}: ${decision.reason}`);
