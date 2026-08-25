@@ -38,6 +38,36 @@
       location:'Chesapeake, Virginia',
       verification:'Offer confirmed directly by Kristen Sessions, Principal Broker & Owner of Compass Rose Realty, on August 23, 2026.',
       terms:'For servicemembers. $100 off home inspections for buyers or pre-listing home inspections for sellers. To redeem, tell Compass Rose Realty Co. you found the offer on Mission Rated.'
+    },
+    {
+      slug:'valhalla-barbell-club',
+      name:'Valhalla Barbell Club',
+      logo:'',
+      logoAlt:'Valhalla Barbell Club logo',
+      offer:'10% OFF',
+      offerLabel:'Military Offer',
+      veteranOwned:true,
+      directlyConfirmed:true,
+      partnerSubheadline:'Veteran-owned. Military-focused. Built around strength and service.',
+      tagline:'More than a gym. A place to train, grow, and face your wolf.',
+      intro:'Valhalla Barbell Club is a veteran-owned private gym in Virginia Beach focused on helping people build themselves mentally, physically, and emotionally.',
+      services:'From small-group personal training to coaching, nutrition guidance, and 24/7 access, Valhalla is built for people who want to train with purpose.',
+      militaryOfferText:'For military members: 10% off month-to-month membership, no sign-up or other fees, and your first month is free.',
+      description:'Valhalla Barbell Club is a veteran-owned private gym in Virginia Beach focused on helping people build themselves mentally, physically, and emotionally.',
+      featuredDescription:'Chris Jordan brings 28 years of military service to Valhalla, where the mission is bigger than fitness: help people build strength, resilience, and confidence.',
+      standard:'Private. PREMIUM. Built for training and putting in the work.',
+      wolfLine:'Face Your Wolf. Whatever the challenge, Valhalla is built to help you meet it head-on.',
+      closingHeading:'Face Your Wolf. Start here.',
+      primaryCtaLabel:'Claim Military Offer',
+      secondaryCtaLabel:'Visit Valhalla Barbell Club',
+      businessUrl:'https://www.valhallabarbellclubvb.com/',
+      profileUrl:'',
+      featuredUrl:'/featured#valhalla-barbell-club',
+      contactName:'Chris Jordan, Owner/Operator',
+      phone:'(757) 567-5499',
+      location:'1333 Oceana Blvd, Ste 100, Virginia Beach, VA 23454',
+      verification:'Offer and participation confirmed directly by Chris Jordan, Owner/Operator of Valhalla Barbell Club, on August 25, 2026.',
+      terms:'For military members: 10% off month-to-month membership, no sign-up or other fees, and your first month is free.'
     }
   ];
   window.MRFeaturedPartners=Object.freeze({
