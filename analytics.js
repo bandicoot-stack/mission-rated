@@ -73,9 +73,6 @@ const embedded=(()=>{try{return window.self!==window.top||qs.get('embedded')==='
 const getId=(key,storage)=>{try{let v=storage.getItem(key);if(!v){v=crypto.randomUUID();storage.setItem(key,v)}return v}catch{return null}};
 const session=getId('mr_analytics_session',sessionStorage);
 const visitor=getId('mr_analytics_visitor',localStorage);
-// Referral attribution uses a dedicated pseudonymous token rather than the
-// analytics visitor ID. A shared Mission Rated URL therefore cannot expose or
-// correlate the sender's internal visitor identifier.
 const referralToken=getId('mr_share_referral_token',localStorage);
 const referrerHost=(()=>{try{return document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):null}catch{return null}})();
 const currentAcquisition={utm_source:qs.get('utm_source'),utm_medium:qs.get('utm_medium'),utm_campaign:qs.get('utm_campaign')||qs.get('campaign'),referral_code:qs.get('mr_ref')||qs.get('ref')};
@@ -97,15 +94,10 @@ const send=(eventName,extra={})=>{
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'same-origin'}).catch(()=>{})}catch{}
 };
 window.mrTrack=send;
-// Subscription integrations must call this only after the authoritative
-// signup provider/server confirms success. Form submission itself is merely an
-// attempt and must never be counted as a subscriber conversion.
 window.mrConfirmWeekendBriefSignup=(surface='unknown')=>send('weekend_brief_signup_confirmed',{signup_surface:clean(surface)||'unknown'});
 window.mrReferralUrl=(url=location.href)=>{
   try{
     const dest=new URL(url,location.href);
-    // Referral tokens stay on Mission Rated links only. External merchant or
-    // source URLs never receive either the referral token or visitor ID.
     if(dest.origin!==location.origin)return dest.toString();
     if(referralToken)dest.searchParams.set('mr_ref',referralToken);
     if(!dest.searchParams.get('utm_source'))dest.searchParams.set('utm_source','mission-rated-share');
@@ -136,7 +128,7 @@ document.addEventListener('click',e=>{
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
   if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
-  if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
+  if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return send('share_action',{...ctx,share_surface:clean(el.dataset?.shareSurface)||location.pathname||'unknown'});
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
