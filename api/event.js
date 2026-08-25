@@ -1,6 +1,6 @@
 const ALLOWED_EVENTS = new Set([
   'page_view','search','installation_change','source_click','feedback_open','data_report_open','beta_invite_share',
-  'referral_visit','return_visit','deal_click','deal_redemption_intent','share_action','claim_action','weekend_brief_signup_attempt','weekend_brief_signup_confirmed',
+  'referral_visit','return_visit','deal_click','share_action','claim_action','weekend_brief_signup_attempt','weekend_brief_signup_confirmed',
   'directions_click','review_action','feedback_action','offer_source_click','official_website_click','internal_navigation'
 ]);
 
