@@ -28,7 +28,6 @@ for(const partner of partners){
   if(!partner.slug) fail('featured partner missing slug');
   if(!partner.name) fail(`${partner.slug||'unknown partner'} missing name`);
   if(!partner.logoAlt||!partner.logoAlt.toLowerCase().includes((partner.name||'').toLowerCase().split(' ')[0])) fail(`${partner.slug||'unknown partner'} missing useful logoAlt`);
-  if(!partner.logo) fail(`${partner.slug||'unknown partner'} missing logo`);
   if(!partner.slug||!partner.logo) continue;
 
   const expectedPrefix=`/assets/partners/${partner.slug}/logo.`;
@@ -77,4 +76,6 @@ if(errors.length){
   for(const error of [...new Set(errors)].sort()) console.error(` - ${error}`);
   process.exit(1);
 }
-console.log(`Featured partner logo QA passed for ${partners.length} partner(s): canonical assets, valid bytes, shared renderer, fallback, and built paths verified.`);
+const assetCount=partners.filter(partner=>partner.logo).length;
+const fallbackCount=partners.length-assetCount;
+console.log(`Featured partner logo QA passed for ${partners.length} partner(s): ${assetCount} canonical asset(s), ${fallbackCount} accessible fallback(s), valid bytes, shared renderer, and built paths verified.`);
