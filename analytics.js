@@ -115,7 +115,18 @@ window.mrReferralUrl=(url=location.href)=>{
 };
 if(!embedded){
   send('page_view');
-  if(currentAcquisition.referral_code)send('referral_visit',{referral_code:currentAcquisition.referral_code});
+  if(currentAcquisition.referral_code){
+    // A referral landing is one acquisition event per browser session, not one
+    // event per page view. This keeps the growth scorecard from inflating when
+    // a referred visitor navigates through Mission Rated with mr_ref preserved.
+    try{
+      const key=`mr_referral_visit:${currentAcquisition.referral_code}`;
+      if(!sessionStorage.getItem(key)){
+        send('referral_visit',{referral_code:currentAcquisition.referral_code});
+        sessionStorage.setItem(key,'1');
+      }
+    }catch{send('referral_visit',{referral_code:currentAcquisition.referral_code})}
+  }
   try{
     const last=Number(localStorage.getItem('mr_last_visit')||0),now=Date.now();
     if(last&&now-last>=20*60*60*1000)send('return_visit',{days_since_last:Math.round((now-last)/86400000)});
