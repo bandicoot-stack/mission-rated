@@ -15,6 +15,7 @@ for (const event of [
   'referral_visit',
   'return_visit',
   'deal_click',
+  'deal_outbound_click',
   'share_action',
   'claim_action',
   'weekend_brief_signup_attempt',
@@ -59,10 +60,22 @@ if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) {
   errors.push('share_action must not send generated referral URLs to analytics');
 }
 
+// Merchant/deal CTA clicks are intent signals only. Guard this distinction so
+// growth instrumentation cannot silently turn an outbound click into a claim,
+// redemption, or savings attribution.
+requireToken(analytics, "send('deal_outbound_click'", 'generic deal CTA must emit deal_outbound_click');
+requireToken(analytics, 'must never be interpreted as a claim, confirmed redemption, or documented savings', 'deal outbound instrumentation must retain its trust-boundary rationale');
+const dealActionHandler = analytics.match(/if\(el\.classList\?\.contains\('mrDealAction'\)[^\n]+/)?.[0] || '';
+if (!dealActionHandler) {
+  errors.push('analytics.js must retain explicit generic deal CTA instrumentation');
+} else if (/send\(['"]claim_action['"]|redemption|savings/.test(dealActionHandler)) {
+  errors.push('generic deal CTA instrumentation must not emit claim, redemption, or savings attribution');
+}
+
 if (errors.length) {
   console.error('Growth measurement QA failed:');
   for (const error of errors) console.error(` - ${error}`);
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: attribution, share outcomes, signup consent contracts, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: attribution, outbound intent, share outcomes, signup consent contracts, and origin integrity are guarded.');
