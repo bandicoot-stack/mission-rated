@@ -23,7 +23,7 @@ else {
     standard:'Private. PREMIUM. Built for training and putting in the work.',
     wolfLine:'Face Your Wolf. Whatever the challenge, Valhalla is built to help you meet it head-on.',
     closingHeading:'Face Your Wolf. Start here.',
-    primaryCtaLabel:'Claim Military Offer',
+    primaryCtaLabel:'Get Military Offer',
     secondaryCtaLabel:'Visit Valhalla Barbell Club'
   };
   for(const [key,value] of Object.entries(expected)) if(valhalla[key]!==value) fail(`Valhalla ${key} does not match founder-approved copy`);
