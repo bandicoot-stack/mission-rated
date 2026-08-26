@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "updated_at": "2026-08-26T21:39:00Z",
+  "current_focus": "Mature Mission Rated into a persistent operator-managed agent system that survives context windows.",
+  "active_change": "specs/changes/persistent-agent-control-plane/",
+  "operator_next_action": "Complete implementation, run QA, open PR, merge after checks, and update current spec if accepted.",
+  "recent_settled_decisions": [
+    "Use Operator-as-manager with bounded specialists rather than a loose autonomous swarm.",
+    "Repository-native checkpoints and queues are durable memory; chat transcripts are not.",
+    "Private connector data stays in its native system of record.",
+    "External side effects keep explicit approval gates regardless of model/runtime."
+  ],
+  "native_state_to_verify_when_relevant": [
+    "GitHub branch/PR/check status",
+    "Vercel production deployment status",
+    "Gmail outreach/reply state",
+    "scheduled automation state"
+  ]
+}
