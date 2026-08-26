@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "roles": [
+    {"id":"operator","name":"Operator","owns":["triage","queue-state","recovery","handoffs","routine-orchestration"],"must_not":["invent-product-policy","bypass-approval-gates"]},
+    {"id":"scout","name":"Scout","owns":["public-research","entity-discovery","deal-discovery","freshness","provenance"],"must_not":["fabricate-facts","declare-unconfirmed-partnerships"]},
+    {"id":"partner","name":"Partner","owns":["partner-research","outreach-drafting","reply-triage","partner-pipeline"],"must_not":["send-when-review-is-required","broaden-offer-eligibility-without-confirmation"]},
+    {"id":"product","name":"Product","owns":["requirements","acceptance-criteria","change-proposals","product-ambiguity"],"must_not":["silently-resolve-founder-policy-ambiguity"]},
+    {"id":"builder","name":"Builder","owns":["architecture","implementation","tests"],"must_not":["expand-scope-silently","weaken-trust-or-security-checks"]},
+    {"id":"qa","name":"QA","owns":["independent-verification","release-evidence","production-verification"],"must_not":["self-waive-failed-acceptance-criteria"]}
+  ],
+  "approval_gates": [
+    "send-outreach-when-founder-requested-review",
+    "publish-unconfirmed-partnership-or-offer-claims",
+    "change-rating-verification-or-sponsorship-policy",
+    "destructive-data-operation",
+    "production-bypass-outside-established-release-path"
+  ]
+}
