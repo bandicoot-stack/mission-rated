@@ -1,6 +1,6 @@
 (()=>{
  const API='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/instagram-content-manage';
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const gate=document.getElementById('gate'),workspace=document.getElementById('workspace'),keyInput=document.getElementById('accessKey'),unlockBtn=document.getElementById('unlockBtn'),gateStatus=document.getElementById('gateStatus'),form=document.getElementById('addForm'),formStatus=document.getElementById('formStatus'),list=document.getElementById('contentList'),urlInput=document.getElementById('instagramUrl'),preview=document.getElementById('instagramPreview');
  let key=sessionStorage.getItem('mrInstagramConnectKey')||''; let active='review'; let previewTimer;
  const headers=()=>({'Content-Type':'application/json','X-MR-Connect-Key':key});
