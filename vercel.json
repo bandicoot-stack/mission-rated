@@ -8,6 +8,23 @@
   "git": {
     "deploymentEnabled": true
   },
+  "redirects": [
+    {
+      "source": "/go/yorktown",
+      "destination": "/family-pass.html?utm_source=partner&utm_medium=business-share&utm_campaign=military-family-growth&mr_partner=yorktown-tools",
+      "permanent": false
+    },
+    {
+      "source": "/go/compassrose",
+      "destination": "/family-pass.html?utm_source=partner&utm_medium=business-share&utm_campaign=military-family-growth&mr_partner=compass-rose-realty-co",
+      "permanent": false
+    },
+    {
+      "source": "/go/valhalla",
+      "destination": "/family-pass.html?utm_source=partner&utm_medium=business-share&utm_campaign=military-family-growth&mr_partner=valhalla-barbell-club",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
