@@ -48,13 +48,12 @@ For material changes:
 Vercel previews are a review resource, not a substitute for iterative engineering checks.
 
 - GitHub QA should run throughout implementation.
-- Batch related implementation work before requesting browser review instead of treating every commit as a preview milestone.
-- Use `[skip preview]` in the commit message for intermediate branch commits when a Vercel browser preview would not provide useful review value.
-- Do not use `[skip preview]` on the final review-ready commit when a browser preview is required.
-- Spec-only, documentation-only, Markdown-only, and GitHub-workflow-only branch changes are automatically ignored by the repo-owned Vercel preview gate.
-- Runtime-impacting changes build previews by default unless explicitly marked `[skip preview]`.
-- `main`/production deployments must never be skipped by preview optimization.
-- Never skip the final browser/production verification required by the change spec.
+- Preview deployments are opt-in on non-production branches to preserve the Vercel build quota.
+- Add `[preview]` to the commit message when a browser preview is intentionally required for review.
+- Normal branch commits without `[preview]` are ignored by the repo-owned Vercel preview gate.
+- Do not assume a runtime-impacting branch commit receives a preview automatically; explicitly request one with `[preview]` when browser verification is part of the acceptance criteria.
+- `main`/production deployments always build and are never skipped by preview optimization.
+- Never skip final production verification required by the change spec.
 
 ## Scope discipline
 
