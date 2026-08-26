@@ -58,7 +58,7 @@
       standard:'Private. PREMIUM. Built for training and putting in the work.',
       wolfLine:'Face Your Wolf. Whatever the challenge, Valhalla is built to help you meet it head-on.',
       closingHeading:'Face Your Wolf. Start here.',
-      primaryCtaLabel:'Claim Military Offer',
+      primaryCtaLabel:'Get Military Offer',
       secondaryCtaLabel:'Visit Valhalla Barbell Club',
       businessUrl:'https://www.valhallabarbellclubvb.com/',
       profileUrl:'',
