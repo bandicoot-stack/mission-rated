@@ -135,9 +135,9 @@ document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
-  // A generic merchant/deal CTA is evidence of outbound intent only. It must
+  // Explicit merchant/deal CTAs are evidence of outbound intent only. They must
   // never be interpreted as a claim, confirmed redemption, or documented savings.
-  if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_outbound_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
+  if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal'||el.dataset?.dealAction==='outbound')return send('deal_outbound_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
   if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
