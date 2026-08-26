@@ -8,7 +8,30 @@ const allowedOrigins = new Set([
   "http://localhost:8080"
 ]);
 
+const WINDOW_MS = 60_000;
+const MAX_REQUESTS = 60;
+const buckets = new Map<string, { count: number; resetAt: number }>();
 const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+function clientKey(req: Request) {
+  return req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+}
+
+function rateLimited(req: Request) {
+  const now = Date.now();
+  const key = clientKey(req);
+  const current = buckets.get(key);
+  if (!current || current.resetAt <= now) {
+    buckets.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+
+  current.count += 1;
+  if (buckets.size > 5000) {
+    for (const [bucketKey, bucket] of buckets) if (bucket.resetAt <= now) buckets.delete(bucketKey);
+  }
+  return current.count > MAX_REQUESTS;
+}
 
 Deno.serve(async (req: Request) => {
   const origin = req.headers.get("origin") || "";
@@ -24,7 +47,8 @@ Deno.serve(async (req: Request) => {
 
   if (req.method === "OPTIONS") return new Response("ok", { headers });
   if (req.method !== "POST") return json({ ok: false, error: "method_not_allowed" }, 405, headers);
-  if (origin && !allowedOrigins.has(origin)) return json({ ok: false, error: "origin_not_allowed" }, 403, headers);
+  if (!origin || !allowedOrigins.has(origin)) return json({ ok: false, error: "origin_not_allowed" }, 403, headers);
+  if (rateLimited(req)) return json({ ok: false, error: "rate_limited" }, 429, { ...headers, "Retry-After": "60" });
 
   let body: Record<string, unknown> = {};
   try { body = await req.json(); } catch { return json({ ok: false, error: "invalid_json" }, 400, headers); }
