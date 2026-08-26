@@ -1,0 +1,11 @@
+import { readFile } from 'node:fs/promises';
+const required=['dist/family-pass.html','dist/pcs-hampton-roads.html','dist/business-share-kit.html','dist/creator-guides.html','dist/growth-loop.js','dist/weekend-brief.js'];
+const text={};for(const f of required)text[f]=await readFile(f,'utf8');
+const must=(cond,msg)=>{if(!cond)throw new Error(`Acquisition QA: ${msg}`)};
+must(text['dist/family-pass.html'].includes('family_pass_shared'),'Family Pass share tracking missing');
+must(text['dist/pcs-hampton-roads.html'].includes('hampton-roads-pcs'),'PCS campaign attribution missing');
+must(text['dist/business-share-kit.html'].includes('utm_source'),'Business share attribution missing');
+must(text['dist/creator-guides.html'].includes('utm_source'),'Creator attribution missing');
+must(text['dist/growth-loop.js'].includes('family_pass_cta_clicked'),'Sitewide Family Pass CTA tracking missing');
+must(text['dist/weekend-brief.js'].includes('weekend_brief_referral_shared'),'Weekend Brief referral loop missing');
+console.log('Acquisition system QA passed');
