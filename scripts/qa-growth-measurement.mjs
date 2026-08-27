@@ -59,10 +59,26 @@ if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) {
   errors.push('share_action must not send generated referral URLs to analytics');
 }
 
+// Savings must come from a separate authoritative redemption/verification path.
+// Browser intent events are useful funnel signals, but they are never evidence
+// that money was saved. Guard both the event vocabulary and payload so a future
+// UI change cannot accidentally turn clicks/claims into the savings ledger.
+for (const forbiddenEvent of ['redemption_confirmed', 'savings_confirmed', 'verified_savings']) {
+  if (eventApi.includes(`'${forbiddenEvent}'`)) {
+    errors.push(`browser event allowlist must not accept authoritative ${forbiddenEvent} events`);
+  }
+}
+for (const forbiddenField of ['amount_cents:', 'savings_cents:', 'redemption_count:']) {
+  if (eventApi.includes(forbiddenField)) {
+    errors.push(`browser event payload must not accept authoritative savings field ${forbiddenField.slice(0, -1)}`);
+  }
+}
+requireToken(analytics, 'must never be interpreted as a claim, confirmed redemption, or documented savings', 'deal outbound analytics must explicitly preserve non-redemption semantics');
+
 if (errors.length) {
   console.error('Growth measurement QA failed:');
   for (const error of errors) console.error(` - ${error}`);
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: attribution, share outcomes, signup consent contracts, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: attribution, share outcomes, signup consent, savings integrity, and origin contracts are guarded.');
