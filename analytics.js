@@ -73,9 +73,6 @@ const embedded=(()=>{try{return window.self!==window.top||qs.get('embedded')==='
 const getId=(key,storage)=>{try{let v=storage.getItem(key);if(!v){v=crypto.randomUUID();storage.setItem(key,v)}return v}catch{return null}};
 const session=getId('mr_analytics_session',sessionStorage);
 const visitor=getId('mr_analytics_visitor',localStorage);
-// Referral attribution uses a dedicated pseudonymous token rather than the
-// analytics visitor ID. A shared Mission Rated URL therefore cannot expose or
-// correlate the sender's internal visitor identifier.
 const referralToken=getId('mr_share_referral_token',localStorage);
 const referrerHost=(()=>{try{return document.referrer?new URL(document.referrer).hostname.replace(/^www\./,''):null}catch{return null}})();
 const currentAcquisition={utm_source:qs.get('utm_source'),utm_medium:qs.get('utm_medium'),utm_campaign:qs.get('utm_campaign')||qs.get('campaign'),referral_code:qs.get('mr_ref')||qs.get('ref')};
@@ -97,15 +94,20 @@ const send=(eventName,extra={})=>{
   try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'same-origin'}).catch(()=>{})}catch{}
 };
 window.mrTrack=send;
-// Subscription integrations must call this only after the authoritative
-// signup provider/server confirms success. Form submission itself is merely an
-// attempt and must never be counted as a subscriber conversion.
 window.mrConfirmWeekendBriefSignup=(surface='unknown')=>send('weekend_brief_signup_confirmed',{signup_surface:clean(surface)||'unknown'});
+// Redemption is intentionally explicit: outbound clicks and generic "claim"
+// actions are not evidence that a deal was redeemed. Call this hook only after
+// a user or authoritative partner flow confirms redemption. Dollar savings are
+// recorded separately in the verified-savings ledger after evidence review.
+window.mrConfirmDealRedemption=(dealId,source='user_confirmed')=>{
+  const id=clean(dealId);
+  if(!id)return false;
+  send('deal_redemption_confirmed',{target_type:'deal',target_id:id,redemption_source:clean(source)||'user_confirmed'});
+  return true;
+};
 window.mrReferralUrl=(url=location.href)=>{
   try{
     const dest=new URL(url,location.href);
-    // Referral tokens stay on Mission Rated links only. External merchant or
-    // source URLs never receive either the referral token or visitor ID.
     if(dest.origin!==location.origin)return dest.toString();
     if(referralToken)dest.searchParams.set('mr_ref',referralToken);
     if(!dest.searchParams.get('utm_source'))dest.searchParams.set('utm_source','mission-rated-share');
@@ -135,8 +137,6 @@ document.addEventListener('click',e=>{
   const el=e.target?.closest?.('a,button');if(!el)return;
   const text=clean(el.textContent).toLowerCase(),href=clean(el.getAttribute?.('href'));
   const ctx=targetContext(el);
-  // A generic merchant/deal CTA is evidence of outbound intent only. It must
-  // never be interpreted as a claim, confirmed redemption, or documented savings.
   if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_outbound_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
   if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
