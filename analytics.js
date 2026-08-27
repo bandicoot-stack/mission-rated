@@ -138,6 +138,10 @@ document.addEventListener('click',e=>{
   // A generic merchant/deal CTA is evidence of outbound intent only. It must
   // never be interpreted as a claim, confirmed redemption, or documented savings.
   if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_outbound_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
+  // Explicit claim language is still only user intent. A claim click is not a
+  // redemption and must never write to the savings ledger without independent
+  // confirmation from the merchant/user flow.
+  if(el.dataset?.dealAction==='claim'||/\bclaim (this )?(deal|offer)\b/.test(text))return send('deal_claim_intent',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
   if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
