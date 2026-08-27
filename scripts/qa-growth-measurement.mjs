@@ -15,6 +15,7 @@ for (const event of [
   'referral_visit',
   'return_visit',
   'deal_click',
+  'deal_outbound_click',
   'share_action',
   'claim_action',
   'weekend_brief_signup_attempt',
@@ -40,6 +41,13 @@ for (const field of [
 requireToken(eventApi, 'isSameOriginBrowserRequest', 'server event endpoint must retain same-origin browser protection');
 requireToken(eventApi, 'if (!origin) return false', 'server event endpoint must reject originless metric submissions');
 requireToken(eventApi, 'referral_code: cleanUuid(body.referral_code)', 'referral attribution must accept only pseudonymous UUID tokens');
+requireToken(eventApi, "'deal_outbound_click'", 'deal outbound intent must remain distinct from a claim or redemption');
+if (/['"](?:deal_redeemed|redemption_confirmed|savings_confirmed)['"]/.test(eventApi)) {
+  errors.push('browser event ingestion must not accept redemption or confirmed-savings events without an authoritative confirmation path');
+}
+if (/amount_(?:cents|saved)|savings_(?:cents|value)|retail_value/.test(eventApi)) {
+  errors.push('browser event ingestion must not accept client-supplied savings amounts');
+}
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
 const submitHandler = analytics.match(/document\.addEventListener\('submit',[\s\S]*?\},true\);/)?.[0] || '';
 if (!submitHandler) {
@@ -65,4 +73,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: attribution, share outcomes, signup consent contracts, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: attribution, claim/redemption boundaries, share outcomes, signup consent contracts, and origin integrity are guarded.');
