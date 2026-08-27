@@ -5,6 +5,7 @@ const eventApi = readFileSync('api/event.js', 'utf8');
 const share = readFileSync('deal-share.js', 'utf8');
 const weekendBrief = readFileSync('weekend-brief.js', 'utf8');
 const weekendBriefSignup = readFileSync('supabase/functions/weekend-brief-signup/index.ts', 'utf8');
+const home = readFileSync('home-priority.js', 'utf8');
 
 const errors = [];
 const requireToken = (source, token, message) => {
@@ -59,10 +60,24 @@ if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) {
   errors.push('share_action must not send generated referral URLs to analytics');
 }
 
+// Trust invariant: catalog availability/value is not the same as realized user savings.
+// Until an authoritative redemption-backed ledger is wired to the UI, growth surfaces
+// must not claim aggregate dollars were "saved through/by Mission Rated".
+for (const [name, source] of [['home-priority.js', home], ['weekend-brief.js', weekendBrief]]) {
+  for (const pattern of [
+    /\$[\d,.]+\+?\s+(?:saved|savings)\s+(?:through|by)\s+Mission Rated/i,
+    /Mission Rated\s+(?:has\s+)?saved\s+(?:military\s+)?famil(?:y|ies)\s+\$[\d,.]+/i
+  ]) {
+    if (pattern.test(source)) {
+      errors.push(`${name} must not present modeled/catalog value as realized Mission Rated savings without redemption-backed attribution`);
+    }
+  }
+}
+
 if (errors.length) {
   console.error('Growth measurement QA failed:');
   for (const error of errors) console.error(` - ${error}`);
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: attribution, share outcomes, signup consent contracts, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: attribution, share outcomes, signup consent, savings-claim integrity, and origin integrity are guarded.');
