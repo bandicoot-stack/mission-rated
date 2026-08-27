@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Mission Rated Command Center</title>
+  <link rel="icon" href="/assets/mission-rated-logo.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --bg: #08111f;
+      --panel: #101b2d;
+      --panel-2: #14233a;
+      --line: rgba(255,255,255,.09);
+      --text: #f4f7fb;
+      --muted: #91a0b5;
+      --blue: #4ba3ff;
+      --green: #38d39f;
+      --amber: #ffbf69;
+      --red: #ff6b6b;
+      --violet: #9f8cff;
+      --shadow: 0 18px 55px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    html { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 78% 0%, rgba(75,163,255,.16), transparent 34%),
+        radial-gradient(circle at 8% 18%, rgba(159,140,255,.11), transparent 26%),
+        var(--bg);
+      color: var(--text);
+    }
+    a { color: inherit; }
+    button { font: inherit; }
+    .shell { max-width: 1500px; margin: 0 auto; padding: 26px; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      margin-bottom: 22px;
+    }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand img { width: 46px; height: 46px; }
+    .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--blue); font-weight: 800; }
+    h1 { margin: 2px 0 0; font-size: clamp(24px, 3vw, 36px); letter-spacing: -.04em; }
+    .top-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .pill, .button {
+      border: 1px solid var(--line); background: rgba(255,255,255,.045); color: var(--text);
+      border-radius: 999px; padding: 9px 13px; font-size: 13px; text-decoration: none;
+    }
+    .button { cursor: pointer; }
+    .button:hover { border-color: rgba(75,163,255,.5); background: rgba(75,163,255,.1); }
+    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 7px; box-shadow: 0 0 12px rgba(56,211,159,.65); }
+    .hero {
+      display: grid; grid-template-columns: minmax(0,1.7fr) minmax(300px,.8fr); gap: 16px; margin-bottom: 16px;
+    }
+    .panel {
+      background: linear-gradient(180deg, rgba(20,35,58,.95), rgba(13,25,42,.96));
+      border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow);
+    }
+    .focus { padding: 24px; position: relative; overflow: hidden; }
+    .focus::after {
+      content: ""; position: absolute; width: 280px; height: 280px; border-radius: 50%;
+      right: -120px; top: -140px; background: rgba(75,163,255,.12); filter: blur(4px);
+    }
+    .section-kicker { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; }
+    .focus h2 { margin: 9px 0 10px; max-width: 920px; font-size: clamp(24px, 4vw, 42px); line-height: 1.04; letter-spacing: -.04em; position: relative; z-index: 1; }
+    .focus p { color: var(--muted); font-size: 15px; max-width: 850px; line-height: 1.55; margin: 0; position: relative; z-index: 1; }
+    .focus-meta { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; position: relative; z-index: 1; }
+    .attention { padding: 22px; }
+    .attention h3, .section-title { margin: 6px 0 14px; font-size: 19px; letter-spacing: -.02em; }
+    .attention-count { font-size: 56px; line-height: 1; font-weight: 800; letter-spacing: -.06em; color: var(--amber); }
+    .attention p { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 8px 0 0; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
+    .metric { padding: 18px; }
+    .metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .metric-value { font-size: 32px; font-weight: 800; margin-top: 6px; letter-spacing: -.04em; }
+    .metric-note { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .layout { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(340px,.75fr); gap: 16px; align-items: start; }
+    .stack { display: grid; gap: 16px; }
+    .section { padding: 20px; }
+    .section-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 14px; }
+    .section-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .agent-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+    .agent-card { border: 1px solid var(--line); background: rgba(255,255,255,.025); border-radius: 15px; padding: 15px; min-height: 154px; }
+    .agent-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .agent-name { font-weight: 800; font-size: 16px; }
+    .agent-role { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+    .agent-state { font-size: 11px; border-radius: 999px; padding: 5px 8px; border: 1px solid var(--line); color: var(--muted); }
+    .agent-state.active { color: var(--green); border-color: rgba(56,211,159,.25); background: rgba(56,211,159,.07); }
+    .owns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+    .tag { background: rgba(75,163,255,.08); color: #b9d9ff; border: 1px solid rgba(75,163,255,.14); border-radius: 999px; padding: 4px 7px; font-size: 10px; }
+    .queue { display: grid; gap: 9px; }
+    .work-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(255,255,255,.024); }
+    .work-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+    .work-id { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .05em; }
+    .work-title { margin-top: 3px; font-weight: 750; }
+    .work-owner, .work-next { color: var(--muted); font-size: 12px; margin-top: 7px; line-height: 1.45; }
+    .badge { padding: 5px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+    .badge.in_progress, .badge.ongoing { background: rgba(75,163,255,.1); color: #9fcaff; border: 1px solid rgba(75,163,255,.2); }
+    .badge.blocked { background: rgba(255,107,107,.1); color: #ff9d9d; border: 1px solid rgba(255,107,107,.22); }
+    .badge.done { background: rgba(56,211,159,.09); color: #80e8c3; border: 1px solid rgba(56,211,159,.2); }
+    .gate { margin-top: 9px; color: var(--amber); font-size: 11px; }
+    .systems { display: grid; gap: 9px; }
+    .system { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 13px; padding: 13px; background: rgba(255,255,255,.022); }
+    .system-name { font-size: 13px; font-weight: 800; }
+    .system-note { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .system-status { font-size: 10px; padding: 5px 7px; border-radius: 999px; border: 1px solid rgba(255,191,105,.2); color: var(--amber); background: rgba(255,191,105,.06); white-space: nowrap; }
+    .decision-list { display: grid; gap: 9px; }
+    .decision { border-left: 2px solid var(--violet); padding: 7px 0 7px 11px; color: #d8d3ff; font-size: 12px; line-height: 1.45; }
+    .business-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; }
+    .business-card { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(255,255,255,.022); }
+    .business-card strong { display: block; font-size: 16px; }
+    .business-card span { color: var(--muted); font-size: 11px; display: block; margin-top: 4px; line-height: 1.4; }
+    .placeholder { color: var(--amber) !important; }
+    .footer { color: var(--muted); font-size: 11px; text-align: center; padding: 18px 4px 2px; }
+    .error { color: #ffb2b2; border: 1px solid rgba(255,107,107,.25); background: rgba(255,107,107,.06); padding: 12px; border-radius: 12px; font-size: 12px; }
+    @media (max-width: 1000px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2,1fr); }
+      .agent-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 620px) {
+      .shell { padding: 15px; }
+      .topbar { align-items: flex-start; }
+      .top-actions { display: none; }
+      .metrics, .agent-grid, .business-grid { grid-template-columns: 1fr; }
+      .focus, .section, .attention { padding: 17px; }
+      .focus h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="/assets/mission-rated-logo.svg" alt="Mission Rated" />
+        <div>
+          <div class="eyebrow">Founder Operations</div>
+          <h1>Mission Rated Command Center</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="pill"><span class="status-dot"></span>Control plane online</span>
+        <button class="button" id="refreshButton" type="button">Refresh</button>
+        <a class="button" href="/" target="_blank" rel="noopener">Open site ↗</a>
+      </div>
+    </header>
+
+    <div id="errorBox"></div>
+
+    <section class="hero">
+      <article class="panel focus">
+        <div class="section-kicker">Current mission</div>
+        <h2 id="currentFocus">Loading Mission Rated state…</h2>
+        <p id="nextAction">Pulling the durable operator checkpoint and next action.</p>
+        <div class="focus-meta">
+          <span class="pill" id="stateUpdated">State updated —</span>
+          <span class="pill" id="activeChange">Active change —</span>
+        </div>
+      </article>
+      <aside class="panel attention">
+        <div class="section-kicker">Needs your attention</div>
+        <div class="attention-count" id="attentionCount">—</div>
+        <h3>Founder approval gates</h3>
+        <p>Anything shown here should not be auto-approved by an agent. This is the boundary between autonomous preparation and your decision.</p>
+      </aside>
+    </section>
+
+    <section class="metrics">
+      <div class="panel metric"><div class="metric-label">Agent roles</div><div class="metric-value" id="agentCount">—</div><div class="metric-note">bounded specialist roles</div></div>
+      <div class="panel metric"><div class="metric-label">Active work</div><div class="metric-value" id="activeWorkCount">—</div><div class="metric-note">in progress + ongoing</div></div>
+      <div class="panel metric"><div class="metric-label">Blocked</div><div class="metric-value" id="blockedCount">—</div><div class="metric-note">requires recovery or decision</div></div>
+      <div class="panel metric"><div class="metric-label">External systems</div><div class="metric-value">4</div><div class="metric-note">GitHub · Vercel · Gmail · automations</div></div>
+    </section>
+
+    <div class="layout">
+      <div class="stack">
+        <section class="panel section">
+          <div class="section-head">
+            <div><div class="section-kicker">Agent fleet</div><h2 class="section-title">Who owns what</h2><p>Logical roles from the repo-native agent registry.</p></div>
+          </div>
+          <div class="agent-grid" id="agentGrid"></div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-head">
+            <div><div class="section-kicker">Execution</div><h2 class="section-title">Work queue</h2><p>Stable task IDs, owners, next actions, and approval gates.</p></div>
+            <span class="pill" id="queueUpdated">Updated —</span>
+          </div>
+          <div class="queue" id="workQueue"></div>
+        </section>
+      </div>
+
+      <aside class="stack">
+        <section class="panel section">
+          <div class="section-kicker">Big picture</div>
+          <h2 class="section-title">Business cockpit</h2>
+          <div class="business-grid">
+            <div class="business-card"><strong>Deals & savings</strong><span class="placeholder">Next layer: wire the anchor-dollar savings model.</span></div>
+            <div class="business-card"><strong>Audience</strong><span class="placeholder">Next layer: traffic, users, signups, retention.</span></div>
+            <div class="business-card"><strong>Partners</strong><span class="placeholder">Next layer: pipeline, outreach, replies, featured status.</span></div>
+            <div class="business-card"><strong>Release health</strong><span class="placeholder">Next layer: deploy state, failures, QA, incidents.</span></div>
+          </div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-kicker">Native systems</div>
+          <h2 class="section-title">Source-of-truth health</h2>
+          <div class="systems">
+            <div class="system"><div><div class="system-name">GitHub</div><div class="system-note">code · PRs · checks · queue</div></div><span class="system-status">native verify</span></div>
+            <div class="system"><div><div class="system-name">Vercel</div><div class="system-note">production · previews · failures</div></div><span class="system-status">next connector</span></div>
+            <div class="system"><div><div class="system-name">Gmail</div><div class="system-note">outreach · partner replies</div></div><span class="system-status">next connector</span></div>
+            <div class="system"><div><div class="system-name">Automations</div><div class="system-note">scheduled agent routines</div></div><span class="system-status">next connector</span></div>
+          </div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-kicker">Operating doctrine</div>
+          <h2 class="section-title">Settled decisions</h2>
+          <div class="decision-list" id="decisionList"></div>
+        </section>
+      </aside>
+    </div>
+
+    <div class="footer">Mission Rated founder dashboard · repo-backed control plane · private operational data remains in its native system of record.</div>
+  </main>
+  <script src="/mission-control.js" defer></script>
+</body>
+</html>
