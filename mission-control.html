@@ -7,225 +7,69 @@
   <title>Mission Rated Command Center</title>
   <link rel="icon" href="/assets/mission-rated-logo.svg" type="image/svg+xml" />
   <style>
-    :root {
-      --bg: #08111f;
-      --panel: #101b2d;
-      --panel-2: #14233a;
-      --line: rgba(255,255,255,.09);
-      --text: #f4f7fb;
-      --muted: #91a0b5;
-      --blue: #4ba3ff;
-      --green: #38d39f;
-      --amber: #ffbf69;
-      --red: #ff6b6b;
-      --violet: #9f8cff;
-      --shadow: 0 18px 55px rgba(0,0,0,.28);
-    }
-    * { box-sizing: border-box; }
-    html { color-scheme: dark; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 78% 0%, rgba(75,163,255,.16), transparent 34%),
-        radial-gradient(circle at 8% 18%, rgba(159,140,255,.11), transparent 26%),
-        var(--bg);
-      color: var(--text);
-    }
-    a { color: inherit; }
-    button { font: inherit; }
-    .shell { max-width: 1500px; margin: 0 auto; padding: 26px; }
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between; gap: 18px;
-      margin-bottom: 22px;
-    }
-    .brand { display: flex; align-items: center; gap: 13px; }
-    .brand img { width: 46px; height: 46px; }
-    .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--blue); font-weight: 800; }
-    h1 { margin: 2px 0 0; font-size: clamp(24px, 3vw, 36px); letter-spacing: -.04em; }
-    .top-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-    .pill, .button {
-      border: 1px solid var(--line); background: rgba(255,255,255,.045); color: var(--text);
-      border-radius: 999px; padding: 9px 13px; font-size: 13px; text-decoration: none;
-    }
-    .button { cursor: pointer; }
-    .button:hover { border-color: rgba(75,163,255,.5); background: rgba(75,163,255,.1); }
-    .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 7px; box-shadow: 0 0 12px rgba(56,211,159,.65); }
-    .hero {
-      display: grid; grid-template-columns: minmax(0,1.7fr) minmax(300px,.8fr); gap: 16px; margin-bottom: 16px;
-    }
-    .panel {
-      background: linear-gradient(180deg, rgba(20,35,58,.95), rgba(13,25,42,.96));
-      border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow);
-    }
-    .focus { padding: 24px; position: relative; overflow: hidden; }
-    .focus::after {
-      content: ""; position: absolute; width: 280px; height: 280px; border-radius: 50%;
-      right: -120px; top: -140px; background: rgba(75,163,255,.12); filter: blur(4px);
-    }
-    .section-kicker { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; }
-    .focus h2 { margin: 9px 0 10px; max-width: 920px; font-size: clamp(24px, 4vw, 42px); line-height: 1.04; letter-spacing: -.04em; position: relative; z-index: 1; }
-    .focus p { color: var(--muted); font-size: 15px; max-width: 850px; line-height: 1.55; margin: 0; position: relative; z-index: 1; }
-    .focus-meta { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; position: relative; z-index: 1; }
-    .attention { padding: 22px; }
-    .attention h3, .section-title { margin: 6px 0 14px; font-size: 19px; letter-spacing: -.02em; }
-    .attention-count { font-size: 56px; line-height: 1; font-weight: 800; letter-spacing: -.06em; color: var(--amber); }
-    .attention p { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 8px 0 0; }
-    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 16px; }
-    .metric { padding: 18px; }
-    .metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
-    .metric-value { font-size: 32px; font-weight: 800; margin-top: 6px; letter-spacing: -.04em; }
-    .metric-note { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .layout { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(340px,.75fr); gap: 16px; align-items: start; }
-    .stack { display: grid; gap: 16px; }
-    .section { padding: 20px; }
-    .section-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; margin-bottom: 14px; }
-    .section-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
-    .agent-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
-    .agent-card { border: 1px solid var(--line); background: rgba(255,255,255,.025); border-radius: 15px; padding: 15px; min-height: 154px; }
-    .agent-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .agent-name { font-weight: 800; font-size: 16px; }
-    .agent-role { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
-    .agent-state { font-size: 11px; border-radius: 999px; padding: 5px 8px; border: 1px solid var(--line); color: var(--muted); }
-    .agent-state.active { color: var(--green); border-color: rgba(56,211,159,.25); background: rgba(56,211,159,.07); }
-    .owns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
-    .tag { background: rgba(75,163,255,.08); color: #b9d9ff; border: 1px solid rgba(75,163,255,.14); border-radius: 999px; padding: 4px 7px; font-size: 10px; }
-    .queue { display: grid; gap: 9px; }
-    .work-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(255,255,255,.024); }
-    .work-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
-    .work-id { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .05em; }
-    .work-title { margin-top: 3px; font-weight: 750; }
-    .work-owner, .work-next { color: var(--muted); font-size: 12px; margin-top: 7px; line-height: 1.45; }
-    .badge { padding: 5px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
-    .badge.in_progress, .badge.ongoing { background: rgba(75,163,255,.1); color: #9fcaff; border: 1px solid rgba(75,163,255,.2); }
-    .badge.blocked { background: rgba(255,107,107,.1); color: #ff9d9d; border: 1px solid rgba(255,107,107,.22); }
-    .badge.done { background: rgba(56,211,159,.09); color: #80e8c3; border: 1px solid rgba(56,211,159,.2); }
-    .gate { margin-top: 9px; color: var(--amber); font-size: 11px; }
-    .systems { display: grid; gap: 9px; }
-    .system { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: 13px; padding: 13px; background: rgba(255,255,255,.022); }
-    .system-name { font-size: 13px; font-weight: 800; }
-    .system-note { font-size: 11px; color: var(--muted); margin-top: 3px; }
-    .system-status { font-size: 10px; padding: 5px 7px; border-radius: 999px; border: 1px solid rgba(255,191,105,.2); color: var(--amber); background: rgba(255,191,105,.06); white-space: nowrap; }
-    .decision-list { display: grid; gap: 9px; }
-    .decision { border-left: 2px solid var(--violet); padding: 7px 0 7px 11px; color: #d8d3ff; font-size: 12px; line-height: 1.45; }
-    .business-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; }
-    .business-card { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: rgba(255,255,255,.022); }
-    .business-card strong { display: block; font-size: 16px; }
-    .business-card span { color: var(--muted); font-size: 11px; display: block; margin-top: 4px; line-height: 1.4; }
-    .placeholder { color: var(--amber) !important; }
-    .footer { color: var(--muted); font-size: 11px; text-align: center; padding: 18px 4px 2px; }
-    .error { color: #ffb2b2; border: 1px solid rgba(255,107,107,.25); background: rgba(255,107,107,.06); padding: 12px; border-radius: 12px; font-size: 12px; }
-    @media (max-width: 1000px) {
-      .hero, .layout { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: repeat(2,1fr); }
-      .agent-grid { grid-template-columns: repeat(2,1fr); }
-    }
-    @media (max-width: 620px) {
-      .shell { padding: 15px; }
-      .topbar { align-items: flex-start; }
-      .top-actions { display: none; }
-      .metrics, .agent-grid, .business-grid { grid-template-columns: 1fr; }
-      .focus, .section, .attention { padding: 17px; }
-      .focus h2 { font-size: 28px; }
-    }
+    :root{--bg:#07101c;--panel:#0e1a2a;--panel2:#111f33;--line:#ffffff12;--text:#f7f9fc;--muted:#8ea0b7;--blue:#52a8ff;--cyan:#63e6ff;--green:#44d7a8;--amber:#ffbd66;--red:#ff7272;--violet:#a997ff;--shadow:0 20px 60px #0005}
+    *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;background:radial-gradient(circle at 78% -5%,#298cff22,transparent 32%),radial-gradient(circle at 12% 28%,#8e77ff13,transparent 24%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a{font:inherit}.shell{max-width:1580px;margin:auto;padding:22px}.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0 18px;background:linear-gradient(180deg,var(--bg) 60%,transparent)}.brand{display:flex;align-items:center;gap:12px}.brand img{width:42px;height:42px}.eyebrow,.kicker{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:var(--blue)}h1{margin:1px 0 0;font-size:clamp(23px,3vw,34px);letter-spacing:-.04em}.actions{display:flex;gap:8px;align-items:center}.pill,.btn{border:1px solid var(--line);background:#ffffff09;color:var(--text);border-radius:999px;padding:8px 11px;font-size:12px;text-decoration:none}.btn{cursor:pointer}.btn:hover{border-color:#52a8ff66;background:#52a8ff12}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 12px #44d7a8}.grid{display:grid;gap:14px}.hero{grid-template-columns:minmax(0,1.65fr) minmax(310px,.72fr);margin-bottom:14px}.panel{background:linear-gradient(180deg,#13233aee,#0c1828f7);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.mission{padding:23px;position:relative;overflow:hidden}.mission:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-135px;top:-165px;background:#52a8ff18}.mission h2{position:relative;z-index:1;margin:7px 0 10px;max-width:900px;font-size:clamp(25px,4vw,41px);line-height:1.03;letter-spacing:-.045em}.mission p{position:relative;z-index:1;margin:0;color:var(--muted);font-size:14px;line-height:1.55;max-width:880px}.meta{position:relative;z-index:1;display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.attention{padding:21px}.attention-number{font-size:58px;font-weight:900;line-height:.92;letter-spacing:-.07em;color:var(--amber);margin:8px 0}.attention p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.metrics{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:14px}.metric{padding:15px 17px}.metric-label{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:900}.metric-value{font-size:29px;font-weight:900;letter-spacing:-.04em;margin-top:4px}.metric-note{font-size:10px;color:var(--muted);margin-top:2px}.main{grid-template-columns:minmax(0,1.48fr) minmax(360px,.72fr);align-items:start}.stack{display:grid;gap:14px}.section{padding:18px}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}.section-title{font-size:18px;letter-spacing:-.025em;margin:4px 0 0}.section-sub{font-size:11px;color:var(--muted);margin:4px 0 0}.inbox-list,.queue{display:grid;gap:8px}.inbox-item,.work-item,.system,.goal{border:1px solid var(--line);background:#ffffff05;border-radius:13px;padding:12px}.inbox-item{border-left:3px solid var(--amber)}.work-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.work-id{font-size:10px;color:var(--blue);font-weight:900;letter-spacing:.05em}.work-title{font-size:13px;font-weight:800;margin-top:2px}.work-meta,.work-next{font-size:11px;color:var(--muted);line-height:1.45;margin-top:5px}.gate{font-size:10px;color:var(--amber);margin-top:7px}.badge{padding:4px 7px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;border:1px solid var(--line)}.badge.in_progress,.badge.ongoing,.badge.review{color:#a9d2ff;background:#52a8ff12;border-color:#52a8ff33}.badge.blocked{color:#ffaaaa;background:#ff727212;border-color:#ff727233}.badge.done{color:#80e8c3;background:#44d7a812;border-color:#44d7a833}.agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.agent-card{border:1px solid var(--line);background:#ffffff05;border-radius:13px;padding:12px;min-height:165px}.agent-top{display:flex;justify-content:space-between;gap:8px}.agent-name{font-size:14px;font-weight:900}.agent-role{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}.agent-state{font-size:9px;border:1px solid var(--line);border-radius:999px;padding:4px 6px;color:var(--muted);height:max-content}.agent-state.active{color:var(--green);border-color:#44d7a833;background:#44d7a80e}.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}.tag{font-size:9px;padding:3px 6px;border-radius:999px;background:#52a8ff0d;color:#b8dbff;border:1px solid #52a8ff20}.cockpit{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.cockpit-card{border:1px solid var(--line);border-radius:13px;padding:13px;background:#ffffff05}.cockpit-card strong{font-size:14px}.cockpit-value{font-size:22px;font-weight:900;letter-spacing:-.04em;margin:7px 0 3px}.cockpit-note{font-size:10px;color:var(--muted);line-height:1.4}.goals{display:grid;gap:9px}.goal-top{display:flex;justify-content:space-between;gap:10px}.goal-name{font-size:12px;font-weight:800}.goal-target{font-size:10px;color:var(--muted)}.bar{height:6px;border-radius:999px;background:#ffffff0c;overflow:hidden;margin-top:8px}.bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:inherit}.systems{display:grid;gap:8px}.system{display:flex;align-items:center;justify-content:space-between;gap:12px}.system-name{font-size:12px;font-weight:800}.system-note{font-size:10px;color:var(--muted);margin-top:2px}.system-status{font-size:9px;padding:4px 6px;border-radius:999px;color:var(--amber);border:1px solid #ffbd6630;background:#ffbd660d;white-space:nowrap}.system-status.good{color:var(--green);border-color:#44d7a830;background:#44d7a80d}.decision{border-left:2px solid var(--violet);padding:6px 0 6px 10px;color:#dad5ff;font-size:11px;line-height:1.42}.footer{text-align:center;color:var(--muted);font-size:10px;padding:17px 4px}.error{color:#ffb1b1;border:1px solid #ff727238;background:#ff72720c;padding:11px;border-radius:12px;font-size:11px;margin-bottom:12px}
+    @media(max-width:1080px){.hero,.main{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}.agent-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:680px){.shell{padding:12px}.actions .pill,.actions a{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.agent-grid,.cockpit{grid-template-columns:1fr}.mission,.attention,.section{padding:15px}.mission h2{font-size:28px}.topbar{padding-top:8px}.metric{padding:13px}.metric-value{font-size:25px}}
   </style>
 </head>
 <body>
-  <main class="shell">
-    <header class="topbar">
-      <div class="brand">
-        <img src="/assets/mission-rated-logo.svg" alt="Mission Rated" />
-        <div>
-          <div class="eyebrow">Founder Operations</div>
-          <h1>Mission Rated Command Center</h1>
-        </div>
-      </div>
-      <div class="top-actions">
-        <span class="pill"><span class="status-dot"></span>Control plane online</span>
-        <button class="button" id="refreshButton" type="button">Refresh</button>
-        <a class="button" href="/" target="_blank" rel="noopener">Open site ↗</a>
-      </div>
-    </header>
+<main class="shell">
+  <header class="topbar">
+    <div class="brand"><img src="/assets/mission-rated-logo.svg" alt="Mission Rated"><div><div class="eyebrow">Founder Operations</div><h1>Mission Rated Command Center</h1></div></div>
+    <div class="actions"><span class="pill"><span class="dot"></span>Control plane online</span><button class="btn" id="refreshButton" type="button">Refresh</button><a class="btn" href="/" target="_blank" rel="noopener">Open site ↗</a></div>
+  </header>
+  <div id="errorBox"></div>
 
-    <div id="errorBox"></div>
+  <section class="grid hero">
+    <article class="panel mission"><div class="kicker">Current mission</div><h2 id="currentFocus">Loading Mission Rated state…</h2><p id="nextAction">Pulling the durable operator checkpoint and next action.</p><div class="meta"><span class="pill" id="stateUpdated">State updated —</span><span class="pill" id="activeChange">Active change —</span><span class="pill" id="releasePill">Release —</span></div></article>
+    <aside class="panel attention"><div class="kicker">Founder inbox</div><div class="attention-number" id="attentionCount">—</div><div class="section-title">Things that need you</div><p>Decisions, approval gates, or blockers only. Everything else should keep moving without consuming your attention.</p></aside>
+  </section>
 
-    <section class="hero">
-      <article class="panel focus">
-        <div class="section-kicker">Current mission</div>
-        <h2 id="currentFocus">Loading Mission Rated state…</h2>
-        <p id="nextAction">Pulling the durable operator checkpoint and next action.</p>
-        <div class="focus-meta">
-          <span class="pill" id="stateUpdated">State updated —</span>
-          <span class="pill" id="activeChange">Active change —</span>
-        </div>
-      </article>
-      <aside class="panel attention">
-        <div class="section-kicker">Needs your attention</div>
-        <div class="attention-count" id="attentionCount">—</div>
-        <h3>Founder approval gates</h3>
-        <p>Anything shown here should not be auto-approved by an agent. This is the boundary between autonomous preparation and your decision.</p>
-      </aside>
-    </section>
+  <section class="grid metrics">
+    <div class="panel metric"><div class="metric-label">Active work</div><div class="metric-value" id="activeWorkCount">—</div><div class="metric-note">moving now</div></div>
+    <div class="panel metric"><div class="metric-label">Blocked</div><div class="metric-value" id="blockedCount">—</div><div class="metric-note">needs recovery</div></div>
+    <div class="panel metric"><div class="metric-label">Agents engaged</div><div class="metric-value" id="engagedAgentCount">—</div><div class="metric-note">of <span id="agentCount">—</span> roles</div></div>
+    <div class="panel metric"><div class="metric-label">Release age</div><div class="metric-value" id="releaseAge">—</div><div class="metric-note">current preview build</div></div>
+    <div class="panel metric"><div class="metric-label">Operating mode</div><div class="metric-value" style="font-size:19px;margin-top:9px">Founder-led</div><div class="metric-note">bounded autonomy</div></div>
+  </section>
 
-    <section class="metrics">
-      <div class="panel metric"><div class="metric-label">Agent roles</div><div class="metric-value" id="agentCount">—</div><div class="metric-note">bounded specialist roles</div></div>
-      <div class="panel metric"><div class="metric-label">Active work</div><div class="metric-value" id="activeWorkCount">—</div><div class="metric-note">in progress + ongoing</div></div>
-      <div class="panel metric"><div class="metric-label">Blocked</div><div class="metric-value" id="blockedCount">—</div><div class="metric-note">requires recovery or decision</div></div>
-      <div class="panel metric"><div class="metric-label">External systems</div><div class="metric-value">4</div><div class="metric-note">GitHub · Vercel · Gmail · automations</div></div>
-    </section>
+  <div class="grid main">
+    <div class="stack">
+      <section class="panel section" id="founderInbox"><div class="section-head"><div><div class="kicker">Priority</div><h2 class="section-title">What needs you</h2><p class="section-sub">Only decisions or blockers that should not be silently auto-resolved.</p></div><span class="pill" id="inboxCount">—</span></div><div class="inbox-list" id="inboxList"></div></section>
 
-    <div class="layout">
-      <div class="stack">
-        <section class="panel section">
-          <div class="section-head">
-            <div><div class="section-kicker">Agent fleet</div><h2 class="section-title">Who owns what</h2><p>Logical roles from the repo-native agent registry.</p></div>
-          </div>
-          <div class="agent-grid" id="agentGrid"></div>
-        </section>
+      <section class="panel section"><div class="section-head"><div><div class="kicker">Execution</div><h2 class="section-title">Work in motion</h2><p class="section-sub">Sorted by blocked → review → active → ongoing.</p></div><span class="pill" id="queueUpdated">Updated —</span></div><div class="queue" id="workQueue"></div></section>
 
-        <section class="panel section">
-          <div class="section-head">
-            <div><div class="section-kicker">Execution</div><h2 class="section-title">Work queue</h2><p>Stable task IDs, owners, next actions, and approval gates.</p></div>
-            <span class="pill" id="queueUpdated">Updated —</span>
-          </div>
-          <div class="queue" id="workQueue"></div>
-        </section>
-      </div>
-
-      <aside class="stack">
-        <section class="panel section">
-          <div class="section-kicker">Big picture</div>
-          <h2 class="section-title">Business cockpit</h2>
-          <div class="business-grid">
-            <div class="business-card"><strong>Deals & savings</strong><span class="placeholder">Next layer: wire the anchor-dollar savings model.</span></div>
-            <div class="business-card"><strong>Audience</strong><span class="placeholder">Next layer: traffic, users, signups, retention.</span></div>
-            <div class="business-card"><strong>Partners</strong><span class="placeholder">Next layer: pipeline, outreach, replies, featured status.</span></div>
-            <div class="business-card"><strong>Release health</strong><span class="placeholder">Next layer: deploy state, failures, QA, incidents.</span></div>
-          </div>
-        </section>
-
-        <section class="panel section">
-          <div class="section-kicker">Native systems</div>
-          <h2 class="section-title">Source-of-truth health</h2>
-          <div class="systems">
-            <div class="system"><div><div class="system-name">GitHub</div><div class="system-note">code · PRs · checks · queue</div></div><span class="system-status">native verify</span></div>
-            <div class="system"><div><div class="system-name">Vercel</div><div class="system-note">production · previews · failures</div></div><span class="system-status">next connector</span></div>
-            <div class="system"><div><div class="system-name">Gmail</div><div class="system-note">outreach · partner replies</div></div><span class="system-status">next connector</span></div>
-            <div class="system"><div><div class="system-name">Automations</div><div class="system-note">scheduled agent routines</div></div><span class="system-status">next connector</span></div>
-          </div>
-        </section>
-
-        <section class="panel section">
-          <div class="section-kicker">Operating doctrine</div>
-          <h2 class="section-title">Settled decisions</h2>
-          <div class="decision-list" id="decisionList"></div>
-        </section>
-      </aside>
+      <section class="panel section"><div class="section-head"><div><div class="kicker">Agent fleet</div><h2 class="section-title">Who is doing what</h2><p class="section-sub">Role, current assignment, next action, and bounded capability.</p></div></div><div class="agent-grid" id="agentGrid"></div></section>
     </div>
 
-    <div class="footer">Mission Rated founder dashboard · repo-backed control plane · private operational data remains in its native system of record.</div>
-  </main>
-  <script src="/mission-control.js" defer></script>
+    <aside class="stack">
+      <section class="panel section"><div class="kicker">Big picture</div><h2 class="section-title">Business cockpit</h2><div class="cockpit">
+        <div class="cockpit-card" data-cockpit="savings"><strong>Dollars saved</strong><div class="cockpit-value" id="savingsValue">—</div><div class="cockpit-note" id="savingsNote">Documented savings only.</div></div>
+        <div class="cockpit-card" data-cockpit="audience"><strong>Audience</strong><div class="cockpit-value" id="audienceValue">Wiring</div><div class="cockpit-note" id="audienceNote">Analytics events exist; rollup is next.</div></div>
+        <div class="cockpit-card" data-cockpit="partners"><strong>Partners</strong><div class="cockpit-value" id="partnerValue">—</div><div class="cockpit-note" id="partnerNote">Active partner workstreams.</div></div>
+        <div class="cockpit-card" data-cockpit="release"><strong>Release health</strong><div class="cockpit-value" id="releaseValue">—</div><div class="cockpit-note" id="releaseNote">Loading release identity.</div></div>
+      </div></section>
+
+      <section class="panel section"><div class="section-head"><div><div class="kicker">North-star goals</div><h2 class="section-title">Growth scoreboard</h2></div></div><div class="goals">
+        <div class="goal"><div class="goal-top"><span class="goal-name">Hampton Roads subscribers</span><span class="goal-target">target 1,000</span></div><div class="bar"><span id="goalSubscribers"></span></div></div>
+        <div class="goal"><div class="goal-top"><span class="goal-name">Strong exclusive offers</span><span class="goal-target">target 10</span></div><div class="bar"><span id="goalOffers"></span></div></div>
+        <div class="goal"><div class="goal-top"><span class="goal-name">Participating businesses</span><span class="goal-target">target 100</span></div><div class="bar"><span id="goalBusinesses"></span></div></div>
+        <div class="goal"><div class="goal-top"><span class="goal-name">Documented family savings</span><span class="goal-target">target $25,000</span></div><div class="bar"><span id="goalSavings"></span></div></div>
+      </div><p class="section-sub" style="margin-top:10px">Progress stays blank until a defensible source is connected. No vanity estimates.</p></section>
+
+      <section class="panel section"><div class="kicker">Source of truth</div><h2 class="section-title">System health</h2><div class="systems">
+        <div class="system" data-system="GitHub"><div><div class="system-name">GitHub</div><div class="system-note">repo · PRs · checks</div></div><span class="system-status">checking</span></div>
+        <div class="system" data-system="Vercel"><div><div class="system-name">Vercel</div><div class="system-note">deployments · failures</div></div><span class="system-status">checking</span></div>
+        <div class="system" data-system="Gmail"><div><div class="system-name">Gmail</div><div class="system-note">outreach · replies</div></div><span class="system-status">auth next</span></div>
+        <div class="system" data-system="Automations"><div><div class="system-name">Automations</div><div class="system-note">scheduled routines</div></div><span class="system-status">auth next</span></div>
+      </div></section>
+
+      <section class="panel section"><div class="kicker">Operating doctrine</div><h2 class="section-title">Settled decisions</h2><div id="decisionList"></div></section>
+    </aside>
+  </div>
+  <div class="footer">Mission Rated founder command center · repo-backed control plane · private system data remains behind authenticated sources.</div>
+</main>
+<script src="/mission-control.js" defer></script>
 </body>
 </html>
