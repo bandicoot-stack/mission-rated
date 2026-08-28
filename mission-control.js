@@ -15,6 +15,8 @@
     const hrs = Math.round(mins/60); if (hrs < 48) return `${hrs}h`;
     return `${Math.round(hrs/24)}d`;
   };
+  const money = (cents) => new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format((Number(cents)||0)/100);
+  const pct = (value,target) => target > 0 && value != null ? Math.max(0,Math.min(100,(Number(value)/Number(target))*100)) : null;
   const fetchJson = async (path) => {
     const r = await fetch(`${path}?t=${Date.now()}`,{cache:'no-store'});
     if (!r.ok) throw new Error(`${path} returned ${r.status}`);
@@ -26,10 +28,14 @@
   async function load(){
     $('errorBox').innerHTML=''; $('refreshButton').disabled=true; $('refreshButton').textContent='Refreshing…';
     try{
-      const [registry,state,queue,release]=await Promise.all([
-        fetchJson('/agent-system/registry.json'),fetchJson('/agent-system/state.json'),fetchJson('/agent-system/work-queue.json'),fetchJson('/release.json')
+      const [registry,state,queue,release,metrics]=await Promise.all([
+        fetchJson('/agent-system/registry.json'),
+        fetchJson('/agent-system/state.json'),
+        fetchJson('/agent-system/work-queue.json'),
+        fetchJson('/release.json'),
+        fetchJson('/mission-control-metrics.json')
       ]);
-      renderState(state,release); renderMetrics(registry,queue,release); renderInbox(queue); renderQueue(queue); renderAgents(registry,queue); renderCockpit(queue,release); renderSystems(release); renderDecisions(state);
+      renderState(state,release); renderMetrics(registry,queue,release); renderInbox(queue); renderQueue(queue); renderAgents(registry,queue); renderCockpit(metrics,release); renderGoals(metrics); renderSystems(release,metrics); renderDecisions(state);
     }catch(error){
       console.error('[mission-control] load failed',error);
       $('errorBox').innerHTML=`<div class="error"><strong>Dashboard data could not load.</strong> ${esc(error.message)}.</div>`;
@@ -72,20 +78,39 @@
     }).join('');
   }
 
-  function renderCockpit(queue,release){
-    const partner=(queue.items||[]).filter(i=>i.owner_role==='partner'&&i.status!=='done');
-    $('savingsValue').textContent='Not posted'; $('savingsNote').textContent='Ledger policy is ready; display stays blank until documented-dollar records are connected.';
-    $('audienceValue').textContent='Instrumented'; $('audienceNote').textContent='Page views, return visits, referrals, deal clicks, and Weekend Brief events exist. Aggregate reporting is the next connection.';
-    $('partnerValue').textContent=String(partner.length); $('partnerNote').textContent=`active partner workstream${partner.length===1?'':'s'} represented in the durable queue.`;
-    $('releaseValue').textContent=String(release.git_sha||'').slice(0,8)||'unknown'; $('releaseNote').textContent=`${release.source||'build'} · ${fmtDate(release.generated_at)}`;
+  function renderCockpit(metrics,release){
+    const a=metrics.audience||{}, s=metrics.subscribers||{}, p=metrics.partners||{}, sv=metrics.savings||{};
+    $('savingsValue').textContent=money(sv.documented_savings_cents);
+    $('savingsNote').textContent=`${sv.verified_records||0} verified savings record${sv.verified_records===1?'':'s'} · ${sv.confirmed_redemptions||0} confirmed redemption${sv.confirmed_redemptions===1?'':'s'}.`;
+    $('audienceValue').textContent=String(a.unique_visitors_7d??'—');
+    $('audienceNote').textContent=`unique visitors / 7d · ${a.page_views_7d??'—'} page views · ${a.sessions_7d??'—'} sessions`;
+    $('partnerValue').textContent=String(p.contacted??0);
+    $('partnerNote').textContent=`contacted · ${p.ready??0} ready · ${p.prospects_total??0} total prospects. Prospects are not counted as participating businesses.`;
+    $('releaseValue').textContent=String(release.git_sha||'').slice(0,8)||'unknown';
+    $('releaseNote').textContent=`${release.source||'build'} · ${fmtDate(release.generated_at)} · metrics ${ageLabel(metrics.generated_at)} old`;
   }
 
-  function renderSystems(release){
+  function renderGoals(metrics){
+    const s=metrics.subscribers||{}, p=metrics.partners||{}, sv=metrics.savings||{};
+    setBar('goalSubscribers',pct(s.active,s.target),`${s.active??0} / ${s.target??1000}`);
+    setBar('goalOffers',pct(p.strong_exclusive_offers,p.exclusive_target),p.strong_exclusive_offers==null?'not yet sourced':`${p.strong_exclusive_offers} / ${p.exclusive_target}`);
+    setBar('goalBusinesses',pct(p.participating_businesses,p.participating_target),p.participating_businesses==null?'not yet sourced':`${p.participating_businesses} / ${p.participating_target}`);
+    setBar('goalSavings',pct(sv.documented_savings_cents,sv.target_cents),`${money(sv.documented_savings_cents)} / ${money(sv.target_cents)}`);
+  }
+
+  function setBar(id,width,label){
+    const bar=$(id); if(!bar)return;
+    bar.style.width=width==null?'0%':`${width}%`;
+    const goal=bar.closest('.goal'); const target=goal?.querySelector('.goal-target');
+    if(target) target.textContent=label;
+  }
+
+  function renderSystems(release,metrics){
     const set=(name,note,status,good=false)=>{const row=document.querySelector(`[data-system="${name}"]`);if(!row)return;row.querySelector('.system-note').textContent=note;const s=row.querySelector('.system-status');s.textContent=status;s.classList.toggle('good',good);};
     set('GitHub','durable state · work queue · decisions','repo-backed',true);
     set('Vercel',`${String(release.git_sha||'').slice(0,8)} · ${fmtDate(release.generated_at)}`,'release-known',true);
     set('Gmail','outreach · replies · drafts','auth next');
-    set('Automations','scheduled routines · recurring checks','auth next');
+    set('Automations',`business metrics snapshot ${ageLabel(metrics.generated_at)} old`,'snapshot',true);
   }
 
   function renderDecisions(state){
