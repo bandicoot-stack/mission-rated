@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Mission Rated Partner Pipeline</title>
+  <style>
+    :root{color-scheme:dark;background:#07131d;color:#f3f7f9;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;padding:24px;background:#07131d}main{max-width:1100px;margin:auto}.top{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.12em;color:#62eaf5}.muted{color:#9fb3bf}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0}.card,.panel{border:1px solid #254052;border-radius:14px;background:#0c1d29;padding:16px}.big{font-size:30px;font-weight:900}.toolbar{display:flex;gap:8px;flex-wrap:wrap}input,button{min-height:44px;border-radius:9px;border:1px solid #36586d;background:#07131d;color:#fff;padding:10px 12px}button{cursor:pointer;background:#0f3545;font-weight:800}.table-wrap{overflow:auto}.row{display:grid;grid-template-columns:1.8fr 1fr .6fr 1.2fr 1.2fr 2.2fr;gap:10px;padding:12px 0;border-top:1px solid #1d3646;min-width:900px}.row.head{font-size:11px;font-weight:900;color:#8fb0c0;text-transform:uppercase;border-top:0}.status{display:inline-flex;width:max-content;padding:5px 9px;border-radius:999px;background:#143344;font-weight:800;text-transform:capitalize}.error{padding:14px;border:1px solid #6b3d3d;background:#311b1b;border-radius:10px;color:#ffd6d6;display:none}@media(max-width:640px){body{padding:16px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div><div class="eyebrow">MISSION RATED • OPERATOR</div><h1>Partner Pipeline</h1><p class="muted">Featured partners, active outreach, and follow-up status.</p></div>
+    <div class="toolbar"><input id="key" type="password" autocomplete="off" placeholder="Operator key"><button id="load">Load pipeline</button><button id="clear">Clear key</button></div>
+  </div>
+  <div id="error" class="error"></div>
+  <section class="cards">
+    <div class="card"><div class="muted">Partners</div><div id="partners" class="big">—</div></div>
+    <div class="card"><div class="muted">Contacted</div><div id="contacted" class="big">—</div></div>
+    <div class="card"><div class="muted">Interested</div><div id="interested" class="big">—</div></div>
+    <div class="card"><div class="muted">Follow-up</div><div id="followup" class="big">—</div></div>
+  </section>
+  <section class="panel">
+    <div class="top"><h2>Active pipeline</h2><div id="generated" class="muted"></div></div>
+    <div class="table-wrap"><div class="row head"><div>Name</div><div>Status</div><div>Priority</div><div>Last contact</div><div>Next follow-up</div><div>Why it matters</div></div><div id="rows"></div></div>
+  </section>
+</main>
+<script>
+const $=id=>document.getElementById(id), key=$('key'), error=$('error');
+key.value=sessionStorage.getItem('mr_operator_key')||'';
+$('load').onclick=load;$('clear').onclick=()=>{sessionStorage.removeItem('mr_operator_key');key.value='';$('rows').innerHTML='';};
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function d(v){if(!v)return '—';try{return new Date(v).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});}catch{return '—';}}
+async function load(){
+  const k=key.value.trim();if(!k){show('Enter the operator key.');return;}sessionStorage.setItem('mr_operator_key',k);hide();
+  try{
+    const r=await fetch('/api/partner-pipeline',{headers:{authorization:`Bearer ${k}`},cache:'no-store'});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||`Request failed (${r.status})`);
+    const s=j.summary||{};$('partners').textContent=s.partner||0;$('contacted').textContent=s.contacted||0;$('interested').textContent=s.interested||0;$('followup').textContent=s.follow_up||0;$('generated').textContent=`Updated ${new Date(j.generated_at).toLocaleString()}`;
+    $('rows').innerHTML=(j.prospects||[]).map(p=>`<div class="row"><div><strong>${esc(p.name)}</strong></div><div><span class="status">${esc(p.status)}</span></div><div>${esc(p.priority)}</div><div>${d(p.last_contacted_at)}</div><div>${d(p.next_follow_up_at)}</div><div class="muted">${esc(p.rationale||'')}</div></div>`).join('')||'<p class="muted">No active prospects.</p>';
+  }catch(e){show(e.message==='partner_pipeline_not_configured'?'Partner dashboard server credentials are not configured yet.':e.message);}
+}
+function show(msg){error.textContent=msg;error.style.display='block';}function hide(){error.style.display='none';}
+if(key.value)load();
+</script>
+</body>
+</html>
