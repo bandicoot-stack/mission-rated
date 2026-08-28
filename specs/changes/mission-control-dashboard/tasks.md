@@ -9,6 +9,8 @@
 - [x] Add richer current-assignment details to agent cards.
 - [x] Add a generated Founder Inbox from approval gates and blocked work.
 - [x] Show measurement capability status for audience, savings, partners, and release health.
+- [x] Redesign information hierarchy around founder attention, work in motion, agent execution, cockpit, and north-star goals.
+- [x] Preserve founder dashboard no-index behavior through AI discovery metadata processing.
 - [ ] Verify the refreshed Vercel preview visually and on mobile.
 - [ ] Add authenticated connector-backed Vercel deployment/error telemetry.
 - [ ] Add authenticated Gmail outreach/reply telemetry.
