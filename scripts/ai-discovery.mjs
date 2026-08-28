@@ -36,20 +36,14 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').re
 for(const file of files){
   const p=`dist/${file}`;
   let html=await readFile(p,'utf8');
+  if(/<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html)) continue;
   const canonical=`${SITE}${pathFor(file)}`;
   const title=titles[file]||((html.match(/<title>([^<]+)<\/title>/i)||[])[1]||'Mission Rated');
   const description=descriptions[file]||((html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)||[])[1]||'Source-backed military-family discovery for Hampton Roads, Virginia.');
   html=html.replace(/<link\s+rel="canonical"[^>]*>/ig,'').replace(/<meta\s+name="robots"[^>]*>/ig,'');
-  const ld={
-    '@context':'https://schema.org',
-    '@graph':[
-      {'@type':'Organization','@id':`${SITE}/#organization`,name:'Mission Rated',url:`${SITE}/`,description:'Source-backed military-family discovery, savings and local intelligence for Hampton Roads, Virginia.'},
-      {'@type':'WebSite','@id':`${SITE}/#website`,url:`${SITE}/`,name:'Mission Rated',publisher:{'@id':`${SITE}/#organization`},inLanguage:'en-US'},
-      {'@type':'WebPage','@id':`${canonical}#webpage`,url:canonical,name:title,description,isPartOf:{'@id':`${SITE}/#website`},about:{'@id':`${SITE}/#organization`},inLanguage:'en-US'}
-    ]
-  };
+  const ld={'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':`${SITE}/#organization`,name:'Mission Rated',url:`${SITE}/`,description:'Source-backed military-family discovery, savings and local intelligence for Hampton Roads, Virginia.'},{'@type':'WebSite','@id':`${SITE}/#website`,url:`${SITE}/`,name:'Mission Rated',publisher:{'@id':`${SITE}/#organization`},inLanguage:'en-US'},{'@type':'WebPage','@id':`${canonical}#webpage`,url:canonical,name:title,description,isPartOf:{'@id':`${SITE}/#website`},about:{'@id':`${SITE}/#organization`},inLanguage:'en-US'}]};
   const meta=`<link rel="canonical" href="${esc(canonical)}"><meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1"><meta property="og:type" content="website"><meta property="og:site_name" content="Mission Rated"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${esc(canonical)}"><script type="application/ld+json">${JSON.stringify(ld).replace(/</g,'\\u003c')}</script>`;
   html=html.replace('</head>',`${meta}</head>`);
   await writeFile(p,html);
 }
-console.log(`AI discovery metadata added to ${files.length} HTML pages`);
+console.log(`AI discovery metadata processed for ${files.length} HTML pages`);
