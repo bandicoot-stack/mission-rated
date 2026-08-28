@@ -30,7 +30,7 @@ for (const file of ['business.html','school.html','installation.html']) {
   const path='dist/fall.html';let html=await readFile(path,'utf8');if(!html.includes('fall-mission-rated.js'))html=html.replace('</body>','<script src="/fall-mission-rated.js" defer></script>\n</body>');await writeFile(path,html);
 }
 {
-  const path='dist/local-intel.html';let html=await readFile(path,'utf8');for(const asset of ['local-intel-embeds.js','instagram-connect.js'])if(!html.includes(asset))html=html.replace('</body>',`<script src="/${asset}" defer></script>\n</body>');await writeFile(path,html);
+  const path='dist/local-intel.html';let html=await readFile(path,'utf8');for(const asset of ['local-intel-embeds.js','instagram-connect.js'])if(!html.includes(asset))html=html.replace('</body>',`<script src="/${asset}" defer></script>\n</body>`);await writeFile(path,html);
 }
 for (const file of (await readdir('dist')).filter(file=>file.endsWith('.html'))) {
   const path=`dist/${file}`;let html=await readFile(path,'utf8');
