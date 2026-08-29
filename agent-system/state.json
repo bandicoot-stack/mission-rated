@@ -1,34 +1,29 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T04:24:00Z",
-  "current_focus": "Run Mission Rated from reconciled production truth with audited releases, live Supabase data, defensible Growth measurement, and no unauthenticated operational surfaces.",
-  "active_change": "Security withdrawal shipped via PR #140; production SHA cffd651d685ee9ef1124b809674e4e42d211c235 verified and recorded on release-audit. Public mission-control and durable agent-state routes are withdrawn pending an authenticated server-side gate.",
-  "operator_next_action": "Keep native-system reconciliation current before new work; do not restore the founder Command Center or durable agent JSON to public production without authenticated server-side authorization; continue Growth QA against current production truth.",
+  "updated_at": "2026-08-29T21:56:24Z",
+  "current_focus": "Run the Growth MVP from reconciled production truth with audited releases, defensible Growth measurement, and authenticated operational surfaces.",
+  "active_change": "Production remains on audited main SHA 9f842e313d22ca4b0850eb89ba78148b9587b559. Supabase mission-control-metrics is ACTIVE with verify_jwt=true (version 2) and product-event is ACTIVE with verify_jwt=true (version 7). Growth event persistence remains unresolved: production /api/event is log-only, so Supabase product_events must not be treated as current scorecard truth until issue #141 is resolved.",
+  "operator_next_action": "Resolve Growth measurement issue #141 without weakening authorization: establish one authoritative durable Growth event store and require freshness/source alignment before scorecard metrics are presented as current.",
   "reconciliation": {
-    "observed_at": "2026-08-29T04:24:00Z",
+    "observed_at": "2026-08-29T21:56:24Z",
     "github": {
       "open_pull_requests": 0,
-      "latest_main_sha": "cffd651d685ee9ef1124b809674e4e42d211c235",
-      "security_withdrawal_pr": 140,
-      "merged_guard_pr": 135,
-      "release_discipline_pr": 139,
-      "latest_verified_production_sha": "cffd651d685ee9ef1124b809674e4e42d211c235",
+      "latest_main_sha": "9f842e313d22ca4b0850eb89ba78148b9587b559",
       "release_audit_branch": "release-audit",
-      "latest_release_report": "reports/2026-08-29/cffd651d685ee9ef1124b809674e4e42d211c235.md"
+      "latest_verified_production_sha": "9f842e313d22ca4b0850eb89ba78148b9587b559",
+      "latest_release_report": "reports/2026-08-29/9f842e313d22ca4b0850eb89ba78148b9587b559.md"
     },
     "vercel": {
       "production_state": "READY",
-      "latest_verified_sha": "cffd651d685ee9ef1124b809674e4e42d211c235",
-      "runtime_errors_last_24h_at_reconciliation": 0,
-      "public_mission_control_status": 404,
-      "public_agent_state_status": 404
+      "latest_verified_sha": "9f842e313d22ca4b0850eb89ba78148b9587b559"
     },
     "supabase": {
-      "query_health": "RESPONDING",
-      "active_businesses": 85,
-      "active_deals": 62,
-      "verified_savings_records": 0,
-      "documented_savings_cents": 0
+      "project_status": "ACTIVE_HEALTHY",
+      "mission_control_metrics_verify_jwt": true,
+      "mission_control_metrics_version": 2,
+      "product_event_verify_jwt": true,
+      "product_event_version": 7,
+      "growth_event_store_freshness": "NOT_AUTHORITATIVE_PENDING_ISSUE_141"
     }
   },
   "recent_settled_decisions": [
@@ -40,13 +35,15 @@
     "Stale operational state is a defect and must be reconciled before material work.",
     "Every successful production verification writes an immutable SHA-specific report to the release-audit branch for future agent review.",
     "The founder Command Center and durable agent JSON must not be publicly served without an authenticated server-side gate.",
-    "READY is deployment state only; release health requires release-audit evidence and relevant production behavior checks."
+    "READY is deployment state only; release health requires release-audit evidence and relevant production behavior checks.",
+    "Growth scorecard data must identify an authoritative durable source and freshness; log-only browser ingestion must not be represented as current Supabase measurement truth.",
+    "Browser-origin checks are not authentication for privileged Supabase operational or Growth write surfaces."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
     "release-audit latest production report",
     "Vercel production and preview deployment status",
-    "Supabase live data health",
+    "Supabase live data health and Growth event-store freshness",
     "Gmail outreach/reply state",
     "scheduled automation state"
   ]
