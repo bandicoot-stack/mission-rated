@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-08-28T04:39:00Z",
+  "source": "supabase-aggregate-snapshot",
+  "audience": {
+    "unique_visitors_7d": 11,
+    "unique_visitors_30d": 11,
+    "sessions_7d": 45,
+    "page_views_7d": 48,
+    "page_views_30d": 263,
+    "return_visits_30d": 0,
+    "referral_visits_30d": 0,
+    "deal_clicks_30d": 0
+  },
+  "subscribers": {
+    "active": 1,
+    "target": 1000
+  },
+  "partners": {
+    "prospects_total": 96,
+    "ready": 93,
+    "contacted": 3,
+    "participating_businesses": null,
+    "participating_target": 100,
+    "strong_exclusive_offers": null,
+    "exclusive_target": 10
+  },
+  "savings": {
+    "documented_savings_cents": 0,
+    "verified_records": 0,
+    "confirmed_redemptions": 0,
+    "target_cents": 2500000,
+    "latest_verified_at": null
+  },
+  "integrity": {
+    "contains_personal_data": false,
+    "subscriber_count_is_authoritative": true,
+    "savings_are_documented_only": true,
+    "partner_prospects_are_not_counted_as_participating_businesses": true
+  }
+}
