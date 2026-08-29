@@ -12,8 +12,36 @@ Before material work, every capable agent must:
 4. Read `agent-system/state.json` and `agent-system/work-queue.json`.
 5. Read the relevant `specs/current/*`, active `specs/changes/*`, and only the skill files needed for the task.
 6. Verify fast-changing external state in its native system of record before acting.
+7. For release-sensitive, deployment, recovery, or reconciliation work, review the latest report(s) on the `release-audit` branch before treating durable state as current.
 
 `PROJECT_CONTEXT.md` explains durable founder intent and strategy. `specs/current/*` remains authoritative for shipped product behavior. The control plane preserves operational state between agents and context windows; it does not replace the constitution or specs.
+
+## Stale-state intolerance
+
+Stale operational state is a defect. Do not treat an open PR, queue item, branch, deployment, email thread, or previous agent statement as current merely because it exists.
+
+Before material work that depends on current state:
+
+- reconcile GitHub PR/check/main status;
+- reconcile Vercel production/preview status;
+- reconcile Supabase/data state when relevant;
+- reconcile Gmail/partner state when relevant;
+- reconcile scheduled automation state when relevant;
+- update `agent-system/state.json` and `agent-system/work-queue.json` when reality has materially changed.
+
+Duplicate or divergent stale PRs should be closed or explicitly re-based into a current main-based change. Do not create replacement PRs without first checking for equivalent active work.
+
+## Production release audit
+
+Every successful production deployment must leave durable verification evidence on the dedicated `release-audit` branch.
+
+- The `Mission Rated Production Verification` workflow is the release evidence authority.
+- A success report is written only after production `/release.json` matches the exact GitHub SHA, required route smoke tests pass, and mobile/desktop visual QA pass.
+- Reports live at `reports/YYYY-MM-DD/<git-sha>.md` on `release-audit`.
+- Reports are immutable by SHA; reruns must not replace existing evidence.
+- The audit branch is intentionally separate from `main` so evidence recording cannot trigger another production deployment.
+- Before claiming a production release is complete, verify the corresponding release-audit report exists.
+- Future agents, including Claude or other external reviewers, should use the audit trail plus native GitHub/Vercel state to evaluate release discipline instead of relying on chat history.
 
 ## Agent operating model
 
@@ -49,7 +77,8 @@ For material repository changes:
 7. Open a PR using `.github/PULL_REQUEST_TEMPLATE.md`.
 8. Merge only after required checks and review conditions are met.
 9. Verify production after deployment when production behavior changes.
-10. Update `specs/current/` and durable agent state to match shipped reality.
+10. Confirm the production release-audit report exists for the deployed SHA.
+11. Update `specs/current/` and durable agent state to match shipped reality.
 
 ## Preview deployment discipline
 
