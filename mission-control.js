@@ -2,6 +2,10 @@
   'use strict';
   const $ = (id) => document.getElementById(id);
   const esc = (value) => String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+  const LIVE_METRICS_URL='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/mission-control-metrics';
+  const AUTO_REFRESH_MS=60000;
+  let lastMetricsSource='snapshot';
+
   const fmtDate = (value) => {
     if (!value) return '—';
     const date = new Date(value);
@@ -11,6 +15,7 @@
   const ageLabel = (value) => {
     const ts = new Date(value).getTime(); if (!ts) return '—';
     const mins = Math.max(0, Math.round((Date.now()-ts)/60000));
+    if (mins < 1) return 'now';
     if (mins < 60) return `${mins}m`;
     const hrs = Math.round(mins/60); if (hrs < 48) return `${hrs}h`;
     return `${Math.round(hrs/24)}d`;
@@ -18,24 +23,40 @@
   const money = (cents) => new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format((Number(cents)||0)/100);
   const pct = (value,target) => target > 0 && value != null ? Math.max(0,Math.min(100,(Number(value)/Number(target))*100)) : null;
   const fetchJson = async (path) => {
-    const r = await fetch(`${path}?t=${Date.now()}`,{cache:'no-store'});
+    const join=path.includes('?')?'&':'?';
+    const r = await fetch(`${path}${join}t=${Date.now()}`,{cache:'no-store'});
     if (!r.ok) throw new Error(`${path} returned ${r.status}`);
     return r.json();
+  };
+  const fetchMetrics = async () => {
+    try {
+      const live=await fetchJson(LIVE_METRICS_URL);
+      if (!live?.ok) throw new Error('live metrics unavailable');
+      lastMetricsSource='live';
+      return live;
+    } catch (error) {
+      console.warn('[mission-control] live metrics fallback',error);
+      lastMetricsSource='snapshot';
+      return fetchJson('/mission-control-metrics.json');
+    }
   };
   const activeStatuses = new Set(['in_progress','ongoing','review']);
   const attentionItems = (queue) => (queue.items||[]).filter(i=>i.status!=='done'&&(i.approval_gate||i.status==='blocked'));
 
-  async function load(){
-    $('errorBox').innerHTML=''; $('refreshButton').disabled=true; $('refreshButton').textContent='Refreshing…';
+  async function load({silent=false}={}){
+    if (!silent) $('errorBox').innerHTML='';
+    $('refreshButton').disabled=true; $('refreshButton').textContent='Refreshing…';
     try{
       const [registry,state,queue,release,metrics]=await Promise.all([
         fetchJson('/agent-system/registry.json'),
         fetchJson('/agent-system/state.json'),
         fetchJson('/agent-system/work-queue.json'),
         fetchJson('/release.json'),
-        fetchJson('/mission-control-metrics.json')
+        fetchMetrics()
       ]);
       renderState(state,release); renderMetrics(registry,queue,release); renderInbox(queue); renderQueue(queue); renderAgents(registry,queue); renderCockpit(metrics,release); renderGoals(metrics); renderSystems(release,metrics); renderDecisions(state);
+      document.documentElement.dataset.metricsSource=lastMetricsSource;
+      if (!silent) $('errorBox').innerHTML='';
     }catch(error){
       console.error('[mission-control] load failed',error);
       $('errorBox').innerHTML=`<div class="error"><strong>Dashboard data could not load.</strong> ${esc(error.message)}.</div>`;
@@ -79,7 +100,7 @@
   }
 
   function renderCockpit(metrics,release){
-    const a=metrics.audience||{}, s=metrics.subscribers||{}, p=metrics.partners||{}, sv=metrics.savings||{};
+    const a=metrics.audience||{}, p=metrics.partners||{}, sv=metrics.savings||{};
     $('savingsValue').textContent=money(sv.documented_savings_cents);
     $('savingsNote').textContent=`${sv.verified_records||0} verified savings record${sv.verified_records===1?'':'s'} · ${sv.confirmed_redemptions||0} confirmed redemption${sv.confirmed_redemptions===1?'':'s'}.`;
     $('audienceValue').textContent=String(a.unique_visitors_7d??'—');
@@ -87,7 +108,7 @@
     $('partnerValue').textContent=String(p.contacted??0);
     $('partnerNote').textContent=`contacted · ${p.ready??0} ready · ${p.prospects_total??0} total prospects. Prospects are not counted as participating businesses.`;
     $('releaseValue').textContent=String(release.git_sha||'').slice(0,8)||'unknown';
-    $('releaseNote').textContent=`${release.source||'build'} · ${fmtDate(release.generated_at)} · metrics ${ageLabel(metrics.generated_at)} old`;
+    $('releaseNote').textContent=`${release.source||'build'} · ${fmtDate(release.generated_at)} · metrics ${lastMetricsSource==='live'?'LIVE':ageLabel(metrics.generated_at)}`;
   }
 
   function renderGoals(metrics){
@@ -110,12 +131,15 @@
     set('GitHub','durable state · work queue · decisions','repo-backed',true);
     set('Vercel',`${String(release.git_sha||'').slice(0,8)} · ${fmtDate(release.generated_at)}`,'release-known',true);
     set('Gmail','outreach · replies · drafts','auth next');
-    set('Automations',`business metrics snapshot ${ageLabel(metrics.generated_at)} old`,'snapshot',true);
+    set('Automations',lastMetricsSource==='live'?'Supabase aggregate metrics · refresh every 60s':`snapshot fallback · ${ageLabel(metrics.generated_at)} old`,lastMetricsSource==='live'?'live':'fallback',lastMetricsSource==='live');
   }
 
   function renderDecisions(state){
     const d=state.recent_settled_decisions||[]; $('decisionList').innerHTML=d.length?d.map(x=>`<div class="decision">${esc(x)}</div>`).join(''):'<div class="decision">No settled decisions recorded.</div>';
   }
 
-  $('refreshButton').addEventListener('click',load); load();
+  $('refreshButton').addEventListener('click',()=>load());
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)load({silent:true});});
+  load();
+  setInterval(()=>{if(!document.hidden)load({silent:true});},AUTO_REFRESH_MS);
 })();
