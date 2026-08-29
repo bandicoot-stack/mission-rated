@@ -34,6 +34,7 @@ const titles={
 function pathFor(file){return file==='index.html'?'':`/${file.replace(/\.html$/,'')}`}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 for(const file of files){
+  if (file === 'mission-control.html') continue;
   const p=`dist/${file}`;
   let html=await readFile(p,'utf8');
   const canonical=`${SITE}${pathFor(file)}`;
@@ -52,4 +53,4 @@ for(const file of files){
   html=html.replace('</head>',`${meta}</head>`);
   await writeFile(p,html);
 }
-console.log(`AI discovery metadata added to ${files.length} HTML pages`);
+console.log(`AI discovery metadata added to ${files.filter(file=>file!=='mission-control.html').length} HTML pages`);
