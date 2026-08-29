@@ -11,20 +11,17 @@ The signup experience collects an email address and communicates that subscriber
 ## Current backend contract
 
 - The signup endpoint is public and unauthenticated by design.
-- Requests are subject to origin checks, email validation, and honeypot protection.
+- Requests are subject to origin checks, email validation, honeypot protection, and rate limiting.
+- New valid signups can become active.
+- Duplicate submissions for already-active subscribers are idempotent.
+- Explicitly unsubscribed/inactive subscribers are not silently reactivated by the public signup flow.
+- Re-subscription requires a deliberate flow rather than an implicit public-signup upsert.
+- Historical consent and unsubscribe state must be preserved appropriately.
 - Service-role credentials remain server-side.
 - Responses should not be cached.
 
-## Known gap
+## Trust and consent semantics
 
-The current signup behavior may reactivate an explicitly unsubscribed/inactive address because a signup upsert writes the row back to active state and refreshes consent timing. This violates the desired consent-safety contract and is tracked in GitHub issue #28.
+A successful public signup response means the backend accepted an active subscription. Mission Rated must not report a subscriber as active when the backend rejected or withheld activation.
 
-Until that issue is resolved, a public signup request must not be treated as a safe explicit re-subscribe flow.
-
-## Required target semantics
-
-- New valid signups can become active.
-- Duplicate submissions for already-active subscribers are idempotent.
-- Explicitly unsubscribed/inactive subscribers are not silently reactivated.
-- Re-subscription requires a deliberate, separately defined confirmation flow.
-- Historical consent and unsubscribe timestamps are preserved appropriately.
+The consent-safety defect previously tracked in GitHub issue #28 is resolved. This spec records the shipped contract so future growth work does not regress unsubscribe semantics while optimizing Weekend Brief conversion.
