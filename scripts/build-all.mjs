@@ -34,6 +34,7 @@ for (const file of ['business.html','school.html','installation.html']) {
 }
 for (const file of (await readdir('dist')).filter(file=>file.endsWith('.html'))) {
   const path=`dist/${file}`;let html=await readFile(path,'utf8');
+  if(!html.includes('/analytics.js'))html=html.replace('</body>','<script src="/analytics.js" defer></script>\n</body>');
   if(!html.includes('/brand.js'))html=html.replace('</body>','<script src="/brand.js" defer></script>\n</body>');
   if(!html.includes('/growth-loop.js'))html=html.replace('</body>','<script src="/growth-loop.js" defer></script>\n</body>');
   await writeFile(path,html);
