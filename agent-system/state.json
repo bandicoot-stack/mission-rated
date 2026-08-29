@@ -1,16 +1,17 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T03:16:15Z",
-  "current_focus": "Operate Mission Rated from a functional founder command center with accurate agent state, live business metrics, and bounded specialist execution.",
-  "active_change": "feature/mission-control-dashboard / PR #122",
-  "operator_next_action": "Reconcile PR #122 with current main, restore mergeability, run independent QA, then ship the command center through the established release path.",
+  "updated_at": "2026-08-29T03:23:30Z",
+  "current_focus": "Operate Mission Rated from the production founder command center and add authenticated operational controls while keeping private connector data behind native system boundaries.",
+  "active_change": "Mission Rated Command Center shipped via PR #138",
+  "operator_next_action": "Use the production command center as the durable operating view; prioritize authenticated partner-pipeline, outreach/reply, deployment-error, and agent-action controls without weakening approval gates.",
   "recent_settled_decisions": [
     "Use Operator-as-manager with bounded specialists rather than a loose autonomous swarm.",
     "Repository-native checkpoints and queues are durable memory; chat transcripts are not.",
     "Private connector data stays in its native system of record.",
     "External side effects keep explicit approval gates regardless of model/runtime.",
-    "The founder command center should display authoritative aggregates without exposing private connector data or credentials.",
-    "Agent status must be maintained in the durable queue whenever active Mission Rated work materially changes."
+    "The founder command center displays authoritative aggregates without exposing private connector data or credentials.",
+    "Agent status must be maintained in the durable queue whenever active Mission Rated work materially changes.",
+    "The founder command center is an operational noindex surface and is excluded from consumer brand/growth injection and AI discovery processing."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
