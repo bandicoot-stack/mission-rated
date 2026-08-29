@@ -138,7 +138,9 @@ document.addEventListener('click',e=>{
   // A generic merchant/deal CTA is evidence of outbound intent only. It must
   // never be interpreted as a claim, confirmed redemption, or documented savings.
   if(el.classList?.contains('mrDealAction')||el.dataset?.dealAction==='get-deal')return send('deal_outbound_click',{...ctx,deal_source:clean(el.dataset?.dealSource)||clean(el.closest?.('[data-deal-source]')?.dataset?.dealSource)||'unknown'});
-  if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return;
+  // Clicking a share control proves share intent only; it does not prove that
+  // the OS share sheet, clipboard, or downstream delivery actually succeeded.
+  if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return send('share_action',{...ctx,share_method:clean(el.dataset?.shareMethod)||'unknown'});
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
   if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
