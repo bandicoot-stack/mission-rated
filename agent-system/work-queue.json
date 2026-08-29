@@ -1,28 +1,61 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T21:39:00Z",
+  "updated_at": "2026-08-29T03:16:15Z",
   "items": [
     {
-      "id": "MR-ACP-001",
-      "title": "Ship persistent agent control plane",
+      "id": "MR-CMD-001",
+      "title": "Ship functional Mission Rated command center",
       "status": "in_progress",
       "owner_role": "operator",
-      "created_at": "2026-08-26T21:31:20Z",
-      "updated_at": "2026-08-26T21:39:00Z",
-      "next_action": "Finish control-plane files, run QA, open PR, merge after checks.",
-      "evidence": ["specs/changes/persistent-agent-control-plane/proposal.md","specs/changes/persistent-agent-control-plane/design.md"],
+      "created_at": "2026-08-27T03:56:34Z",
+      "updated_at": "2026-08-29T03:16:15Z",
+      "next_action": "Reconcile PR #122 with current main, restore mergeability, coordinate QA, and ship through the established release path.",
+      "evidence": ["mission-control.html","mission-control.js","specs/changes/mission-control-dashboard/"],
+      "approval_gate": null
+    },
+    {
+      "id": "MR-CMD-002",
+      "title": "Maintain live command center metrics",
+      "status": "in_progress",
+      "owner_role": "builder",
+      "created_at": "2026-08-28T04:39:00Z",
+      "updated_at": "2026-08-29T03:16:15Z",
+      "next_action": "Keep the dashboard on live aggregate Supabase metrics with safe fallback behavior and add authenticated operational controls without exposing private data.",
+      "evidence": ["mission-control.js","mission-control-metrics.json","Supabase edge function: mission-control-metrics"],
+      "approval_gate": null
+    },
+    {
+      "id": "MR-CMD-003",
+      "title": "Verify command center release readiness",
+      "status": "review",
+      "owner_role": "qa",
+      "created_at": "2026-08-29T03:09:00Z",
+      "updated_at": "2026-08-29T03:16:15Z",
+      "next_action": "Verify PR #122 against current main, confirm noindex/privacy boundaries, live-metrics behavior, mobile rendering, and release checks before merge.",
+      "evidence": ["PR #122","Vercel preview deployment","scripts/qa-agent-system.mjs"],
       "approval_gate": null
     },
     {
       "id": "MR-PARTNER-001",
-      "title": "Monitor Mission Rated outreach replies",
+      "title": "Monitor Mission Rated outreach replies and partner pipeline",
       "status": "ongoing",
       "owner_role": "partner",
       "created_at": "2026-08-26T21:28:35Z",
-      "updated_at": "2026-08-26T21:39:00Z",
-      "next_action": "Check native Gmail state when the routine runs; surface actionable replies and draft responses.",
-      "evidence": ["agent-system/skills/partner-outreach.md"],
+      "updated_at": "2026-08-29T03:16:15Z",
+      "next_action": "Check native Gmail state and outreach pipeline; surface actionable replies, follow-ups, and draft responses without sending when founder review is required.",
+      "evidence": ["agent-system/skills/partner-outreach.md","outreach_prospects","outreach_activities"],
       "approval_gate": "send-outreach-when-founder-requested-review"
+    },
+    {
+      "id": "MR-ACP-001",
+      "title": "Establish persistent agent control plane",
+      "status": "done",
+      "owner_role": "operator",
+      "created_at": "2026-08-26T21:31:20Z",
+      "updated_at": "2026-08-29T03:16:15Z",
+      "next_action": "Maintain the control plane as the durable source of truth while active work moves through the command center.",
+      "evidence": ["AGENTS.md","agent-system/registry.json","agent-system/state.json","agent-system/work-queue.json"],
+      "approval_gate": null
     }
   ]
 }
