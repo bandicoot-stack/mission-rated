@@ -27,7 +27,7 @@ for(const id of ['operator','scout','partner','product','builder','qa']) if(!rol
 if(!Array.isArray(registry?.approval_gates)||!registry.approval_gates.length) errors.push('registry missing approval gates');
 if(!state?.updated_at||Number.isNaN(Date.parse(state.updated_at))) errors.push('state.updated_at must be ISO-like timestamp');
 if(!state?.current_focus||!state?.operator_next_action) errors.push('state missing current focus or next action');
-const statuses=new Set(['not_started','in_progress','blocked','review','done','ongoing']);
+const statuses=new Set(['not_started','in_progress','blocked','review','done','ongoing','superseded']);
 const ids=new Set();
 for(const item of queue?.items||[]){
   if(!item.id||ids.has(item.id)) errors.push(`queue invalid/duplicate id ${item.id||'(missing)'}`); else ids.add(item.id);
