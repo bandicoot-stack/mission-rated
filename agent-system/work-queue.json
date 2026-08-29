@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T03:23:30Z",
+  "updated_at": "2026-08-29T03:40:00Z",
   "items": [
     {
       "id": "MR-CMD-001",
@@ -19,9 +19,42 @@
       "status": "in_progress",
       "owner_role": "builder",
       "created_at": "2026-08-28T04:39:00Z",
-      "updated_at": "2026-08-29T03:23:30Z",
-      "next_action": "Add authenticated partner-pipeline, outreach/reply, deployment-error, and agent-action controls while preserving safe aggregate metrics and approval gates.",
-      "evidence": ["mission-control.js","mission-control-metrics.json","Supabase edge function: mission-control-metrics"],
+      "updated_at": "2026-08-29T03:40:00Z",
+      "next_action": "Build authenticated partner-pipeline, outreach/reply, deployment-error, reconciliation, and agent-action controls from current main while preserving safe aggregates and approval gates.",
+      "evidence": ["mission-control.js","mission-control-metrics.json","Supabase edge function: mission-control-metrics","PR #139 release discipline"],
+      "approval_gate": null
+    },
+    {
+      "id": "MR-PARTNER-001",
+      "title": "Monitor Mission Rated outreach replies and partner pipeline",
+      "status": "ongoing",
+      "owner_role": "partner",
+      "created_at": "2026-08-26T21:28:35Z",
+      "updated_at": "2026-08-29T03:40:00Z",
+      "next_action": "Work the current native Gmail/outreach pipeline, prioritizing Norfolk Botanical Garden and Yorktown Tools follow-up while preserving founder-review send gates.",
+      "evidence": ["outreach_prospects: 104 total / 85 ready / 14 contacted / 3 partner / 1 interested / 1 follow_up","Gmail actionable threads: Norfolk Botanical Garden, Yorktown Tools"],
+      "approval_gate": "send-outreach-when-founder-requested-review"
+    },
+    {
+      "id": "MR-OPS-001",
+      "title": "Maintain stale-state reconciliation discipline",
+      "status": "ongoing",
+      "owner_role": "operator",
+      "created_at": "2026-08-29T03:24:45Z",
+      "updated_at": "2026-08-29T03:40:00Z",
+      "next_action": "Reconcile GitHub, release-audit, Vercel, Supabase, Gmail, and automations before material work; close or rebase stale artifacts instead of carrying drift forward.",
+      "evidence": ["0 open PRs after reconciliation","16 stale PRs closed","PR #135 merged","181 CI failure emails archived/labeled","74 Vercel status emails archived/labeled"],
+      "approval_gate": null
+    },
+    {
+      "id": "MR-REL-001",
+      "title": "Track every verified production release in GitHub",
+      "status": "ongoing",
+      "owner_role": "qa",
+      "created_at": "2026-08-29T03:35:17Z",
+      "updated_at": "2026-08-29T03:40:00Z",
+      "next_action": "Require a SHA-specific release-audit report after every successful production verification and verify its existence before declaring a release complete.",
+      "evidence": ["PR #139","release-audit branch","reports/2026-08-29/bba98a4cec925dc7442b97d58bf85acf73c9005f.md","production workflow run 33231899554"],
       "approval_gate": null
     },
     {
@@ -34,17 +67,6 @@
       "next_action": "Continue independent verification as new operational controls are added.",
       "evidence": ["PR #138 static QA","PR #138 integration QA","Vercel production deployment dpl_4aCdRP9gbtHneNxuboCqiftMr5h5","production route HTTP 200"],
       "approval_gate": null
-    },
-    {
-      "id": "MR-PARTNER-001",
-      "title": "Monitor Mission Rated outreach replies and partner pipeline",
-      "status": "ongoing",
-      "owner_role": "partner",
-      "created_at": "2026-08-26T21:28:35Z",
-      "updated_at": "2026-08-29T03:23:30Z",
-      "next_action": "Check native Gmail state and outreach pipeline; surface actionable replies, follow-ups, and draft responses without sending when founder review is required.",
-      "evidence": ["agent-system/skills/partner-outreach.md","outreach_prospects","outreach_activities"],
-      "approval_gate": "send-outreach-when-founder-requested-review"
     },
     {
       "id": "MR-ACP-001",
