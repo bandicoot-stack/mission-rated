@@ -1,51 +1,34 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T03:40:00Z",
-  "current_focus": "Run Mission Rated from reconciled production truth with zero stale open PRs, audited production releases, live Supabase metrics, actionable partner follow-up, and reduced CI notification noise.",
-  "active_change": "Release-discipline controls shipped via PR #139; production SHA bba98a4cec925dc7442b97d58bf85acf73c9005f verified and recorded on release-audit.",
-  "operator_next_action": "Keep native-system reconciliation current before new work; build authenticated Command Center controls from current main, resolve partner follow-ups, and treat new CI failures as defects to fix rather than status noise.",
+  "updated_at": "2026-08-29T04:24:00Z",
+  "current_focus": "Run Mission Rated from reconciled production truth with audited releases, live Supabase data, defensible Growth measurement, and no unauthenticated operational surfaces.",
+  "active_change": "Security withdrawal shipped via PR #140; production SHA cffd651d685ee9ef1124b809674e4e42d211c235 verified and recorded on release-audit. Public mission-control and durable agent-state routes are withdrawn pending an authenticated server-side gate.",
+  "operator_next_action": "Keep native-system reconciliation current before new work; do not restore the founder Command Center or durable agent JSON to public production without authenticated server-side authorization; continue Growth QA against current production truth.",
   "reconciliation": {
-    "observed_at": "2026-08-29T03:40:00Z",
+    "observed_at": "2026-08-29T04:24:00Z",
     "github": {
       "open_pull_requests": 0,
-      "stale_pull_requests_closed": [74,90,93,99,117,120,121,123,125,126,127,129,130,133,134,136],
+      "latest_main_sha": "cffd651d685ee9ef1124b809674e4e42d211c235",
+      "security_withdrawal_pr": 140,
       "merged_guard_pr": 135,
       "release_discipline_pr": 139,
-      "latest_verified_production_sha": "bba98a4cec925dc7442b97d58bf85acf73c9005f",
+      "latest_verified_production_sha": "cffd651d685ee9ef1124b809674e4e42d211c235",
       "release_audit_branch": "release-audit",
-      "latest_release_report": "reports/2026-08-29/bba98a4cec925dc7442b97d58bf85acf73c9005f.md"
+      "latest_release_report": "reports/2026-08-29/cffd651d685ee9ef1124b809674e4e42d211c235.md"
     },
     "vercel": {
       "production_state": "READY",
-      "latest_verified_sha": "bba98a4cec925dc7442b97d58bf85acf73c9005f",
-      "runtime_errors_last_24h_at_reconciliation": 0
+      "latest_verified_sha": "cffd651d685ee9ef1124b809674e4e42d211c235",
+      "runtime_errors_last_24h_at_reconciliation": 0,
+      "public_mission_control_status": 404,
+      "public_agent_state_status": 404
     },
     "supabase": {
-      "project_status": "ACTIVE_HEALTHY",
-      "mission_control_metrics_function": "ACTIVE",
-      "unique_visitors_7d": 11,
-      "sessions_7d": 21,
-      "page_views_7d": 23,
-      "page_views_30d": 263,
-      "active_subscribers": 1,
+      "query_health": "RESPONDING",
       "active_businesses": 85,
       "active_deals": 62,
-      "outreach_prospects_total": 104,
-      "outreach_ready": 85,
-      "outreach_contacted": 14,
-      "outreach_partners": 3,
-      "outreach_interested": 1,
-      "outreach_follow_up": 1,
       "verified_savings_records": 0,
-      "documented_savings_cents": 0,
-      "confirmed_redemptions": 0
-    },
-    "gmail": {
-      "connected": true,
-      "ci_failure_messages_archived_and_labeled": 181,
-      "vercel_status_messages_archived_and_labeled": 74,
-      "partner_messages_preserved": true,
-      "known_actionable_threads": ["Norfolk Botanical Garden", "Yorktown Tools"]
+      "documented_savings_cents": 0
     }
   },
   "recent_settled_decisions": [
@@ -53,17 +36,17 @@
     "Repository-native checkpoints and queues are durable memory; chat transcripts are not.",
     "Private connector data stays in its native system of record.",
     "External side effects keep explicit approval gates regardless of model/runtime.",
-    "The founder command center displays authoritative aggregates without exposing private connector data or credentials.",
     "Agent status must be maintained in the durable queue whenever active Mission Rated work materially changes.",
-    "The founder command center is an operational noindex surface and is excluded from consumer brand/growth injection and AI discovery processing.",
     "Stale operational state is a defect and must be reconciled before material work.",
-    "Every successful production verification writes an immutable SHA-specific report to the release-audit branch for future agent review."
+    "Every successful production verification writes an immutable SHA-specific report to the release-audit branch for future agent review.",
+    "The founder Command Center and durable agent JSON must not be publicly served without an authenticated server-side gate.",
+    "READY is deployment state only; release health requires release-audit evidence and relevant production behavior checks."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
     "release-audit latest production report",
     "Vercel production and preview deployment status",
-    "Supabase live business-metrics endpoint status",
+    "Supabase live data health",
     "Gmail outreach/reply state",
     "scheduled automation state"
   ]
