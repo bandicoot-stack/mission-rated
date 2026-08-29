@@ -1,28 +1,28 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T03:40:00Z",
+  "updated_at": "2026-08-29T04:24:00Z",
   "items": [
     {
       "id": "MR-CMD-001",
       "title": "Ship functional Mission Rated command center",
-      "status": "done",
+      "status": "superseded",
       "owner_role": "operator",
       "created_at": "2026-08-27T03:56:34Z",
-      "updated_at": "2026-08-29T03:23:30Z",
-      "next_action": "Maintain the production command center as the authoritative founder operating view.",
-      "evidence": ["PR #138","production deployment 4783c238","https://www.missionratedhq.com/mission-control.html"],
-      "approval_gate": null
+      "updated_at": "2026-08-29T04:24:00Z",
+      "next_action": "Do not restore the prior public command center. Preserve its useful operating concepts only behind an authenticated server-side gate.",
+      "evidence": ["PR #138 originally shipped the surface","PR #140 withdrew unauthenticated command center artifacts","production /mission-control.html returns 404"],
+      "approval_gate": "authenticated-server-side-gate-required"
     },
     {
       "id": "MR-CMD-002",
       "title": "Add authenticated command center operating controls",
-      "status": "in_progress",
+      "status": "blocked",
       "owner_role": "builder",
       "created_at": "2026-08-28T04:39:00Z",
-      "updated_at": "2026-08-29T03:40:00Z",
-      "next_action": "Build authenticated partner-pipeline, outreach/reply, deployment-error, reconciliation, and agent-action controls from current main while preserving safe aggregates and approval gates.",
-      "evidence": ["mission-control.js","mission-control-metrics.json","Supabase edge function: mission-control-metrics","PR #139 release discipline"],
-      "approval_gate": null
+      "updated_at": "2026-08-29T04:24:00Z",
+      "next_action": "Design and implement authenticated server-side authorization before restoring any founder Command Center, partner pipeline control, durable agent state, deployment-error control, or agent-action control to production.",
+      "evidence": ["PR #140 security withdrawal","production mission-control route 404","production agent-system/state.json route 404"],
+      "approval_gate": "authenticated-server-side-gate-required"
     },
     {
       "id": "MR-PARTNER-001",
@@ -31,8 +31,8 @@
       "owner_role": "partner",
       "created_at": "2026-08-26T21:28:35Z",
       "updated_at": "2026-08-29T03:40:00Z",
-      "next_action": "Work the current native Gmail/outreach pipeline, prioritizing Norfolk Botanical Garden and Yorktown Tools follow-up while preserving founder-review send gates.",
-      "evidence": ["outreach_prospects: 104 total / 85 ready / 14 contacted / 3 partner / 1 interested / 1 follow_up","Gmail actionable threads: Norfolk Botanical Garden, Yorktown Tools"],
+      "next_action": "Work the current native Gmail/outreach pipeline while preserving founder-review send gates.",
+      "evidence": ["Native Gmail/outreach state remains the system of record"],
       "approval_gate": "send-outreach-when-founder-requested-review"
     },
     {
@@ -41,9 +41,9 @@
       "status": "ongoing",
       "owner_role": "operator",
       "created_at": "2026-08-29T03:24:45Z",
-      "updated_at": "2026-08-29T03:40:00Z",
-      "next_action": "Reconcile GitHub, release-audit, Vercel, Supabase, Gmail, and automations before material work; close or rebase stale artifacts instead of carrying drift forward.",
-      "evidence": ["0 open PRs after reconciliation","16 stale PRs closed","PR #135 merged","181 CI failure emails archived/labeled","74 Vercel status emails archived/labeled"],
+      "updated_at": "2026-08-29T04:24:00Z",
+      "next_action": "Reconcile GitHub main/open PRs, release-audit, Vercel production/preview, Supabase, and durable state before material work; correct stale artifacts immediately.",
+      "evidence": ["0 open PRs at reconciliation","latest verified production SHA cffd651d685ee9ef1124b809674e4e42d211c235","release-audit report exists for cffd651d...","durable state corrected after PR #140"],
       "approval_gate": null
     },
     {
@@ -52,21 +52,21 @@
       "status": "ongoing",
       "owner_role": "qa",
       "created_at": "2026-08-29T03:35:17Z",
-      "updated_at": "2026-08-29T03:40:00Z",
-      "next_action": "Require a SHA-specific release-audit report after every successful production verification and verify its existence before declaring a release complete.",
-      "evidence": ["PR #139","release-audit branch","reports/2026-08-29/bba98a4cec925dc7442b97d58bf85acf73c9005f.md","production workflow run 33231899554"],
+      "updated_at": "2026-08-29T04:24:00Z",
+      "next_action": "Require a SHA-specific release-audit report after every successful production verification and verify relevant production behavior before declaring a release healthy.",
+      "evidence": ["PR #139","release-audit branch","reports/2026-08-29/cffd651d685ee9ef1124b809674e4e42d211c235.md"],
       "approval_gate": null
     },
     {
       "id": "MR-CMD-003",
       "title": "Verify command center release readiness",
-      "status": "done",
+      "status": "superseded",
       "owner_role": "qa",
       "created_at": "2026-08-29T03:09:00Z",
-      "updated_at": "2026-08-29T03:23:30Z",
-      "next_action": "Continue independent verification as new operational controls are added.",
-      "evidence": ["PR #138 static QA","PR #138 integration QA","Vercel production deployment dpl_4aCdRP9gbtHneNxuboCqiftMr5h5","production route HTTP 200"],
-      "approval_gate": null
+      "updated_at": "2026-08-29T04:24:00Z",
+      "next_action": "Treat authorization as the prerequisite. Any future Command Center release must prove unauthenticated users cannot access founder data or durable agent state.",
+      "evidence": ["PR #140","production command center and agent state return 404"],
+      "approval_gate": "authenticated-server-side-gate-required"
     },
     {
       "id": "MR-ACP-001",
@@ -74,9 +74,9 @@
       "status": "done",
       "owner_role": "operator",
       "created_at": "2026-08-26T21:31:20Z",
-      "updated_at": "2026-08-29T03:16:15Z",
-      "next_action": "Maintain the control plane as the durable source of truth while active work moves through the command center.",
-      "evidence": ["AGENTS.md","agent-system/registry.json","agent-system/state.json","agent-system/work-queue.json"],
+      "updated_at": "2026-08-29T04:24:00Z",
+      "next_action": "Maintain repository-native control-plane files as durable source of truth; do not publish them as public web assets.",
+      "evidence": ["AGENTS.md","agent-system/registry.json","agent-system/state.json","agent-system/work-queue.json","PR #140"],
       "approval_gate": null
     }
   ]
