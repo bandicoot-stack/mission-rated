@@ -1,21 +1,21 @@
 {
   "version": 1,
-  "updated_at": "2026-08-30T03:56:56Z",
+  "updated_at": "2026-08-30T09:56:13Z",
   "current_focus": "Run the Growth MVP from reconciled production truth with audited releases, defensible Growth measurement, and authenticated operational surfaces.",
-  "active_change": "Production is READY on audited main SHA 0210d3f726f0e7515810d38572a5949c91ab28f1 with the Weekend Brief signup surfaced above homepage tab content. PR #145 adds regression coverage for that placement; PR #146 is separate security regression work and must not be conflated with Growth scope. Supabase mission-control-metrics is ACTIVE with verify_jwt=true (version 4) and product-event is ACTIVE with verify_jwt=true (version 7). Growth event persistence remains unresolved: production /api/event is log-only, so Supabase product_events must not be treated as current scorecard truth until issue #141 is resolved. P0 authorization issue #142 remains open; JWT verification alone is not evidence of founder/operator authorization.",
-  "operator_next_action": "Keep P0 issues #141 and #142 explicit: resolve Growth measurement #141 without weakening authorization, and do not treat mission-control-metrics as founder-authorized until #142 acceptance criteria are satisfied. Existing PR #145 may proceed only through normal green QA/preview gates; do not duplicate it.",
+  "active_change": "Production is READY on audited main SHA e4fe61fcbb3efb46e306d68236915708c5c1e213 after PR #149 safely rolled back the unconfigured durable /api/event write path. Production /api/event is log-only again, so Supabase product_events remains non-authoritative for current Growth scorecard truth and issue #141 stays open. The failed persistence attempt established a concrete blocker: Vercel production does not currently have a usable server-only Supabase persistence credential. Do not retry durable writes by weakening RLS, exposing a publishable/browser credential as privileged, or hardcoding secrets. PR #146 is separate security regression work and must not be conflated with Growth scope. Supabase is ACTIVE_HEALTHY; mission-control-metrics remains fail-closed pending founder/operator authorization and product-event remains JWT-gated.",
+  "operator_next_action": "Keep issue #141 explicit and blocked on an approved server-only Vercel-to-Supabase credential path; until that exists and production verification proves durable writes, treat Vercel logs as ingestion evidence only and never present Supabase product_events as fresh scorecard truth. Do not duplicate PR #146 or mix its separate security provenance work into Growth changes.",
   "reconciliation": {
-    "observed_at": "2026-08-30T03:56:56Z",
+    "observed_at": "2026-08-30T09:56:13Z",
     "github": {
-      "open_pull_requests": 2,
-      "latest_main_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1",
+      "open_pull_requests": 1,
+      "latest_main_sha": "e4fe61fcbb3efb46e306d68236915708c5c1e213",
       "release_audit_branch": "release-audit",
-      "latest_verified_production_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1",
-      "latest_release_report": "reports/2026-08-30/0210d3f726f0e7515810d38572a5949c91ab28f1.md"
+      "latest_verified_production_sha": "e4fe61fcbb3efb46e306d68236915708c5c1e213",
+      "latest_release_report": "reports/2026-08-30/e4fe61fcbb3efb46e306d68236915708c5c1e213.md"
     },
     "vercel": {
       "production_state": "READY",
-      "latest_verified_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1"
+      "latest_verified_sha": "e4fe61fcbb3efb46e306d68236915708c5c1e213"
     },
     "supabase": {
       "project_status": "ACTIVE_HEALTHY",
@@ -24,6 +24,7 @@
       "product_event_verify_jwt": true,
       "product_event_version": 7,
       "growth_event_store_freshness": "NOT_AUTHORITATIVE_PENDING_ISSUE_141",
+      "growth_event_persistence_blocker": "VERCEL_SERVER_ONLY_SUPABASE_CREDENTIAL_NOT_CONFIGURED",
       "founder_operator_authorization": "NOT_PROVEN_PENDING_ISSUE_142"
     }
   },
@@ -38,7 +39,8 @@
     "The founder Command Center and durable agent JSON must not be publicly served without an authenticated server-side gate.",
     "READY is deployment state only; release health requires release-audit evidence and relevant production behavior checks.",
     "Growth scorecard data must identify an authoritative durable source and freshness; log-only browser ingestion must not be represented as current Supabase measurement truth.",
-    "Browser-origin checks are not authentication for privileged Supabase operational or Growth write surfaces."
+    "Browser-origin checks are not authentication for privileged Supabase operational or Growth write surfaces.",
+    "A durable Growth event write path must fail closed when its server-only persistence credential is unavailable; never weaken RLS or expose privileged credentials to make measurement appear healthy."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
