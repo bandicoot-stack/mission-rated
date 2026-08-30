@@ -19,7 +19,7 @@
   shell.innerHTML=`<div class="mrBriefCard"><div class="mrBriefEyebrow">YOUR WEEKEND BRIEF</div><h2>Be part of our story.</h2><p>Sign up and we’ll bring your Weekend Brief right to you — useful military-family finds, local deals, events, and what’s worth knowing around Hampton Roads.</p><form class="mrBriefForm" id="mrBriefForm" data-weekend-brief="true"><input id="mrBriefEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@email.com" aria-label="Email address" required><input class="mrBriefTrap" name="company" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Bring me the Brief</button></form><p class="mrBriefFine">No spam. Just the useful stuff. Unsubscribe anytime.</p><div class="mrBriefStatus" id="mrBriefStatus" role="status" aria-live="polite"></div><div class="mrBriefNext" id="mrBriefNext"><a class="mrBriefAction" href="/family-pass.html?utm_source=weekend_brief&utm_medium=signup&utm_campaign=military_family_pass">Open your free Family Pass</a><button class="mrBriefAction secondary" id="mrBriefShare" type="button">Share Mission Rated</button></div></div>`;
 
   const main=document.querySelector('main');
-  if (main) main.insertAdjacentElement('afterend',shell); else document.body.appendChild(shell);
+  if (main) main.insertAdjacentElement('beforebegin',shell); else document.body.appendChild(shell);
 
   const form=document.getElementById('mrBriefForm');
   form.dataset.signupSurface=signupSurface;
