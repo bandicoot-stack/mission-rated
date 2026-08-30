@@ -1,21 +1,21 @@
 {
   "version": 1,
-  "updated_at": "2026-08-30T09:56:13Z",
+  "updated_at": "2026-08-30T13:52:21Z",
   "current_focus": "Run the Growth MVP from reconciled production truth with audited releases, defensible Growth measurement, and authenticated operational surfaces.",
-  "active_change": "Production is READY on audited main SHA e4fe61fcbb3efb46e306d68236915708c5c1e213 after PR #149 safely rolled back the unconfigured durable /api/event write path. Production /api/event is log-only again, so Supabase product_events remains non-authoritative for current Growth scorecard truth and issue #141 stays open. The failed persistence attempt established a concrete blocker: Vercel production does not currently have a usable server-only Supabase persistence credential. Do not retry durable writes by weakening RLS, exposing a publishable/browser credential as privileged, or hardcoding secrets. PR #146 is separate security regression work and must not be conflated with Growth scope. Supabase is ACTIVE_HEALTHY; mission-control-metrics remains fail-closed pending founder/operator authorization and product-event remains JWT-gated.",
-  "operator_next_action": "Keep issue #141 explicit and blocked on an approved server-only Vercel-to-Supabase credential path; until that exists and production verification proves durable writes, treat Vercel logs as ingestion evidence only and never present Supabase product_events as fresh scorecard truth. Do not duplicate PR #146 or mix its separate security provenance work into Growth changes.",
+  "active_change": "Production is READY and release-audited on main SHA c57ebbeccb6598acfea7631afc7a647a70d5b4bd after PR #151 removed unsupported Family Pass custom event calls and aligned acquisition QA with the supported referral/share flow. Production /api/event remains log-only, so Supabase product_events is still non-authoritative for current Growth scorecard truth and issue #141 remains blocked on an approved server-only Vercel-to-Supabase persistence credential. Do not retry durable writes by weakening RLS, exposing a publishable/browser credential as privileged, or hardcoding secrets. PR #146 remains separate security regression/provenance work and must not be conflated with Growth scope. Supabase is ACTIVE_HEALTHY.",
+  "operator_next_action": "Keep issue #141 explicit and blocked on an approved server-only Vercel-to-Supabase credential path; until that exists and production verification proves durable writes, treat Vercel logs as ingestion evidence only and never present Supabase product_events as fresh scorecard truth. Preserve the now-supported Family Pass referral/share semantics from PR #151 and do not reintroduce unsupported custom measurement events. Do not duplicate PR #146 or mix its separate security provenance work into Growth changes.",
   "reconciliation": {
-    "observed_at": "2026-08-30T09:56:13Z",
+    "observed_at": "2026-08-30T13:52:21Z",
     "github": {
       "open_pull_requests": 1,
-      "latest_main_sha": "e4fe61fcbb3efb46e306d68236915708c5c1e213",
+      "latest_main_sha": "c57ebbeccb6598acfea7631afc7a647a70d5b4bd",
       "release_audit_branch": "release-audit",
-      "latest_verified_production_sha": "e4fe61fcbb3efb46e306d68236915708c5c1e213",
-      "latest_release_report": "reports/2026-08-30/e4fe61fcbb3efb46e306d68236915708c5c1e213.md"
+      "latest_verified_production_sha": "c57ebbeccb6598acfea7631afc7a647a70d5b4bd",
+      "latest_release_report": "reports/2026-08-30/c57ebbeccb6598acfea7631afc7a647a70d5b4bd.md"
     },
     "vercel": {
       "production_state": "READY",
-      "latest_verified_sha": "e4fe61fcbb3efb46e306d68236915708c5c1e213"
+      "latest_verified_sha": "c57ebbeccb6598acfea7631afc7a647a70d5b4bd"
     },
     "supabase": {
       "project_status": "ACTIVE_HEALTHY",
@@ -40,7 +40,8 @@
     "READY is deployment state only; release health requires release-audit evidence and relevant production behavior checks.",
     "Growth scorecard data must identify an authoritative durable source and freshness; log-only browser ingestion must not be represented as current Supabase measurement truth.",
     "Browser-origin checks are not authentication for privileged Supabase operational or Growth write surfaces.",
-    "A durable Growth event write path must fail closed when its server-only persistence credential is unavailable; never weaken RLS or expose privileged credentials to make measurement appear healthy."
+    "A durable Growth event write path must fail closed when its server-only persistence credential is unavailable; never weaken RLS or expose privileged credentials to make measurement appear healthy.",
+    "Family Pass acquisition measurement must use supported referral/share semantics; unsupported custom events must not be reintroduced as if they were authoritative signals."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
