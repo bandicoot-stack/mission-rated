@@ -5,7 +5,10 @@ const ALLOWED_EVENTS = new Set([
   'directions_click','review_action','feedback_action','offer_source_click','official_website_click','internal_navigation'
 ]);
 
-export default function handler(req, res) {
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://vquwdypidgjmxnhhdbol.supabase.co';
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false });
@@ -46,9 +49,53 @@ export default function handler(req, res) {
     ts: new Date().toISOString()
   };
 
-  console.log(JSON.stringify(payload));
   res.setHeader('Cache-Control', 'no-store');
-  return res.status(204).end();
+  if (!SERVICE_KEY) return res.status(503).json({ ok: false, error: 'growth_event_store_not_configured' });
+
+  const row = {
+    event_name: payload.event,
+    path: payload.path || '/',
+    target_type: payload.target_type || null,
+    target_id: payload.target_id || null,
+    session_id: payload.session_id || null,
+    visitor_id: payload.visitor_id || null,
+    referrer_host: payload.referrer_host || null,
+    utm_source: payload.utm_source || null,
+    utm_medium: payload.utm_medium || null,
+    utm_campaign: payload.utm_campaign || null,
+    destination: payload.destination || null,
+    event_metadata: {
+      item: payload.item || null,
+      deal_source: payload.deal_source || null,
+      share_method: payload.share_method || null,
+      signup_surface: payload.signup_surface || null,
+      referral_code: payload.referral_code || null,
+      days_since_last: payload.days_since_last
+    }
+  };
+
+  try {
+    const url = new URL('/rest/v1/product_events', SUPABASE_URL);
+    const stored = await fetch(url, {
+      method: 'POST',
+      headers: {
+        apikey: SERVICE_KEY,
+        authorization: `Bearer ${SERVICE_KEY}`,
+        'content-type': 'application/json',
+        prefer: 'return=minimal'
+      },
+      body: JSON.stringify(row)
+    });
+    if (!stored.ok) {
+      console.error('growth_event_persistence_failed', stored.status);
+      return res.status(503).json({ ok: false, error: 'growth_event_store_unavailable' });
+    }
+    console.log(JSON.stringify(payload));
+    return res.status(204).end();
+  } catch (error) {
+    console.error('growth_event_persistence_failed', error?.name || 'unknown');
+    return res.status(503).json({ ok: false, error: 'growth_event_store_unavailable' });
+  }
 }
 
 function isSameOriginBrowserRequest(req) {
