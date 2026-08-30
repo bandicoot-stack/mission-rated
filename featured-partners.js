@@ -1,77 +1,76 @@
-(()=>{
-  'use strict';
-  const partners=[
+(async function(){
+  const fallbackPartners = [
     {
-      slug:'yorktown-tools',
-      name:'Yorktown Tools',
-      logo:'/assets/partners/yorktown-tools/logo.webp',
-      logoAlt:'Yorktown Tools logo',
-      offer:'10% OFF',
-      offerLabel:'Military Discount',
-      veteranOwned:true,
-      directlyConfirmed:true,
-      description:'Yorktown Tools directly confirmed a 10% military discount with Mission Rated. Featured placement highlights the partnership and benefit; it does not affect ratings or rankings.',
-      featuredDescription:'Yorktown Tools stepped up with a direct 10% military discount for the community. They are a veteran-owned Hampton Roads supplier serving contractors, government agencies, and military installations, with free local job-site delivery.',
-      businessUrl:'https://yorktowntools.com/',
-      profileUrl:'/business.html?id=fa25b2da-995b-4318-9d97-05b185688f62',
-      featuredUrl:'/featured',
-      phone:'(757) 940-5171',
-      location:'Yorktown, Virginia',
-      verification:'Offer confirmed directly by Yorktown Tools on August 23, 2026.',
-      terms:'Military eligibility required. Confirm final eligibility and any exclusions with Yorktown Tools at purchase or quote.'
-    },
-    {
-      slug:'compass-rose-realty-co',
-      name:'Compass Rose Realty Co.',
-      logo:'',
-      logoAlt:'Compass Rose Realty Co. logo',
-      offer:'$100 OFF',
-      offerLabel:'Home inspection',
-      veteranOwned:false,
-      directlyConfirmed:true,
-      description:'Compass Rose Realty Co. stepped up to support servicemembers with a directly confirmed $100 discount on buyer home inspections or seller pre-listing home inspections. Their participation reflects exactly what Mission Rated is built to encourage: local businesses showing up for the military community with meaningful, practical value. Featured placement does not affect ratings or rankings.',
-      featuredDescription:'Compass Rose Realty Co. is showing up for the military community with a directly confirmed Mission Rated offer: $100 off a home inspection for buyers or a pre-listing home inspection for sellers. Kristen Sessions and Compass Rose are helping make an expensive part of buying or selling a home a little easier for servicemembers, and we appreciate their willingness to support the community in a tangible way.',
-      businessUrl:'https://www.compassroserealtyco.com/',
-      profileUrl:'',
-      featuredUrl:'/featured#compass-rose-realty-co',
-      phone:'757-362-9125',
-      location:'Chesapeake, Virginia',
-      verification:'Offer confirmed directly by Kristen Sessions, Principal Broker & Owner of Compass Rose Realty, on August 23, 2026.',
-      terms:'For servicemembers. $100 off home inspections for buyers or pre-listing home inspections for sellers. To redeem, tell Compass Rose Realty Co. you found the offer on Mission Rated.'
-    },
-    {
-      slug:'valhalla-barbell-club',
-      name:'Valhalla Barbell Club',
-      logo:'',
-      logoAlt:'Valhalla Barbell Club logo',
-      offer:'10% OFF',
-      offerLabel:'Military Offer',
-      veteranOwned:true,
-      directlyConfirmed:true,
-      partnerSubheadline:'Veteran-owned. Military-focused. Built around strength and service.',
-      tagline:'More than a gym. A place to train, grow, and face your wolf.',
-      intro:'Valhalla Barbell Club is a veteran-owned private gym in Virginia Beach focused on helping people build themselves mentally, physically, and emotionally.',
-      services:'From small-group personal training to coaching, nutrition guidance, and 24/7 access, Valhalla is built for people who want to train with purpose.',
-      militaryOfferText:'For military members: 10% off month-to-month membership, no sign-up or other fees, and your first month is free.',
-      description:'Valhalla Barbell Club is a veteran-owned private gym in Virginia Beach focused on helping people build themselves mentally, physically, and emotionally.',
-      featuredDescription:'Chris Jordan brings 28 years of military service to Valhalla, where the mission is bigger than fitness: help people build strength, resilience, and confidence.',
-      standard:'Private. PREMIUM. Built for training and putting in the work.',
-      wolfLine:'Face Your Wolf. Whatever the challenge, Valhalla is built to help you meet it head-on.',
-      closingHeading:'Face Your Wolf. Start here.',
-      primaryCtaLabel:'Get Military Offer',
-      secondaryCtaLabel:'Visit Valhalla Barbell Club',
-      businessUrl:'https://www.valhallabarbellclubvb.com/',
-      profileUrl:'',
-      featuredUrl:'/featured#valhalla-barbell-club',
-      contactName:'Chris Jordan, Owner/Operator',
-      phone:'(757) 567-5499',
-      location:'1333 Oceana Blvd, Ste 100, Virginia Beach, VA 23454',
-      verification:'Offer and participation confirmed directly by Chris Jordan, Owner/Operator of Valhalla Barbell Club, on August 25, 2026.',
-      terms:'For military members: 10% off month-to-month membership, no sign-up or other fees, and your first month is free.'
+      slug:'hunt-club-farm',
+      name:'Hunt Club Farm',
+      location:'Virginia Beach, VA',
+      category:'Family Activities',
+      featured:true,
+      directPartner:true,
+      sourceType:'direct-partner-confirmation',
+      logo:null,
+      logoAlt:'Hunt Club Farm',
+      logoPending:true,
+      eligibilityNote:'Eligibility and exclusions pending partner confirmation. Offer terms below are directly confirmed.',
+      offers:[
+        '10% off Petting Farm/TreeWalk admission on Sundays',
+        '10% off Farm Market purchases on Sundays',
+        '$2 off Harvest Fair admission on Sundays in October',
+        '$10 off Halloween Festival military admission'
+      ]
     }
   ];
-  window.MRFeaturedPartners=Object.freeze({
-    all:Object.freeze(partners),
-    get(slug){return partners.find(partner=>partner.slug===slug)||null;}
-  });
+
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function normalizePartner(p){
+    return {
+      slug:p.slug || '',
+      name:p.name || '',
+      location:p.location || '',
+      category:p.category || '',
+      featured:!!p.featured,
+      directPartner:!!p.directPartner,
+      sourceType:p.sourceType || '',
+      logo:p.logo || null,
+      logoAlt:p.logoAlt || p.name || '',
+      logoPending:!!p.logoPending,
+      eligibilityNote:p.eligibilityNote || '',
+      offers:Array.isArray(p.offers) ? p.offers : []
+    };
+  }
+
+  const existing = Array.isArray(window.MISSION_RATED_FEATURED_PARTNERS) ? window.MISSION_RATED_FEATURED_PARTNERS.map(normalizePartner) : [];
+  const bySlug = new Map(existing.map(p => [p.slug, p]));
+  for (const p of fallbackPartners.map(normalizePartner)) if (!bySlug.has(p.slug)) bySlug.set(p.slug,p);
+  const partners = Array.from(bySlug.values());
+  window.MISSION_RATED_FEATURED_PARTNERS = partners;
+
+  function renderPartner(p){
+    const logo = p.logo
+      ? `<img class="featured-partner-logo" src="${esc(p.logo)}" alt="${esc(p.logoAlt)}" loading="lazy">`
+      : `<div class="featured-partner-logo-fallback" aria-label="${esc(p.name)} logo pending">${esc(p.name.charAt(0) || '★')}</div>`;
+    const offers = p.offers.map(o => `<li>${esc(o)}</li>`).join('');
+    const provenance = p.directPartner ? '<span class="partner-badge">Directly confirmed partner</span>' : '';
+    const logoNote = p.logoPending ? '<span class="partner-badge subtle">Logo pending</span>' : '';
+    return `<article class="featured-partner-card" data-partner-slug="${esc(p.slug)}">
+      <div class="featured-partner-brand">${logo}</div>
+      <div class="featured-partner-content">
+        <div class="featured-partner-kicker">Featured Partner</div>
+        <h3>${esc(p.name)}</h3>
+        <p class="featured-partner-meta">${esc(p.location)}${p.category ? ` · ${esc(p.category)}` : ''}</p>
+        <div class="featured-partner-badges">${provenance}${logoNote}</div>
+        <ul class="featured-partner-offers">${offers}</ul>
+        ${p.eligibilityNote ? `<p class="featured-partner-note">${esc(p.eligibilityNote)}</p>` : ''}
+      </div>
+    </article>`;
+  }
+
+  function mount(){
+    const root = document.querySelector('[data-featured-partners]') || document.getElementById('featured-partners');
+    if (!root) return;
+    root.innerHTML = partners.filter(p => p.featured).map(renderPartner).join('');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true}); else mount();
 })();
