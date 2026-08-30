@@ -68,6 +68,32 @@
       location:'1333 Oceana Blvd, Ste 100, Virginia Beach, VA 23454',
       verification:'Offer and participation confirmed directly by Chris Jordan, Owner/Operator of Valhalla Barbell Club, on August 25, 2026.',
       terms:'For military members: 10% off month-to-month membership, no sign-up or other fees, and your first month is free.'
+    },
+    {
+      slug:'hunt-club-farm',
+      name:'Hunt Club Farm',
+      logo:'',
+      logoAlt:'Hunt Club Farm logo',
+      offer:'$10 OFF',
+      offerLabel:'Halloween Festival military admission + more Sunday savings',
+      veteranOwned:false,
+      directlyConfirmed:true,
+      partnerSubheadline:'Virginia Beach family farm with directly confirmed military savings.',
+      tagline:'Family farm fun with military savings across regular visits and fall events.',
+      intro:'Hunt Club Farm is a 50-acre, family-owned and operated Virginia Beach farm focused on education and entertainment for visitors of all ages.',
+      services:'Families can visit the Petting Farm, TreeWalk Adventure, Farm Market, and seasonal events including Harvest Fair and the Halloween Festival.',
+      militaryOfferText:'Military offers directly confirmed with Mission Rated: 10% off Petting Farm/TreeWalk admission on Sundays; 10% off Farm Market purchases on Sundays; $2 off Harvest Fair admission on Sundays in October; and $10 off Halloween Festival military admission.',
+      description:'Hunt Club Farm is a family-owned Virginia Beach destination offering farm activities, a market, and seasonal family events. Featured placement highlights the confirmed partnership and military value; it does not affect ratings or rankings.',
+      featuredDescription:'Hunt Club Farm is supporting the local military community with multiple directly confirmed savings opportunities, including recurring Sunday discounts and stronger fall-event savings.',
+      primaryCtaLabel:'View Hunt Club Farm',
+      secondaryCtaLabel:'Visit Official Site',
+      businessUrl:'https://www.huntclubfarm.com/',
+      profileUrl:'',
+      featuredUrl:'/featured#hunt-club-farm',
+      phone:'757-427-9520',
+      location:'2388 London Bridge Rd, Virginia Beach, VA 23456',
+      verification:'Participation and the listed military offers were confirmed directly by Hunt Club Farm on August 30, 2026.',
+      terms:'Directly confirmed military offers: 10% off Petting Farm/TreeWalk admission on Sundays; 10% off Farm Market purchases on Sundays; $2 off Harvest Fair admission on Sundays in October; and $10 off Halloween Festival military admission. Final eligibility, redemption method, and exclusions are pending partner confirmation.'
     }
   ];
   window.MRFeaturedPartners=Object.freeze({
