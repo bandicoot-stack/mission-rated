@@ -11,7 +11,7 @@
       "latest_main_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1",
       "release_audit_branch": "release-audit",
       "latest_verified_production_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1",
-      "latest_release_report": "reports/2026-08-29/0210d3f726f0e7515810d38572a5949c91ab28f1.md"
+      "latest_release_report": "reports/2026-08-30/0210d3f726f0e7515810d38572a5949c91ab28f1.md"
     },
     "vercel": {
       "production_state": "READY",
