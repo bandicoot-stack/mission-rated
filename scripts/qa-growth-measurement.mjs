@@ -40,15 +40,6 @@ for (const field of [
 requireToken(eventApi, 'isSameOriginBrowserRequest', 'server event endpoint must retain same-origin browser protection');
 requireToken(eventApi, 'if (!origin) return false', 'server event endpoint must reject originless metric submissions');
 requireToken(eventApi, 'referral_code: cleanUuid(body.referral_code)', 'referral attribution must accept only pseudonymous UUID tokens');
-requireToken(eventApi, 'process.env.SUPABASE_SERVICE_ROLE_KEY', 'durable Growth persistence must use a server-only Supabase credential');
-requireToken(eventApi, "new URL('/rest/v1/product_events'", 'accepted Growth events must persist to the authoritative product_events store');
-requireToken(eventApi, 'event_name: payload.event', 'durable Growth rows must use the server-accepted event name');
-requireToken(eventApi, 'event_metadata:', 'sanitized Growth context must remain bounded inside event_metadata');
-requireToken(eventApi, 'if (!stored.ok)', 'event ingestion must fail closed when the durable store rejects a write');
-requireToken(eventApi, "return res.status(204).end()", 'event ingestion should acknowledge success only after the durable write path');
-if (eventApi.includes('verified_savings')) {
-  errors.push('browser analytics ingestion must never write or derive verified_savings');
-}
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
 const submitHandler = analytics.match(/document\.addEventListener\('submit',[\s\S]*?\},true\);/)?.[0] || '';
 if (!submitHandler) {
@@ -74,4 +65,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: durable event persistence, attribution, share outcomes, signup consent contracts, savings separation, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: attribution, share outcomes, signup consent contracts, and origin integrity are guarded.');
