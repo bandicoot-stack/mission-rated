@@ -1,29 +1,30 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T21:56:24Z",
+  "updated_at": "2026-08-30T03:56:56Z",
   "current_focus": "Run the Growth MVP from reconciled production truth with audited releases, defensible Growth measurement, and authenticated operational surfaces.",
-  "active_change": "Production remains on audited main SHA 9f842e313d22ca4b0850eb89ba78148b9587b559. Supabase mission-control-metrics is ACTIVE with verify_jwt=true (version 2) and product-event is ACTIVE with verify_jwt=true (version 7). Growth event persistence remains unresolved: production /api/event is log-only, so Supabase product_events must not be treated as current scorecard truth until issue #141 is resolved.",
-  "operator_next_action": "Resolve Growth measurement issue #141 without weakening authorization: establish one authoritative durable Growth event store and require freshness/source alignment before scorecard metrics are presented as current.",
+  "active_change": "Production is READY on audited main SHA 0210d3f726f0e7515810d38572a5949c91ab28f1 with the Weekend Brief signup surfaced above homepage tab content. PR #145 adds regression coverage for that placement; PR #146 is separate security regression work and must not be conflated with Growth scope. Supabase mission-control-metrics is ACTIVE with verify_jwt=true (version 4) and product-event is ACTIVE with verify_jwt=true (version 7). Growth event persistence remains unresolved: production /api/event is log-only, so Supabase product_events must not be treated as current scorecard truth until issue #141 is resolved. P0 authorization issue #142 remains open; JWT verification alone is not evidence of founder/operator authorization.",
+  "operator_next_action": "Keep P0 issues #141 and #142 explicit: resolve Growth measurement #141 without weakening authorization, and do not treat mission-control-metrics as founder-authorized until #142 acceptance criteria are satisfied. Existing PR #145 may proceed only through normal green QA/preview gates; do not duplicate it.",
   "reconciliation": {
-    "observed_at": "2026-08-29T21:56:24Z",
+    "observed_at": "2026-08-30T03:56:56Z",
     "github": {
-      "open_pull_requests": 0,
-      "latest_main_sha": "9f842e313d22ca4b0850eb89ba78148b9587b559",
+      "open_pull_requests": 2,
+      "latest_main_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1",
       "release_audit_branch": "release-audit",
-      "latest_verified_production_sha": "9f842e313d22ca4b0850eb89ba78148b9587b559",
-      "latest_release_report": "reports/2026-08-29/9f842e313d22ca4b0850eb89ba78148b9587b559.md"
+      "latest_verified_production_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1",
+      "latest_release_report": "reports/2026-08-29/0210d3f726f0e7515810d38572a5949c91ab28f1.md"
     },
     "vercel": {
       "production_state": "READY",
-      "latest_verified_sha": "9f842e313d22ca4b0850eb89ba78148b9587b559"
+      "latest_verified_sha": "0210d3f726f0e7515810d38572a5949c91ab28f1"
     },
     "supabase": {
       "project_status": "ACTIVE_HEALTHY",
       "mission_control_metrics_verify_jwt": true,
-      "mission_control_metrics_version": 2,
+      "mission_control_metrics_version": 4,
       "product_event_verify_jwt": true,
       "product_event_version": 7,
-      "growth_event_store_freshness": "NOT_AUTHORITATIVE_PENDING_ISSUE_141"
+      "growth_event_store_freshness": "NOT_AUTHORITATIVE_PENDING_ISSUE_141",
+      "founder_operator_authorization": "NOT_PROVEN_PENDING_ISSUE_142"
     }
   },
   "recent_settled_decisions": [
