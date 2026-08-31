@@ -5,7 +5,9 @@ const ALLOWED_EVENTS = new Set([
   'directions_click','review_action','feedback_action','offer_source_click','official_website_click','internal_navigation'
 ]);
 
-export default function handler(req, res) {
+const GROWTH_INGEST_URL = 'https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/growth-event-ingest';
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false });
@@ -46,9 +48,61 @@ export default function handler(req, res) {
     ts: new Date().toISOString()
   };
 
-  console.log(JSON.stringify(payload));
   res.setHeader('Cache-Control', 'no-store');
-  return res.status(204).end();
+
+  // Preview/development traffic must never pollute the production Growth store.
+  // Production persists through a server-to-server endpoint authenticated with
+  // Vercel's built-in OIDC identity, so no Supabase service credential is copied
+  // into Vercel or exposed to browser code.
+  if (process.env.VERCEL_ENV !== 'production') {
+    console.log(JSON.stringify({ ...payload, persistence: 'preview_log_only' }));
+    return res.status(204).end();
+  }
+
+  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
+  if (!oidcToken) return res.status(503).json({ ok: false, error: 'growth_event_identity_unavailable' });
+
+  const row = {
+    event_name: payload.event,
+    path: payload.path || '/',
+    target_type: payload.target_type || null,
+    target_id: payload.target_id || null,
+    session_id: payload.session_id || null,
+    visitor_id: payload.visitor_id || null,
+    referrer_host: payload.referrer_host || null,
+    utm_source: payload.utm_source || null,
+    utm_medium: payload.utm_medium || null,
+    utm_campaign: payload.utm_campaign || null,
+    destination: payload.destination || null,
+    event_metadata: {
+      item: payload.item || null,
+      deal_source: payload.deal_source || null,
+      share_method: payload.share_method || null,
+      signup_surface: payload.signup_surface || null,
+      referral_code: payload.referral_code || null,
+      days_since_last: payload.days_since_last
+    }
+  };
+
+  try {
+    const stored = await fetch(GROWTH_INGEST_URL, {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${oidcToken}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(row)
+    });
+    if (!stored.ok) {
+      console.error('growth_event_persistence_failed', stored.status);
+      return res.status(503).json({ ok: false, error: 'growth_event_store_unavailable' });
+    }
+    console.log(JSON.stringify({ ...payload, persistence: 'supabase_product_events' }));
+    return res.status(204).end();
+  } catch (error) {
+    console.error('growth_event_persistence_failed', error?.name || 'unknown');
+    return res.status(503).json({ ok: false, error: 'growth_event_store_unavailable' });
+  }
 }
 
 function isSameOriginBrowserRequest(req) {
