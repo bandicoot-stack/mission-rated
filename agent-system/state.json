@@ -1,21 +1,21 @@
 {
   "version": 1,
-  "updated_at": "2026-08-30T17:54:52Z",
+  "updated_at": "2026-08-31T05:56:43Z",
   "current_focus": "Run the Growth MVP from reconciled production truth with audited releases, defensible Growth measurement, and authenticated operational surfaces.",
-  "active_change": "Production is READY and release-audited on main SHA 069df7158e16561f803946a65b52c3415c795da8 after PR #153 removed the unsupported Business Share Kit custom analytics event so Growth instrumentation remains within the supported event contract. Production /api/event remains log-only, so Supabase product_events is still non-authoritative for current Growth scorecard truth and issue #141 remains blocked on an approved server-only Vercel-to-Supabase persistence credential. Do not retry durable writes by weakening RLS, exposing a publishable/browser credential as privileged, or hardcoding secrets. PR #146 remains separate security regression/provenance work and must not be conflated with Growth scope. Supabase is ACTIVE_HEALTHY.",
-  "operator_next_action": "Keep issue #141 explicit and blocked on an approved server-only Vercel-to-Supabase credential path; until that exists and production verification proves durable writes, treat Vercel logs as ingestion evidence only and never present Supabase product_events as fresh scorecard truth. Preserve the supported referral/share measurement contract from PRs #151 and #153 and do not reintroduce unsupported custom measurement events. Do not duplicate PR #146 or mix its separate security provenance work into Growth changes.",
+  "active_change": "Production is READY and release-audited on main SHA b7b2913019421e910745bb625ce26c5b5345bfb5 after PR #158 corrected production visual verification to require the intentionally visible Hunt Club Farm Featured Partner. The 2026-08-31 release audit confirms route smoke tests plus mobile and desktop visual QA passed. Production /api/event remains log-only, so Supabase product_events is still non-authoritative for current Growth scorecard truth and issue #141 remains blocked on an approved server-only Vercel-to-Supabase persistence credential. Do not retry durable writes by weakening RLS, exposing a publishable/browser credential as privileged, or hardcoding secrets. PR #146 remains separate security regression/provenance work; PR #157 is separate Featured Partner outreach targeting work. Supabase is ACTIVE_HEALTHY.",
+  "operator_next_action": "Keep issue #141 explicit and blocked on an approved server-only Vercel-to-Supabase credential path; until that exists and production verification proves durable writes, treat Vercel logs as ingestion evidence only and never present Supabase product_events as fresh scorecard truth. Preserve the supported referral/share measurement contract from PRs #151 and #153 and do not reintroduce unsupported custom measurement events. Do not duplicate PR #146 or #157 and do not conflate their separate security/outreach scopes with Growth measurement work.",
   "reconciliation": {
-    "observed_at": "2026-08-30T17:54:52Z",
+    "observed_at": "2026-08-31T05:56:43Z",
     "github": {
-      "open_pull_requests": 1,
-      "latest_main_sha": "069df7158e16561f803946a65b52c3415c795da8",
+      "open_pull_requests": 2,
+      "latest_main_sha": "b7b2913019421e910745bb625ce26c5b5345bfb5",
       "release_audit_branch": "release-audit",
-      "latest_verified_production_sha": "069df7158e16561f803946a65b52c3415c795da8",
-      "latest_release_report": "reports/2026-08-30/069df7158e16561f803946a65b52c3415c795da8.md"
+      "latest_verified_production_sha": "b7b2913019421e910745bb625ce26c5b5345bfb5",
+      "latest_release_report": "reports/2026-08-31/b7b2913019421e910745bb625ce26c5b5345bfb5.md"
     },
     "vercel": {
       "production_state": "READY",
-      "latest_verified_sha": "069df7158e16561f803946a65b52c3415c795da8"
+      "latest_verified_sha": "b7b2913019421e910745bb625ce26c5b5345bfb5"
     },
     "supabase": {
       "project_status": "ACTIVE_HEALTHY",
