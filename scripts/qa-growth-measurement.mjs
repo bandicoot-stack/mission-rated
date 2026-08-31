@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const analytics = readFileSync('analytics.js', 'utf8');
 const eventApi = readFileSync('api/event.js', 'utf8');
+const ingest = readFileSync('supabase/functions/growth-event-ingest/index.ts', 'utf8');
 const share = readFileSync('deal-share.js', 'utf8');
 const weekendBrief = readFileSync('weekend-brief.js', 'utf8');
 const weekendBriefSignup = readFileSync('supabase/functions/weekend-brief-signup/index.ts', 'utf8');
@@ -40,6 +41,22 @@ for (const field of [
 requireToken(eventApi, 'isSameOriginBrowserRequest', 'server event endpoint must retain same-origin browser protection');
 requireToken(eventApi, 'if (!origin) return false', 'server event endpoint must reject originless metric submissions');
 requireToken(eventApi, 'referral_code: cleanUuid(body.referral_code)', 'referral attribution must accept only pseudonymous UUID tokens');
+requireToken(eventApi, "process.env.VERCEL_ENV !== 'production'", 'preview traffic must not persist into the production Growth store');
+requireToken(eventApi, 'process.env.VERCEL_OIDC_TOKEN', 'production Growth persistence must use Vercel server OIDC identity');
+requireToken(eventApi, 'growth-event-ingest', 'accepted production events must route to the authoritative ingest function');
+requireToken(eventApi, "return res.status(204).end()", 'event ingestion should acknowledge success only after the chosen persistence path');
+if (eventApi.includes('SUPABASE_SERVICE_ROLE_KEY')) errors.push('Vercel event API must not require a copied Supabase service-role credential');
+if (eventApi.includes('verified_savings')) errors.push('browser analytics ingestion must never write or derive verified_savings');
+
+requireToken(ingest, 'createRemoteJWKSet', 'Growth ingest must verify Vercel OIDC signatures against JWKS');
+requireToken(ingest, 'jwtVerify', 'Growth ingest must cryptographically verify the Vercel OIDC token');
+requireToken(ingest, 'environment:production', 'Growth ingest identity must be restricted to the production Vercel environment');
+requireToken(ingest, 'payload.project_id !== PROJECT_ID', 'Growth ingest must bind authorization to the Mission Rated Vercel project');
+requireToken(ingest, 'payload.owner_id !== OWNER_ID', 'Growth ingest must bind authorization to the Mission Rated Vercel team');
+requireToken(ingest, ".from('product_events').insert(row)", 'Growth ingest must persist into authoritative product_events');
+requireToken(ingest, "ingestion: 'vercel_oidc_v1'", 'durable rows must record bounded ingestion provenance');
+if (ingest.includes('verified_savings')) errors.push('Growth ingest must never write or derive verified_savings');
+
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
 const submitHandler = analytics.match(/document\.addEventListener\('submit',[\s\S]*?\},true\);/)?.[0] || '';
 if (!submitHandler) {
@@ -65,4 +82,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: attribution, share outcomes, signup consent contracts, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: OIDC durable persistence, attribution, share outcomes, signup consent contracts, savings separation, and origin integrity are guarded.');
