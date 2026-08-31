@@ -1,3 +1,5 @@
+import { getVercelOidcToken } from '@vercel/oidc';
+
 const ALLOWED_EVENTS = new Set([
   'page_view','search','installation_change','source_click','feedback_open','data_report_open','beta_invite_share',
   'referral_visit','return_visit','deal_click','deal_outbound_click','share_action','claim_action','weekend_brief_signup_attempt','weekend_brief_signup_confirmed',
@@ -38,9 +40,6 @@ export default async function handler(req, res) {
     utm_source: clean(body.utm_source, 80),
     utm_medium: clean(body.utm_medium, 80),
     utm_campaign: clean(body.utm_campaign, 120),
-    // Referral links are generated from a pseudonymous UUID in analytics.js.
-    // Accept only that shape so arbitrary query-string values cannot pollute
-    // referral attribution or become free-form data in analytics logs.
     referral_code: cleanUuid(body.referral_code),
     session_id: cleanUuid(body.session_id),
     visitor_id: cleanUuid(body.visitor_id),
@@ -52,15 +51,21 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   // Preview/development traffic must never pollute the production Growth store.
-  // Production persists through a server-to-server endpoint authenticated with
-  // Vercel's built-in OIDC identity, so no Supabase service credential is copied
-  // into Vercel or exposed to browser code.
   if (process.env.VERCEL_ENV !== 'production') {
     console.log(JSON.stringify({ ...payload, persistence: 'preview_log_only' }));
     return res.status(204).end();
   }
 
-  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
+  let oidcToken;
+  try {
+    oidcToken = await getVercelOidcToken({
+      project: 'prj_mk9F2l6zlQ1oqWEh8DfluKKqMBQO',
+      team: 'team_keaLn1aS3rp2RW0ewC2SwKJV'
+    });
+  } catch (error) {
+    console.error('growth_event_identity_failed', error?.name || 'unknown');
+    return res.status(503).json({ ok: false, error: 'growth_event_identity_unavailable' });
+  }
   if (!oidcToken) return res.status(503).json({ ok: false, error: 'growth_event_identity_unavailable' });
 
   const row = {
@@ -107,17 +112,10 @@ export default async function handler(req, res) {
 }
 
 function isSameOriginBrowserRequest(req) {
-  // Growth metrics are only accepted from the Mission Rated browser client.
-  // Reject originless POSTs so curl/bots cannot trivially manufacture claims,
-  // shares, referrals, or signup events in the growth scorecard. Any future
-  // trusted server/provider confirmation path should use its own authenticated
-  // endpoint rather than weakening this browser-ingestion boundary.
   const origin = req.headers.origin;
   if (!origin) return false;
-
   const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').toLowerCase();
   if (!host) return false;
-
   try {
     return new URL(origin).host.toLowerCase() === host;
   } catch {
