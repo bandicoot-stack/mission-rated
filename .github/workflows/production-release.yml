@@ -129,7 +129,7 @@ jobs:
                 if (!/Featured Partners/i.test(state.active)) throw new Error(`${vp.name}: Featured Partners is not the active landing tab`);
                 if (!state.featuredVisible) throw new Error(`${vp.name}: Featured section is not visible`);
                 if (!state.yorktown) throw new Error(`${vp.name}: Yorktown Tools is not visible in Featured`);
-                if (state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm is visibly rendered inside Featured`);
+                if (!state.huntClub) throw new Error(`${vp.name}: Hunt Club Farm is not visible in Featured`);
                 if (state.todayHero) throw new Error(`${vp.name}: Today's Deals promo is visibly rendered above Featured landing`);
                 assertLogo(state.logo, `${vp.name} homepage`);
 
@@ -197,6 +197,7 @@ jobs:
           - [x] Mobile visual QA passed at 390x844.
           - [x] Desktop visual QA passed at 1440x1000.
           - [x] Yorktown Tools partner logo decoded and rendered on homepage and Featured page.
+          - [x] Hunt Club Farm rendered inside the Featured Partners landing surface.
           - [x] Featured Partners remained the active production landing surface expected by the release test.
 
           ## Discipline declaration
