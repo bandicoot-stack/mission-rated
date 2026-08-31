@@ -5,6 +5,7 @@ const ALLOWED_EVENTS = new Set([
   'directions_click','review_action','feedback_action','offer_source_click','official_website_click','internal_navigation'
 ]);
 
+// Production-only durable ingestion; preview traffic is intentionally log-only.
 const GROWTH_INGEST_URL = 'https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/growth-event-ingest';
 
 export default async function handler(req, res) {
