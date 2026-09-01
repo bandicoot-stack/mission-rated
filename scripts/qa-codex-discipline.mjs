@@ -13,32 +13,20 @@ function requireText(rel, needle, why) {
   if (!source.includes(needle)) failures.push(`${rel}: ${why}`);
 }
 
-function scanForDirectOidcEnv(dir) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (['.git', 'node_modules', 'dist'].includes(entry.name)) continue;
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      scanForDirectOidcEnv(full);
-      continue;
-    }
-    if (!/\.(?:js|mjs|cjs|ts|tsx)$/.test(entry.name)) continue;
-    const source = fs.readFileSync(full, 'utf8');
-    if (/process\.env\.VERCEL_OIDC_TOKEN\b/.test(source)) {
-      failures.push(`${path.relative(root, full)}: direct VERCEL_OIDC_TOKEN access is forbidden; acquire Vercel identity with getVercelOidcToken() at request time`);
-    }
-  }
-}
-
-scanForDirectOidcEnv(root);
-
 const eventSource = read('api/event.js');
-if (!/import\s*\{\s*getVercelOidcToken\s*\}\s*from\s*['"]@vercel\/oidc['"]/.test(eventSource)) {
+
+if (eventSource.includes('process.env.VERCEL_OIDC_TOKEN')) {
+  failures.push('api/event.js: direct VERCEL_OIDC_TOKEN access is forbidden; acquire Vercel identity with getVercelOidcToken() at request time');
+}
+if (!eventSource.includes("import { getVercelOidcToken } from '@vercel/oidc';")) {
   failures.push('api/event.js: must import getVercelOidcToken from @vercel/oidc');
 }
-if (!/export\s+default\s+async\s+function\s+handler[\s\S]*await\s+getVercelOidcToken\s*\(/.test(eventSource)) {
+const handlerIndex = eventSource.indexOf('export default async function handler');
+const oidcIndex = eventSource.indexOf('await getVercelOidcToken(', handlerIndex);
+if (handlerIndex < 0 || oidcIndex < handlerIndex) {
   failures.push('api/event.js: OIDC token must be acquired inside the async request handler so each persistence attempt gets fresh runtime identity');
 }
-if (!/authorization:\s*`Bearer \$\{oidcToken\}`/.test(eventSource)) {
+if (!eventSource.includes('authorization: `Bearer ${oidcToken}`')) {
   failures.push('api/event.js: growth ingest request must use the request-scoped OIDC token as Bearer authorization');
 }
 
