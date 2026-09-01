@@ -12,7 +12,9 @@ const sources = files.map((path) => [path, readFileSync(path, 'utf8')]);
 const errors = [];
 
 // Trust invariant: intent/traffic events are not proof of monetary savings.
-const intentEvents = ['deal_click', 'claim_action', 'share_action', 'referral_visit'];
+// Keep this list aligned with the production analytics event names so the
+// regression guard protects the signals we actually emit.
+const intentEvents = ['deal_outbound_click', 'claim_action', 'share_action', 'referral_visit'];
 for (const [path, source] of sources) {
   for (const event of intentEvents) {
     const eventBlocks = source.match(new RegExp(`.{0,180}${event}.{0,500}`, 'gs')) || [];
@@ -26,7 +28,7 @@ for (const [path, source] of sources) {
 
 // Guard against common copy/metric shortcuts that overstate attribution.
 for (const [path, source] of sources) {
-  if (/deal_clicks?\s*[*+]\s*\$?\d+/i.test(source)) errors.push(`${path}: deal clicks must not be converted into dollars saved`);
+  if (/deal_(?:outbound_)?clicks?\s*[*+]\s*\$?\d+/i.test(source)) errors.push(`${path}: deal outbound clicks must not be converted into dollars saved`);
   if (/claim_actions?\s*[*+]\s*\$?\d+/i.test(source)) errors.push(`${path}: claim actions must not be converted into dollars saved`);
   if (/shares?\s*[*+]\s*\$?\d+/i.test(source)) errors.push(`${path}: shares must not be converted into dollars saved`);
 }
@@ -37,4 +39,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Savings ledger QA passed: intent and referral signals remain separate from defensible monetary savings.');
+console.log('Savings ledger QA passed: outbound intent and referral signals remain separate from defensible monetary savings.');
