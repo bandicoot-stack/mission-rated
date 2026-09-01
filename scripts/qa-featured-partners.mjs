@@ -57,7 +57,8 @@ else {
 for(const slug of ['yorktown-tools','compass-rose-realty-co','valhalla-barbell-club']) if(!partners.some(partner=>partner.slug===slug)) fail(`existing featured partner regression: ${slug} missing`);
 
 const page=read('featured.html');
-for(const token of ['partnerSubheadline','militaryOfferText','partner.standard','partner.wolfLine','primaryCtaLabel','data-deal-action="get-deal"']) if(!page.includes(token)) fail(`featured.html missing rich partner renderer token: ${token}`);
+for(const token of ['partnerSubheadline','militaryOfferText','partner.standard','partner.wolfLine','primaryCtaLabel','data-deal-action="outbound"']) if(!page.includes(token)) fail(`featured.html missing rich partner renderer token: ${token}`);
+if(page.includes('data-deal-action="get-deal"')) fail('featured.html must not classify generic merchant-site clicks as deal redemption intent');
 if(!page.includes('Featured placement identifies a confirmed partner or noteworthy military benefit; it never improves a business’s score')) fail('featured trust disclosure changed or is missing');
 
 if(errors.length){
@@ -65,4 +66,4 @@ if(errors.length){
   for(const error of [...new Set(errors)]) console.error(` - ${error}`);
   process.exit(1);
 }
-console.log('Featured partner QA passed: Valhalla approved copy, Hunt Club Farm confirmed offers/trust state, CTA, and existing partner presence verified.');
+console.log('Featured partner QA passed: Valhalla approved copy, Hunt Club Farm confirmed offers/trust state, outbound CTA semantics, and existing partner presence verified.');
