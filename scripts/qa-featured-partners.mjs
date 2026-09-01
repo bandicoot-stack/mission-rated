@@ -61,9 +61,14 @@ for(const token of ['partnerSubheadline','militaryOfferText','partner.standard',
 if(page.includes('data-deal-action="get-deal"')) fail('featured.html must not classify generic merchant-site clicks as deal redemption intent');
 if(!page.includes('Featured placement identifies a confirmed partner or noteworthy military benefit; it never improves a business’s score')) fail('featured trust disclosure changed or is missing');
 
+const analytics=read('analytics.js');
+if(!analytics.includes("el.dataset?.dealAction==='outbound'")) fail('analytics.js must recognize the Featured Partner outbound intent token');
+if(!analytics.includes("return send('deal_outbound_click'")) fail('analytics.js must emit deal_outbound_click for merchant/deal outbound intent');
+if(!analytics.includes("el.dataset?.dealAction==='get-deal'||el.dataset?.dealAction==='outbound'")) fail('analytics.js must bind outbound intent to the existing deal_outbound_click path without claim/redemption semantics');
+
 if(errors.length){
   console.error('Featured partner QA failed:');
   for(const error of [...new Set(errors)]) console.error(` - ${error}`);
   process.exit(1);
 }
-console.log('Featured partner QA passed: Valhalla approved copy, Hunt Club Farm confirmed offers/trust state, outbound CTA semantics, and existing partner presence verified.');
+console.log('Featured partner QA passed: approved partner copy/trust state, outbound CTA semantics, analytics attribution, and existing partner presence verified.');
