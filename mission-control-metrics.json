@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-08-28T04:39:00Z",
+  "generated_at": "2026-09-02T02:36:00Z",
   "source": "supabase-aggregate-snapshot",
   "audience": {
-    "unique_visitors_7d": 11,
-    "unique_visitors_30d": 11,
-    "sessions_7d": 45,
-    "page_views_7d": 48,
-    "page_views_30d": 263,
-    "return_visits_30d": 0,
+    "unique_visitors_7d": 25,
+    "unique_visitors_30d": 25,
+    "sessions_7d": null,
+    "page_views_7d": 29,
+    "page_views_30d": null,
+    "return_visits_30d": null,
     "referral_visits_30d": 0,
     "deal_clicks_30d": 0
   },
@@ -16,10 +16,12 @@
     "target": 1000
   },
   "partners": {
-    "prospects_total": 96,
-    "ready": 93,
-    "contacted": 3,
-    "participating_businesses": null,
+    "prospects_total": 118,
+    "ready": 85,
+    "contacted": 24,
+    "interested": 2,
+    "follow_up": 2,
+    "participating_businesses": 4,
     "participating_target": 100,
     "strong_exclusive_offers": null,
     "exclusive_target": 10
