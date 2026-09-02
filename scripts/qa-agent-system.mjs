@@ -27,6 +27,30 @@ for(const id of ['operator','scout','partner','product','builder','qa']) if(!rol
 if(!Array.isArray(registry?.approval_gates)||!registry.approval_gates.length) errors.push('registry missing approval gates');
 if(!state?.updated_at||Number.isNaN(Date.parse(state.updated_at))) errors.push('state.updated_at must be ISO-like timestamp');
 if(!state?.current_focus||!state?.operator_next_action) errors.push('state missing current focus or next action');
+if(state?.reconciliation?.semantics!=='external-state-snapshot') errors.push('state reconciliation must declare external-state-snapshot semantics');
+if(state?.reconciliation?.authority!=='observational_only_reread_native_systems_before_material_work') errors.push('state reconciliation must declare native systems authoritative');
+if(!state?.reconciliation?.observed_at||Number.isNaN(Date.parse(state.reconciliation.observed_at))) errors.push('state reconciliation observed_at must be ISO-like timestamp');
+if(state?.updated_at&&state?.reconciliation?.observed_at&&Date.parse(state.updated_at)<Date.parse(state.reconciliation.observed_at)) errors.push('state.updated_at must not precede reconciliation.observed_at');
+for(const [scope,field] of [
+  ['github','observed_main_sha'],
+  ['github','observed_open_pull_requests'],
+  ['github','observed_verified_production_sha'],
+  ['vercel','observed_production_state'],
+  ['vercel','observed_verified_sha'],
+  ['supabase','observed_project_status']
+]) if(state?.reconciliation?.[scope]?.[field]===undefined) errors.push(`state reconciliation missing ${scope}.${field}`);
+const gitSha=/^[0-9a-f]{40}$/;
+for(const field of ['observed_main_sha','observed_verified_production_sha']){
+  const value=state?.reconciliation?.github?.[field];
+  if(value!==undefined&&!gitSha.test(value)) errors.push(`state reconciliation github.${field} must be a full lowercase 40-character SHA`);
+}
+const vercelSha=state?.reconciliation?.vercel?.observed_verified_sha;
+if(vercelSha!==undefined&&!gitSha.test(vercelSha)) errors.push('state reconciliation vercel.observed_verified_sha must be a full lowercase 40-character SHA');
+const openPrs=state?.reconciliation?.github?.observed_open_pull_requests;
+if(openPrs!==undefined&&(!Number.isInteger(openPrs)||openPrs<0)) errors.push('state reconciliation github.observed_open_pull_requests must be a non-negative integer');
+for(const legacy of ['latest_main_sha','open_pull_requests','latest_verified_production_sha']) if(state?.reconciliation?.github?.[legacy]!==undefined) errors.push(`state reconciliation must not use live-authority field github.${legacy}`);
+for(const legacy of ['production_state','latest_verified_sha']) if(state?.reconciliation?.vercel?.[legacy]!==undefined) errors.push(`state reconciliation must not use live-authority field vercel.${legacy}`);
+for(const legacy of ['project_status','mission_control_metrics_verify_jwt','mission_control_metrics_version','product_event_verify_jwt','product_event_version']) if(state?.reconciliation?.supabase?.[legacy]!==undefined) errors.push(`state reconciliation must not use live-authority field supabase.${legacy}`);
 const statuses=new Set(['not_started','in_progress','blocked','review','done','ongoing','superseded']);
 const ids=new Set();
 for(const item of queue?.items||[]){

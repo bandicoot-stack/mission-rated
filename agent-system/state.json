@@ -1,30 +1,35 @@
 {
   "version": 1,
-  "updated_at": "2026-08-31T05:56:43Z",
-  "current_focus": "Run the Growth MVP from reconciled production truth with audited releases, defensible Growth measurement, and authenticated operational surfaces.",
-  "active_change": "Production is READY and release-audited on main SHA b7b2913019421e910745bb625ce26c5b5345bfb5 after PR #158 corrected production visual verification to require the intentionally visible Hunt Club Farm Featured Partner. The 2026-08-31 release audit confirms route smoke tests plus mobile and desktop visual QA passed. Production /api/event remains log-only, so Supabase product_events is still non-authoritative for current Growth scorecard truth and issue #141 remains blocked on an approved server-only Vercel-to-Supabase persistence credential. Do not retry durable writes by weakening RLS, exposing a publishable/browser credential as privileged, or hardcoding secrets. PR #146 remains separate security regression/provenance work; PR #157 is separate Featured Partner outreach targeting work. Supabase is ACTIVE_HEALTHY.",
-  "operator_next_action": "Keep issue #141 explicit and blocked on an approved server-only Vercel-to-Supabase credential path; until that exists and production verification proves durable writes, treat Vercel logs as ingestion evidence only and never present Supabase product_events as fresh scorecard truth. Preserve the supported referral/share measurement contract from PRs #151 and #153 and do not reintroduce unsupported custom measurement events. Do not duplicate PR #146 or #157 and do not conflate their separate security/outreach scopes with Growth measurement work.",
+  "updated_at": "2026-09-01T08:06:00Z",
+  "current_focus": "Run Mission Rated from reconciled production truth with audited releases, defensible measurement, authenticated operational surfaces, and durable agent-state semantics.",
+  "active_change": "At the 2026-09-01T08:06:00Z reconciliation snapshot, GitHub main and Vercel production were both on bfb982a1e7a412d4962462a439eb6e590a6f1bf2. The exact-SHA release audit passed convergence, required route smoke tests, mobile and desktop visual QA, analytics suppression during production visual QA, Yorktown Tools rendering, and Hunt Club Farm Featured rendering. Supabase was ACTIVE_HEALTHY. Growth event persistence uses the shipped Vercel OIDC to Supabase growth-event-ingest path from PRs #164 and #165; issue #141 is closed. PR #146 remains separate security provenance work, PR #157 remains separate outreach work, and PR #160 owns the durable external-state snapshot contract. External reconciliation fields below are timestamped observations, never live authority; reread native systems before material work.",
+  "operator_next_action": "Before material work, reread GitHub main/open PRs/checks, the exact-SHA release audit, Vercel production/runtime health, and relevant Supabase live state. Preserve the shipped OIDC event-persistence boundary and analytics-suppression release QA. Do not duplicate PR #146, #157, or #160, and do not infer current operational truth from this repository snapshot after native systems change.",
   "reconciliation": {
-    "observed_at": "2026-08-31T05:56:43Z",
+    "semantics": "external-state-snapshot",
+    "authority": "observational_only_reread_native_systems_before_material_work",
+    "observed_at": "2026-09-01T08:06:00Z",
     "github": {
-      "open_pull_requests": 2,
-      "latest_main_sha": "b7b2913019421e910745bb625ce26c5b5345bfb5",
+      "observed_open_pull_requests": 3,
+      "observed_main_sha": "bfb982a1e7a412d4962462a439eb6e590a6f1bf2",
       "release_audit_branch": "release-audit",
-      "latest_verified_production_sha": "b7b2913019421e910745bb625ce26c5b5345bfb5",
-      "latest_release_report": "reports/2026-08-31/b7b2913019421e910745bb625ce26c5b5345bfb5.md"
+      "observed_verified_production_sha": "bfb982a1e7a412d4962462a439eb6e590a6f1bf2",
+      "observed_release_report": "reports/2026-09-01/bfb982a1e7a412d4962462a439eb6e590a6f1bf2.md"
     },
     "vercel": {
-      "production_state": "READY",
-      "latest_verified_sha": "b7b2913019421e910745bb625ce26c5b5345bfb5"
+      "observed_production_state": "READY",
+      "observed_verified_sha": "bfb982a1e7a412d4962462a439eb6e590a6f1bf2",
+      "observed_runtime_errors_24h": 0
     },
     "supabase": {
-      "project_status": "ACTIVE_HEALTHY",
-      "mission_control_metrics_verify_jwt": true,
-      "mission_control_metrics_version": 4,
-      "product_event_verify_jwt": true,
-      "product_event_version": 7,
-      "growth_event_store_freshness": "NOT_AUTHORITATIVE_PENDING_ISSUE_141",
-      "growth_event_persistence_blocker": "VERCEL_SERVER_ONLY_SUPABASE_CREDENTIAL_NOT_CONFIGURED",
+      "observed_project_status": "ACTIVE_HEALTHY",
+      "observed_mission_control_metrics_verify_jwt": true,
+      "observed_mission_control_metrics_version": 4,
+      "observed_product_event_verify_jwt": true,
+      "observed_product_event_version": 7,
+      "observed_growth_event_ingest_verify_jwt": false,
+      "observed_growth_event_ingest_version": 1,
+      "growth_event_ingest_auth_boundary": "CUSTOM_VERCEL_OIDC_VERIFICATION",
+      "growth_measurement_issue_141": "CLOSED",
       "founder_operator_authorization": "NOT_PROVEN_PENDING_ISSUE_142"
     }
   },
@@ -38,11 +43,12 @@
     "Every successful production verification writes an immutable SHA-specific report to the release-audit branch for future agent review.",
     "The founder Command Center and durable agent JSON must not be publicly served without an authenticated server-side gate.",
     "READY is deployment state only; release health requires release-audit evidence and relevant production behavior checks.",
-    "Growth scorecard data must identify an authoritative durable source and freshness; log-only browser ingestion must not be represented as current Supabase measurement truth.",
+    "Growth scorecard data must identify an authoritative durable source and freshness; measurement claims must follow verified persistence evidence.",
     "Browser-origin checks are not authentication for privileged Supabase operational or Growth write surfaces.",
-    "A durable Growth event write path must fail closed when its server-only persistence credential is unavailable; never weaken RLS or expose privileged credentials to make measurement appear healthy.",
-    "Family Pass acquisition measurement must use supported referral/share semantics; unsupported custom events must not be reintroduced as if they were authoritative signals.",
-    "Business Share Kit acquisition measurement must remain within the supported event contract; unsupported custom events must not be represented as measured Growth signals."
+    "Production Growth event persistence uses Vercel OIDC with explicit Supabase-side verification rather than copied service-role credentials.",
+    "Automated production visual QA must suppress Mission Rated analytics so release verification does not contaminate Growth measurement.",
+    "Family Pass and Business Share Kit acquisition measurement must remain within the supported event contract; unsupported custom events must not be represented as measured Growth signals.",
+    "Volatile external reconciliation data in agent-system/state.json is a timestamped observation, never live authority; native systems must be reread before material work."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
