@@ -64,21 +64,59 @@ Use `agent-system/HANDOFF_TEMPLATE.md` for material handoffs. Record completed w
 
 Native systems remain authoritative for their own state: GitHub for code/PR/checks, Gmail for messages/drafts, Vercel for deployments, and scheduled task infrastructure for automations. Re-verify native state before taking consequential action.
 
+## Codex branch and intent discipline
+
+Codex and every other coding agent must treat branch/PR creation as a controlled operation, not a disposable scratchpad.
+
+### Equivalent-work preflight
+
+Before creating a material branch, replacement branch, or PR:
+
+1. Read current `main` and current open PRs in GitHub.
+2. Search active branch names and relevant `specs/changes/*` for equivalent intent.
+3. Check the durable work queue for an existing item that owns the task.
+4. If equivalent work exists, resume, rebase, or update that work instead of creating a sibling attempt.
+5. Record the preflight and any superseded branch/PR in the PR body.
+
+A failed attempt is not permission to create another branch. Diagnose the failure on the existing line of work unless the branch is irrecoverable; if replacement is unavoidable, explicitly close/supersede the prior line first.
+
+### One intent, one active branch
+
+At any point, one material intent should map to one active implementation branch and at most one open PR. Parallel speculative implementation is prohibited unless the founder explicitly requests competing prototypes.
+
+- Do not create timestamped, numbered, `-v2`, `-retry`, `-fix2`, or similar sibling branches for the same intent.
+- Rebase the existing branch onto current `main` instead of cloning its intent into a new branch.
+- If scope splits into genuinely independent work, create separate specs and queue items before splitting branches.
+- State-only reconciliation must not compete with a branch that already owns the same reconciliation scope.
+
+### Stop conditions
+
+Stop implementation and reconcile before continuing when any of these become true:
+
+- current `main` moved in a way that changes the task assumptions;
+- another PR now owns the same intent;
+- the durable queue contradicts native GitHub/Vercel/Supabase state;
+- implementation reveals a new product, security, data, or consent decision;
+- a release-sensitive change cannot be verified before production.
+
+Do not respond to a stop condition by spawning a replacement branch.
+
 ## Required engineering workflow
 
 For material repository changes:
 
 1. Read the boot sequence above.
-2. Create or update `specs/changes/<change-name>/proposal.md`.
-3. Add `design.md` if architecture/data/security/consent changes.
-4. Create `tasks.md`.
-5. Implement on a non-`main` branch.
-6. Run relevant tests and QA workflows.
-7. Open a PR using `.github/PULL_REQUEST_TEMPLATE.md`.
-8. Merge only after required checks and review conditions are met.
-9. Verify production after deployment when production behavior changes.
-10. Confirm the production release-audit report exists for the deployed SHA.
-11. Update `specs/current/` and durable agent state to match shipped reality.
+2. Complete the Equivalent-work preflight.
+3. Create or update `specs/changes/<change-name>/proposal.md`.
+4. Add `design.md` if architecture/data/security/consent changes.
+5. Create `tasks.md`.
+6. Implement on the single active non-`main` branch for that intent.
+7. Run relevant tests and QA workflows.
+8. Open or update one PR using `.github/PULL_REQUEST_TEMPLATE.md`.
+9. Merge only after required checks and review conditions are met.
+10. Verify production after deployment when production behavior changes.
+11. Confirm the production release-audit report exists for the deployed SHA.
+12. Update `specs/current/` and durable agent state to match shipped reality.
 
 ## Preview deployment discipline
 

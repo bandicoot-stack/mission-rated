@@ -9,6 +9,13 @@ Describe the user-visible and technical change.
 - Change proposal: `specs/changes/.../proposal.md` or explain why this is a lightweight change
 - Related issue(s):
 
+## Codex / agent discipline
+
+- [ ] Equivalent-work preflight completed: current open PRs, active branches, and relevant `specs/changes/*` were checked before creating this line of work.
+- [ ] One intent maps to one active branch/PR; this PR reuses/rebases the current line of work instead of replacing it with a sibling attempt.
+- [ ] Durable state / queue updated if operational truth materially changed; otherwise explain why no durable-state mutation is needed.
+- Preflight evidence / superseded work:
+
 ## Acceptance criteria
 
 - [ ] The proposal acceptance criteria are satisfied.
