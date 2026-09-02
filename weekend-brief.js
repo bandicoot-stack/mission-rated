@@ -42,6 +42,7 @@
     button.disabled=true;
     status.className='mrBriefStatus';
     status.textContent='Joining…';
+    window.mrTrack?.('weekend_brief_signup_attempt',{signup_surface:signupSurface});
     try{
       const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,company,source:signupSurface})});
       const body=await res.json().catch(()=>({}));
@@ -51,11 +52,16 @@
         window.mrTrack?.('weekend_brief_resubscribe_required',{signup_surface:signupSurface});
         return;
       }
+      if(res.status===503&&body.error==='confirmation_required'){
+        status.className='mrBriefStatus bad';
+        status.textContent='Signup confirmation is temporarily unavailable. We won’t mark you subscribed without verifying your email first.';
+        return;
+      }
       if(!res.ok||!body.ok) throw new Error(body.error||'signup_failed');
       form.reset();
-      status.textContent=body.already_subscribed?'You’re already subscribed. Your free Family Pass is ready below.':'You’re in. Your Weekend Brief is headed your way — grab the free Family Pass too.';
+      status.textContent=body.already_subscribed?'This address is already on the Weekend Brief list. Your free Family Pass is ready below.':'Signup received.';
       showNext();
-      window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:signupSurface,already_subscribed:Boolean(body.already_subscribed)});
+      if(body.already_subscribed) window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:signupSurface,already_subscribed:true});
     }catch{
       status.className='mrBriefStatus bad';
       status.textContent='Couldn’t sign you up just now. Please try again.';
