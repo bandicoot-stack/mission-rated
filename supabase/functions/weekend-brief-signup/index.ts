@@ -56,8 +56,6 @@ Deno.serve(async (req: Request) => {
   if (String(body.company || "").trim()) return json({ ok: true }, 200, headers);
 
   const email = String(body.email || "").trim().toLowerCase().slice(0, 254);
-  const source = String(body.source || "homepage").trim().slice(0, 80) || "homepage";
-  const installation = String(body.installation || "").trim().slice(0, 120) || null;
   if (!emailPattern.test(email)) return json({ ok: false, error: "invalid_email" }, 400, headers);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -89,34 +87,11 @@ Deno.serve(async (req: Request) => {
     return json({ ok: true, already_subscribed: true }, 200, headers);
   }
 
-  const now = new Date().toISOString();
-  const { error } = await supabase.from("weekend_brief_subscribers").insert({
-    email,
-    source,
-    installation,
-    status: "active",
-    consented_at: now,
-    updated_at: now
-  });
-
-  if (error) {
-    // A concurrent first signup can win the unique constraint. Treat that as
-    // idempotent only after verifying the resulting row is active.
-    if (error.code === "23505") {
-      const { data: raced } = await supabase
-        .from("weekend_brief_subscribers")
-        .select("status")
-        .eq("email_normalized", email)
-        .maybeSingle();
-      if (raced?.status === "active") return json({ ok: true, already_subscribed: true }, 200, headers);
-      if (raced?.status === "unsubscribed") return json({ ok: false, error: "resubscribe_required" }, 409, headers);
-    }
-
-    console.error("weekend_brief_signup_failed", { code: error.code });
-    return json({ ok: false, error: "signup_failed" }, 500, headers);
-  }
-
-  return json({ ok: true }, 200, headers);
+  // An allowlisted Origin is a CORS control, not proof that the owner of this
+  // email address consented. Until an inbox-control confirmation flow exists,
+  // fail closed rather than manufacture an authoritative active subscriber.
+  // This intentionally performs no insert and sets no consent timestamp.
+  return json({ ok: false, error: "confirmation_required" }, 503, headers);
 });
 
 function json(payload: unknown, status: number, headers: Record<string, string>) {
