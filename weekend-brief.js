@@ -16,7 +16,7 @@
   shell.className='mrBrief';
   shell.id='mrWeekendBrief';
   shell.setAttribute('aria-label','Weekend Brief signup');
-  shell.innerHTML=`<div class="mrBriefCard"><div class="mrBriefEyebrow">YOUR WEEKEND BRIEF</div><h2>Be part of our story.</h2><p>Sign up and we’ll bring your Weekend Brief right to you — useful military-family finds, local deals, events, and what’s worth knowing around Hampton Roads.</p><form class="mrBriefForm" id="mrBriefForm" data-weekend-brief="true"><input id="mrBriefEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@email.com" aria-label="Email address" required><input class="mrBriefTrap" name="company" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Bring me the Brief</button></form><p class="mrBriefFine">No spam. Just the useful stuff. Unsubscribe anytime.</p><div class="mrBriefStatus" id="mrBriefStatus" role="status" aria-live="polite"></div><div class="mrBriefNext" id="mrBriefNext"><a class="mrBriefAction" href="/family-pass.html?utm_source=weekend_brief&utm_medium=signup&utm_campaign=military_family_pass">Open your free Family Pass</a><button class="mrBriefAction secondary" id="mrBriefShare" type="button">Share Mission Rated</button></div></div>`;
+  shell.innerHTML=`<div class="mrBriefCard"><div class="mrBriefEyebrow">YOUR WEEKEND BRIEF</div><h2>Be part of our story.</h2><p>Sign up and we’ll bring your Weekend Brief right to you — useful military-family finds, local deals, events, and what’s worth knowing around Hampton Roads.</p><form class="mrBriefForm" id="mrBriefForm" data-weekend-brief="true"><input id="mrBriefEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="you@email.com" aria-label="Email address" required><input class="mrBriefTrap" name="company" tabindex="-1" autocomplete="off" aria-hidden="true"><button type="submit">Bring me the Brief</button></form><p class="mrBriefFine">No spam. Just the useful stuff. Unsubscribe anytime.</p><div class="mrBriefStatus" id="mrBriefStatus" role="status" aria-live="polite"></div><div class="mrBriefNext" id="mrBriefNext"><a class="mrBriefAction" href="/family-pass.html?utm_source=weekend_brief&utm_medium=signup&utm_campaign=military_family_pass">Open your free Family Pass</a><button class="mrBriefAction secondary" id="mrBriefShare" data-deal-action="share" data-share-method="native-or-copy" type="button">Share Mission Rated</button></div></div>`;
 
   const main=document.querySelector('main');
   if (main) main.insertAdjacentElement('beforebegin',shell); else document.body.appendChild(shell);
@@ -29,9 +29,10 @@
   const share=document.getElementById('mrBriefShare');
   const showNext=()=>next.classList.add('show');
   share.addEventListener('click',async()=>{
-    const u=new URL('/family-pass.html',location.origin);u.searchParams.set('utm_source','referral');u.searchParams.set('utm_medium','share');u.searchParams.set('utm_campaign','weekend_brief_referral');
-    const data={title:'Mission Rated',text:'Useful Hampton Roads military-family deals, events, and local finds.',url:u.toString()};
-    try{if(navigator.share){await navigator.share(data);window.mrTrack?.('weekend_brief_referral_shared',{method:'native'})}else{await navigator.clipboard.writeText(data.url);status.textContent='Family Pass link copied — thanks for sharing.';window.mrTrack?.('weekend_brief_referral_shared',{method:'copy'})}}catch{}
+    const base=new URL('/family-pass.html',location.origin);base.searchParams.set('utm_campaign','weekend_brief_referral');
+    const url=window.mrReferralUrl?.(base.toString())||base.toString();
+    const data={title:'Mission Rated',text:'Useful Hampton Roads military-family deals, events, and local finds.',url};
+    try{if(navigator.share){await navigator.share(data)}else{await navigator.clipboard.writeText(data.url);status.textContent='Family Pass link copied — thanks for sharing.'}}catch{}
   });
   form.addEventListener('submit',async e=>{
     e.preventDefault();

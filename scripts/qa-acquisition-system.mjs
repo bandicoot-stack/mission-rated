@@ -7,5 +7,6 @@ must(text['dist/pcs-hampton-roads.html'].includes('hampton-roads-pcs'),'PCS camp
 must(text['dist/business-share-kit.html'].includes('utm_source'),'Business share attribution missing');
 must(text['dist/creator-guides.html'].includes('utm_source'),'Creator attribution missing');
 must(text['dist/growth-loop.js'].includes('family_pass_cta_clicked'),'Sitewide Family Pass CTA tracking missing');
-must(text['dist/weekend-brief.js'].includes('weekend_brief_referral_shared'),'Weekend Brief referral loop missing');
+must(text['dist/weekend-brief.js'].includes('window.mrReferralUrl')&&text['dist/weekend-brief.js'].includes('data-deal-action="share"'),'Weekend Brief referral loop missing supported referral/share contract');
+must(!text['dist/weekend-brief.js'].includes('weekend_brief_referral_shared'),'Weekend Brief contains unsupported custom referral event');
 console.log('Acquisition system QA passed');
