@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 const analytics = readFileSync('analytics.js', 'utf8');
 const eventApi = readFileSync('api/event.js', 'utf8');
 const ingest = readFileSync('supabase/functions/growth-event-ingest/index.ts', 'utf8');
+const missionControlMetrics = readFileSync('supabase/functions/mission-control-metrics/index.ts', 'utf8');
 const packageJson = readFileSync('package.json', 'utf8');
 const share = readFileSync('deal-share.js', 'utf8');
 const weekendBrief = readFileSync('weekend-brief.js', 'utf8');
@@ -51,6 +52,12 @@ requireToken(ingest, ".from('product_events').insert(row)", 'Growth ingest must 
 requireToken(ingest, "ingestion: 'vercel_oidc_v1'", 'durable rows must record bounded ingestion provenance');
 if (ingest.includes('verified_savings')) errors.push('Growth ingest must never write or derive verified_savings');
 
+requireToken(missionControlMetrics, 'founder_authorization_not_configured', 'founder/Growth metrics must remain withdrawn until founder authorization is configured');
+requireToken(missionControlMetrics, 'status: 403', 'withdrawn founder/Growth metrics endpoint must fail closed');
+if (missionControlMetrics.includes('SUPABASE_SERVICE_ROLE_KEY')) errors.push('withdrawn founder/Growth metrics endpoint must not regain service-role data access');
+if (missionControlMetrics.includes(".from('product_events')") || missionControlMetrics.includes(".from(\"product_events\")")) errors.push('withdrawn founder/Growth metrics endpoint must not query authoritative Growth events');
+if (missionControlMetrics.includes('verified_savings')) errors.push('withdrawn founder/Growth metrics endpoint must not expose realized savings before founder authorization exists');
+
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
 const submitHandler = analytics.match(/document\.addEventListener\('submit',[\s\S]*?\},true\);/)?.[0] || '';
 if (!submitHandler) {
@@ -77,4 +84,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, savings separation, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, founder-metrics withdrawal, savings separation, and origin integrity are guarded.');
