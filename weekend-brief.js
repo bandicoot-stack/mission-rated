@@ -46,7 +46,6 @@
     button.disabled=true;
     status.className='mrBriefStatus';
     status.textContent='Joining…';
-    window.mrTrack?.('weekend_brief_signup_attempt',{signup_surface:signupSurface});
     try{
       const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,company,source:signupSurface})});
       const body=await res.json().catch(()=>({}));

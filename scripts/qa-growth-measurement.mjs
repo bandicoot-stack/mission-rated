@@ -58,6 +58,9 @@ if (!submitHandler) {
 } else if (/send\(['"]weekend_brief_signup_confirmed['"]/.test(submitHandler)) {
   errors.push('analytics.js must not confirm Weekend Brief signup from a generic browser submit handler');
 }
+if (/mrTrack\?\.\(['"]weekend_brief_signup_attempt['"]/.test(weekendBrief)) {
+  errors.push('Weekend Brief local submit handler must not duplicate the generic analytics signup-attempt event');
+}
 requireToken(analytics, 'window.mrConfirmWeekendBriefSignup', 'confirmed Weekend Brief conversion must remain behind the explicit authoritative-success helper');
 requireToken(weekendBriefSignup, 'existing?.status === "unsubscribed"', 'Weekend Brief backend must preserve explicit unsubscribe state');
 requireToken(weekendBriefSignup, 'resubscribe_required', 'Weekend Brief backend must return a distinct resubscribe-required state');
