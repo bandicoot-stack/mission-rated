@@ -29,7 +29,10 @@
   const share=document.getElementById('mrBriefShare');
   const showNext=()=>next.classList.add('show');
   share.addEventListener('click',async()=>{
-    const base=new URL('/family-pass.html',location.origin);base.searchParams.set('utm_campaign','weekend_brief_referral');
+    const base=new URL('/family-pass.html',location.origin);
+    base.searchParams.set('utm_source','weekend_brief');
+    base.searchParams.set('utm_medium','referral');
+    base.searchParams.set('utm_campaign','weekend_brief_referral');
     const url=window.mrReferralUrl?.(base.toString())||base.toString();
     const data={title:'Mission Rated',text:'Useful Hampton Roads military-family deals, events, and local finds.',url};
     try{if(navigator.share){await navigator.share(data)}else{await navigator.clipboard.writeText(data.url);status.textContent='Family Pass link copied — thanks for sharing.'}}catch{}
