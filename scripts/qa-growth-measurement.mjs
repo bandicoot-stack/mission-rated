@@ -73,7 +73,10 @@ requireToken(weekendBriefSignup, 'existing?.status === "unsubscribed"', 'Weekend
 requireToken(weekendBriefSignup, 'resubscribe_required', 'Weekend Brief backend must return a distinct resubscribe-required state');
 requireToken(weekendBrief, "res.status===409&&body.error==='resubscribe_required'", 'Weekend Brief UI must handle resubscribe-required before generic success/error handling');
 requireToken(weekendBrief, 'previously unsubscribed', 'Weekend Brief UI must explain that an unsubscribed address was not reactivated');
-requireToken(weekendBrief, "weekend_brief_signup_confirmed", 'Weekend Brief UI must record confirmed signup only after authoritative success');
+if (/mrTrack\?\.\(['"]weekend_brief_signup_confirmed['"]/.test(weekendBrief)) {
+  errors.push('Weekend Brief UI must not emit confirmed signup from an already-active address; confirmation is reserved for authoritative inbox-confirmation success');
+}
+requireToken(weekendBrief, 'already-active address is an idempotent lookup', 'Weekend Brief UI must document that already-subscribed responses are not new conversion evidence');
 requireToken(share, "window.mrTrack('share_action'", 'successful deal share must emit share_action');
 requireToken(share, "if(err?.name==='AbortError')", 'cancelled native shares must not be counted as completed shares');
 if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) errors.push('share_action must not send generated referral URLs to analytics');
