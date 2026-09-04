@@ -64,7 +64,8 @@
       form.reset();
       status.textContent=body.already_subscribed?'This address is already on the Weekend Brief list. Your free Family Pass is ready below.':'Signup received.';
       showNext();
-      if(body.already_subscribed) window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:signupSurface,already_subscribed:true});
+      // An already-active address is an idempotent lookup, not a new signup conversion.
+      // Confirmed signup analytics remain reserved for a future authoritative inbox-confirmation path.
     }catch{
       status.className='mrBriefStatus bad';
       status.textContent='Couldn’t sign you up just now. Please try again.';
