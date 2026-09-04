@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+// CORS: this browser-write endpoint restricts browser cross-origin access to Mission Rated origins; Origin/CORS is not authentication or proof of subscriber consent.
 const allowedOrigins = new Set([
   "https://www.missionratedhq.com",
   "https://missionratedhq.com",

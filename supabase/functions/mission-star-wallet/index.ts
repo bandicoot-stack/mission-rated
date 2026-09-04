@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.95.0'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2.95.0/cors'
 
+// CORS: wildcard access is intentional because this read-only endpoint returns device-scoped, non-identifying progress and uses no browser credentials.
 const WINDOW_MS = 60_000
 const MAX_REQUESTS = 60
 const buckets = new Map<string, { count: number; resetAt: number }>()
