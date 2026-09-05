@@ -1,5 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.95.0'
 import { corsHeaders } from 'npm:@supabase/supabase-js@2.95.0/cors'
+// CORS: wildcard access is intentional because this endpoint serves read-only public discovery data and does not rely on browser credentials.
 const day=(v:string|null)=>v?new Date(v).toISOString().slice(0,10):null
 const hasHttps=(v:unknown)=>typeof v==='string'&&/^https:\/\//i.test(v)
 const host=(v:unknown)=>{try{return hasHttps(v)?new URL(String(v)).hostname.replace(/^www\./,''):''}catch{return''}}
