@@ -19,6 +19,7 @@ for (const file of ['index.html','military-value.html']) {
   if (!html.includes('deal-expiry.js')) html = html.replace('</body>','<script src="/deal-expiry.js" defer></script>\n</body>');
   if (file === 'index.html' && !html.includes('weekly.js')) html=html.replace('</body>','<script src="/weekly.js" defer></script>\n</body>');
   if (file === 'index.html' && !html.includes('labor-day-promo.js')) html=html.replace('</body>','<script src="/labor-day-promo.js" defer></script>\n</body>');
+  if (file === 'index.html' && !html.includes('labor-day-deals.js')) html=html.replace('</body>','<script src="/labor-day-deals.js" defer></script>\n</body>');
   for (const asset of file==='index.html'?['featured-partners.js','partner-logo.js','home-priority.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js']:[]) if(!html.includes(asset)) html=html.replace('</body>',`<script src="/${asset}" defer></script>\n</body>`);
   await writeFile(path,html);
 }
