@@ -18,6 +18,8 @@ const decorate=()=>{
   section.querySelectorAll('a.mrDealVerify').forEach(link=>{
     const card=link.closest('.mrDeal');
     if(card&&!card.dataset.dealId)card.dataset.dealId=stableDealKey(card);
+    link.textContent='Source ↗';
+    link.setAttribute('aria-label','Open source for this offer');
     link.dataset.dealAction='get-deal';
     // This identifies the click as an outbound source-link interaction only.
     // It must not be interpreted as proof that Mission Rated independently
