@@ -29,7 +29,10 @@
   const share=document.getElementById('mrBriefShare');
   const showNext=()=>next.classList.add('show');
   share.addEventListener('click',async()=>{
-    const base=new URL('/family-pass.html',location.origin);base.searchParams.set('utm_campaign','weekend_brief_referral');
+    const base=new URL('/family-pass.html',location.origin);
+    base.searchParams.set('utm_source','weekend_brief');
+    base.searchParams.set('utm_medium','referral');
+    base.searchParams.set('utm_campaign','weekend_brief_referral');
     const url=window.mrReferralUrl?.(base.toString())||base.toString();
     const data={title:'Mission Rated',text:'Useful Hampton Roads military-family deals, events, and local finds.',url};
     try{if(navigator.share){await navigator.share(data)}else{await navigator.clipboard.writeText(data.url);status.textContent='Family Pass link copied — thanks for sharing.'}}catch{}
@@ -43,7 +46,6 @@
     button.disabled=true;
     status.className='mrBriefStatus';
     status.textContent='Joining…';
-    window.mrTrack?.('weekend_brief_signup_attempt',{signup_surface:signupSurface});
     try{
       const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,company,source:signupSurface})});
       const body=await res.json().catch(()=>({}));
@@ -62,7 +64,8 @@
       form.reset();
       status.textContent=body.already_subscribed?'This address is already on the Weekend Brief list. Your free Family Pass is ready below.':'Signup received.';
       showNext();
-      if(body.already_subscribed) window.mrTrack?.('weekend_brief_signup_confirmed',{signup_surface:signupSurface,already_subscribed:true});
+      // An already-active address is an idempotent lookup, not a new signup conversion.
+      // Confirmed signup analytics remain reserved for a future authoritative inbox-confirmation path.
     }catch{
       status.className='mrBriefStatus bad';
       status.textContent='Couldn’t sign you up just now. Please try again.';

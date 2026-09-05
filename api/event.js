@@ -25,6 +25,15 @@ export default async function handler(req, res) {
   const event = clean(body.event || body.event_name, 60);
   if (!ALLOWED_EVENTS.has(event)) return res.status(400).json({ ok: false });
 
+  // The legacy Labor Day surface cannot prove a genuinely new confirmed subscriber:
+  // its inline handler emits this event for any successful/idempotent API response.
+  // Fail closed at the authoritative ingestion boundary until that surface uses the
+  // canonical inbox-confirmation semantics. Attempts remain measurable separately.
+  if (event === 'weekend_brief_signup_confirmed' && clean(body.signup_surface, 80) === 'labor-day-2026') {
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(204).end();
+  }
+
   const payload = {
     level: 'info',
     msg: 'mission_rated_beta_event',

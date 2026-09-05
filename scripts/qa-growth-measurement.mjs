@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 const analytics = readFileSync('analytics.js', 'utf8');
 const eventApi = readFileSync('api/event.js', 'utf8');
 const ingest = readFileSync('supabase/functions/growth-event-ingest/index.ts', 'utf8');
+const laborDay = readFileSync('labor-day.html', 'utf8');
+const missionControlMetrics = readFileSync('supabase/functions/mission-control-metrics/index.ts', 'utf8');
 const packageJson = readFileSync('package.json', 'utf8');
 const share = readFileSync('deal-share.js', 'utf8');
 const weekendBrief = readFileSync('weekend-brief.js', 'utf8');
@@ -51,6 +53,12 @@ requireToken(ingest, ".from('product_events').insert(row)", 'Growth ingest must 
 requireToken(ingest, "ingestion: 'vercel_oidc_v1'", 'durable rows must record bounded ingestion provenance');
 if (ingest.includes('verified_savings')) errors.push('Growth ingest must never write or derive verified_savings');
 
+requireToken(missionControlMetrics, 'founder_authorization_not_configured', 'founder/Growth metrics must remain withdrawn until founder authorization is configured');
+requireToken(missionControlMetrics, 'status: 403', 'withdrawn founder/Growth metrics endpoint must fail closed');
+if (missionControlMetrics.includes('SUPABASE_SERVICE_ROLE_KEY')) errors.push('withdrawn founder/Growth metrics endpoint must not regain service-role data access');
+if (missionControlMetrics.includes(".from('product_events')") || missionControlMetrics.includes(".from(\"product_events\")")) errors.push('withdrawn founder/Growth metrics endpoint must not query authoritative Growth events');
+if (missionControlMetrics.includes('verified_savings')) errors.push('withdrawn founder/Growth metrics endpoint must not expose realized savings before founder authorization exists');
+
 requireToken(analytics, "send('weekend_brief_signup_attempt'", 'Weekend Brief submit must record attempt, not confirmed signup');
 const submitHandler = analytics.match(/document\.addEventListener\('submit',[\s\S]*?\},true\);/)?.[0] || '';
 if (!submitHandler) {
@@ -58,12 +66,33 @@ if (!submitHandler) {
 } else if (/send\(['"]weekend_brief_signup_confirmed['"]/.test(submitHandler)) {
   errors.push('analytics.js must not confirm Weekend Brief signup from a generic browser submit handler');
 }
+if (/mrTrack\?\.\(['"]weekend_brief_signup_attempt['"]/.test(weekendBrief)) {
+  errors.push('Weekend Brief local submit handler must not duplicate the generic analytics signup-attempt event');
+}
 requireToken(analytics, 'window.mrConfirmWeekendBriefSignup', 'confirmed Weekend Brief conversion must remain behind the explicit authoritative-success helper');
 requireToken(weekendBriefSignup, 'existing?.status === "unsubscribed"', 'Weekend Brief backend must preserve explicit unsubscribe state');
 requireToken(weekendBriefSignup, 'resubscribe_required', 'Weekend Brief backend must return a distinct resubscribe-required state');
 requireToken(weekendBrief, "res.status===409&&body.error==='resubscribe_required'", 'Weekend Brief UI must handle resubscribe-required before generic success/error handling');
 requireToken(weekendBrief, 'previously unsubscribed', 'Weekend Brief UI must explain that an unsubscribed address was not reactivated');
-requireToken(weekendBrief, "weekend_brief_signup_confirmed", 'Weekend Brief UI must record confirmed signup only after authoritative success');
+if (/mrTrack\?\.\(['"]weekend_brief_signup_confirmed['"]/.test(weekendBrief)) {
+  errors.push('Weekend Brief UI must not emit confirmed signup from an already-active address; confirmation is reserved for authoritative inbox-confirmation success');
+}
+requireToken(weekendBrief, 'already-active address is an idempotent lookup', 'Weekend Brief UI must document that already-subscribed responses are not new conversion evidence');
+
+requireToken(laborDay, 'data-weekend-brief="true"', 'Labor Day signup must participate in generic Weekend Brief attempt attribution');
+requireToken(laborDay, 'data-signup-surface="labor-day-2026"', 'Labor Day signup must preserve explicit signup-surface attribution');
+requireToken(laborDay, "res.status===409&&body.error==='resubscribe_required'", 'Labor Day signup must handle resubscribe-required before generic success/error handling');
+requireToken(laborDay, "res.status===503&&body.error==='confirmation_required'", 'Labor Day signup must handle confirmation-required before generic success/error handling');
+requireToken(laborDay, 'previously unsubscribed', 'Labor Day signup must explain that an unsubscribed address was not reactivated');
+requireToken(laborDay, 'won’t mark you subscribed without verifying your email first', 'Labor Day signup must fail closed when inbox confirmation is unavailable');
+requireToken(laborDay, 'body.already_subscribed', 'Labor Day signup must distinguish an already-active address from a new signup response');
+if (/mrTrack\?\.\(['"]weekend_brief_signup_confirmed['"]/.test(laborDay)) {
+  errors.push('Labor Day signup must not emit confirmed conversion evidence from a browser success or already-active response');
+}
+if (/You’re in\. We’ll bring the Labor Day updates to you\./.test(laborDay)) {
+  errors.push('Labor Day signup must not claim subscription success without authoritative inbox confirmation');
+}
+
 requireToken(share, "window.mrTrack('share_action'", 'successful deal share must emit share_action');
 requireToken(share, "if(err?.name==='AbortError')", 'cancelled native shares must not be counted as completed shares');
 if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) errors.push('share_action must not send generated referral URLs to analytics');
@@ -74,4 +103,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, savings separation, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, founder-metrics withdrawal, savings separation, and origin integrity are guarded.');
