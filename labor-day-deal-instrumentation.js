@@ -1,13 +1,16 @@
 (()=>{
 'use strict';
+const hash32=(input,seed)=>{
+  let hash=seed>>>0;
+  for(let i=0;i<input.length;i++)hash=Math.imul(hash^input.charCodeAt(i),16777619);
+  return (hash>>>0).toString(16).padStart(8,'0');
+};
 const stableDealKey=card=>{
   const source=card.querySelector('a.mrDealVerify')?.getAttribute('href')||'';
   const business=card.querySelector('h3')?.textContent||'';
   const offer=card.querySelector('.mrDealOffer')?.textContent||'';
   const input=`${source}|${business}|${offer}`;
-  let hash=2166136261;
-  for(let i=0;i<input.length;i++)hash=Math.imul(hash^input.charCodeAt(i),16777619);
-  return `labor-day-${(hash>>>0).toString(16).padStart(8,'0')}`;
+  return `labor-day-${hash32(input,2166136261)}${hash32(input,2246822519)}`;
 };
 const decorate=()=>{
   const section=document.getElementById('mrLocalLaborDeals');
