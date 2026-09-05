@@ -98,7 +98,10 @@ if (/You’re in\. We’ll bring the Labor Day updates to you\./.test(laborDay))
 
 requireToken(laborDayDeals, 'class="mrDealVerify"', 'Labor Day offer cards must retain their source verification CTA');
 requireToken(laborDayDealInstrumentation, "link.dataset.dealAction='get-deal'", 'Labor Day verification links must opt into supported deal outbound instrumentation');
-requireToken(laborDayDealInstrumentation, "link.dataset.dealSource='verified-source'", 'Labor Day verification links must preserve source-backed provenance in outbound measurement');
+requireToken(laborDayDealInstrumentation, "link.dataset.dealSource='seasonal-source-link'", 'Labor Day outbound measurement must describe a source-link click without asserting independent verification');
+if (laborDayDealInstrumentation.includes("link.dataset.dealSource='verified-source'")) {
+  errors.push('Labor Day instrumentation must not label seasonal source links as verified-source without independent verification evidence');
+}
 requireToken(laborDayDealInstrumentation, 'card.dataset.dealId=stableDealKey(card)', 'Labor Day outbound events must carry a deterministic content-derived per-offer target identifier');
 requireToken(laborDayDealInstrumentation, 'const source=', 'Labor Day per-offer target identifiers must be derived from existing offer content rather than user data');
 requireToken(laborDayDealInstrumentation, 'const business=', 'Labor Day per-offer target identifiers must include the existing business label');
