@@ -19,7 +19,10 @@ const decorate=()=>{
     const card=link.closest('.mrDeal');
     if(card&&!card.dataset.dealId)card.dataset.dealId=stableDealKey(card);
     link.dataset.dealAction='get-deal';
-    link.dataset.dealSource='verified-source';
+    // This identifies the click as an outbound source-link interaction only.
+    // It must not be interpreted as proof that Mission Rated independently
+    // verified the merchant, offer, redemption, or realized savings.
+    link.dataset.dealSource='seasonal-source-link';
   });
   return true;
 };
