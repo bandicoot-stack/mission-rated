@@ -4,6 +4,9 @@ const analytics = readFileSync('analytics.js', 'utf8');
 const eventApi = readFileSync('api/event.js', 'utf8');
 const ingest = readFileSync('supabase/functions/growth-event-ingest/index.ts', 'utf8');
 const laborDay = readFileSync('labor-day.html', 'utf8');
+const laborDayDeals = readFileSync('labor-day-deals.js', 'utf8');
+const laborDayDealInstrumentation = readFileSync('labor-day-deal-instrumentation.js', 'utf8');
+const buildAll = readFileSync('scripts/build-all.mjs', 'utf8');
 const missionControlMetrics = readFileSync('supabase/functions/mission-control-metrics/index.ts', 'utf8');
 const packageJson = readFileSync('package.json', 'utf8');
 const share = readFileSync('deal-share.js', 'utf8');
@@ -93,6 +96,17 @@ if (/You’re in\. We’ll bring the Labor Day updates to you\./.test(laborDay))
   errors.push('Labor Day signup must not claim subscription success without authoritative inbox confirmation');
 }
 
+requireToken(laborDayDeals, 'class="mrDealVerify"', 'Labor Day offer cards must retain their source verification CTA');
+requireToken(laborDayDealInstrumentation, "link.dataset.dealAction='get-deal'", 'Labor Day verification links must opt into supported deal outbound instrumentation');
+requireToken(laborDayDealInstrumentation, "link.dataset.dealSource='verified-source'", 'Labor Day verification links must preserve source-backed provenance in outbound measurement');
+requireToken(analytics, "send('deal_outbound_click'", 'supported deal outbound intent must retain the deal_outbound_click event contract');
+requireToken(eventApi, "'deal_outbound_click'", 'server event allowlist must accept deal_outbound_click');
+requireToken(buildAll, "'labor-day-deal-instrumentation.js'", 'release build must package Labor Day deal instrumentation');
+requireToken(buildAll, '<script src="/labor-day-deal-instrumentation.js" defer></script>', 'release build must load Labor Day deal instrumentation on seasonal deal surfaces');
+if (laborDayDealInstrumentation.includes('mrTrack') || laborDayDealInstrumentation.includes('verified_savings')) {
+  errors.push('Labor Day deal decorator must only opt into the shared analytics contract and must not create custom metrics or savings evidence');
+}
+
 requireToken(share, "window.mrTrack('share_action'", 'successful deal share must emit share_action');
 requireToken(share, "if(err?.name==='AbortError')", 'cancelled native shares must not be counted as completed shares');
 if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) errors.push('share_action must not send generated referral URLs to analytics');
@@ -103,4 +117,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, founder-metrics withdrawal, savings separation, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, founder-metrics withdrawal, savings separation, Labor Day outbound intent, and origin integrity are guarded.');
