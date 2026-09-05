@@ -1,6 +1,6 @@
 (()=>{
  const endpoint='https://vquwdypidgjmxnhhdbol.supabase.co/functions/v1/public-local-intel-candidates';
- const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const esc=window.MRDomUtils.escapeHtml;
  const grid=document.getElementById('candidateGrid'),count=document.getElementById('candidateCount');
  if(!grid||!count) return;
  let items=[];
