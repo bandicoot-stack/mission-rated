@@ -6,6 +6,9 @@ must(text['dist/family-pass.html'].includes('utm_campaign')&&text['dist/family-p
 must(text['dist/pcs-hampton-roads.html'].includes('hampton-roads-pcs'),'PCS campaign attribution missing');
 must(text['dist/business-share-kit.html'].includes('utm_source'),'Business share attribution missing');
 must(text['dist/business-share-kit.html'].includes("utm_source','business"),'Business share attribution must use neutral business-source semantics');
+must(text['dist/business-share-kit.html'].includes("allowedDest=u=>u.protocol==='https:'"),'Business share kit must fail closed to HTTPS Mission Rated destinations');
+must(text['dist/business-share-kit.html'].includes("u.hostname==='missionratedhq.com'||u.hostname==='www.missionratedhq.com'"),'Business share kit must restrict generated links to Mission Rated production domains');
+must(text['dist/business-share-kit.html'].includes("Destination must be on missionratedhq.com."),'Business share kit must explain rejected external destinations');
 must(!text['dist/business-share-kit.html'].includes('Featured on Mission Rated'),'Business share kit must not fabricate featured placement');
 must(!text['dist/business-share-kit.html'].includes('Mission Rated partner'),'Business share kit must not fabricate partner relationships');
 must(text['dist/creator-guides.html'].includes('utm_source'),'Creator attribution missing');
