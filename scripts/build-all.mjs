@@ -3,6 +3,8 @@ import { copyFile, cp, readFile, writeFile, mkdir, readdir } from 'node:fs/promi
 
 await mkdir('dist/assets',{recursive:true});
 await cp('assets','dist/assets',{recursive:true});
+await mkdir('dist/shared',{recursive:true});
+await cp('shared','dist/shared',{recursive:true});
 await mkdir('dist/partners',{recursive:true});
 await cp('partners','dist/partners',{recursive:true});
 await copyFile('brand.js','dist/brand.js');
@@ -40,6 +42,7 @@ for (const file of ['business.html','school.html','installation.html']) {
 }
 for (const file of (await readdir('dist')).filter(file=>file.endsWith('.html'))) {
   const path=`dist/${file}`;let html=await readFile(path,'utf8');
+  if(!html.includes('/shared/dom-utils.js'))html=html.replace('</head>','<script src="/shared/dom-utils.js"></script>\n</head>');
   if(!html.includes('/analytics.js'))html=html.replace('</body>','<script src="/analytics.js" defer></script>\n</body>');
   if(!html.includes('/brand.js'))html=html.replace('</body>','<script src="/brand.js" defer></script>\n</body>');
   if(!html.includes('/growth-loop.js'))html=html.replace('</body>','<script src="/growth-loop.js" defer></script>\n</body>');
