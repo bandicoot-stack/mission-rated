@@ -12,3 +12,11 @@
 - [ ] Run Mission Rated QA and Integration QA.
 - [ ] Verify mobile flow and production event behavior after deployment.
 - [ ] Update `specs/current/` only after shipped behavior matches this change.
+
+## Bounded slice: single-emission share intent
+
+- [x] Reconcile current `main`, open PRs, release audit, Vercel production, Supabase health, durable state, and overlapping share branches.
+- [x] Confirm the shared analytics click listener already emits `share_action` as intent while `deal-share.js` emits a second event after successful share/copy.
+- [ ] Remove the duplicate helper-level `share_action` emission without changing share/copy behavior or referral URL generation.
+- [ ] Add Growth QA that requires the generic share-intent contract and rejects helper-level duplicate emission.
+- [ ] Run Mission Rated QA and Integration QA on the exact branch head.
