@@ -32,9 +32,9 @@ const share=async({url=location.href,title='Mission Rated military deal',text='C
       input.remove();
       if(!copied)throw new Error('copy_failed');
     }
-    // Track only a confirmed native share or successful clipboard copy and only
-    // stable target identifiers. Never count a button click or failed fallback.
-    if(typeof window.mrTrack==='function')window.mrTrack('share_action',{target_type:targetType,target_id:targetId,share_method:method});
+    // The shared analytics click listener records share_action as observed intent.
+    // Do not emit the same event here after native share/copy success: that would
+    // double-count one user interaction and mix intent with completion semantics.
     return {ok:true,method,url:shareUrl};
   }catch(err){
     if(err?.name==='AbortError')return {ok:false,cancelled:true,url:shareUrl};
