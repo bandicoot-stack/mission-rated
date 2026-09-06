@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "build": "node scripts/build-all.mjs",
-    "qa": "npm run build && node scripts/qa.mjs && node scripts/qa-home-deals.mjs && node scripts/qa-growth-measurement.mjs && node scripts/qa-deal-source-integrity.mjs && node scripts/qa-savings-ledger.mjs && node scripts/qa-growth-loop.mjs && node scripts/qa-acquisition-system.mjs && node scripts/qa-fall.mjs && node scripts/qa-brand.mjs && node scripts/qa-partner-logos.mjs && node scripts/qa-featured-partners.mjs && node scripts/qa-agent-system.mjs && node scripts/qa-codex-discipline.mjs && node scripts/qa-operational-exposure.mjs && node scripts/qa-vercel-preview.mjs"
+    "qa": "npm run build && node scripts/qa.mjs && node scripts/qa-home-deals.mjs && node scripts/qa-growth-measurement.mjs && node scripts/qa-deal-source-integrity.mjs && node scripts/qa-external-deal-source-integrity.mjs && node scripts/qa-savings-ledger.mjs && node scripts/qa-growth-loop.mjs && node scripts/qa-acquisition-system.mjs && node scripts/qa-fall.mjs && node scripts/qa-brand.mjs && node scripts/qa-partner-logos.mjs && node scripts/qa-featured-partners.mjs && node scripts/qa-agent-system.mjs && node scripts/qa-codex-discipline.mjs && node scripts/qa-operational-exposure.mjs && node scripts/qa-vercel-preview.mjs"
   },
   "dependencies": {
     "@vercel/oidc": "3.8.5"
