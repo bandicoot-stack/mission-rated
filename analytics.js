@@ -142,7 +142,9 @@ document.addEventListener('click',e=>{
   // the OS share sheet, clipboard, or downstream delivery actually succeeded.
   if(el.id==='mrShareAction'||el.dataset?.dealAction==='share'||/^↗?\s*share\b/.test(text))return send('share_action',{...ctx,share_method:clean(el.dataset?.shareMethod)||'unknown'});
   if(el.classList?.contains('mrDirections')||/\bdirections\b/.test(text))return send('directions_click',ctx);
-  if(/claim (this|business|listing)|\bclaim\b/.test(text))return send('claim_action',ctx);
+  // claim_action is deal-target intent only. Business/listing ownership claims
+  // must not enter deal-claim measurement, and a deal claim is not redemption.
+  if(ctx.target_type==='deal'&&(el.dataset?.dealAction==='claim'||/\bclaim\b/.test(text)))return send('claim_action',ctx);
   if(/leave.*review|write.*review|add.*review|review this|submit review/.test(text))return send('review_action',ctx);
   if(/feedback|suggest.*improvement|report.*issue/.test(text))return send('feedback_action',ctx);
   if(/verify (military )?offer( source)?|verify source|tricare evidence|rating source|public rating source|source ↗/.test(text))return send('offer_source_click',ctx);
