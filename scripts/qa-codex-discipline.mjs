@@ -32,6 +32,13 @@ if (!eventSource.includes('authorization: `Bearer ${oidcToken}`')) {
 
 requireText('AGENTS.md', 'Equivalent-work preflight', 'must require an equivalent-work preflight before material branches or replacement PRs');
 requireText('AGENTS.md', 'One intent, one active branch', 'must enforce one active branch/PR per intent');
+requireText('AGENTS.md', 'Read before write', 'must require agents to inspect existing code and patterns before editing');
+requireText('AGENTS.md', 'Do not guess at APIs, file paths, schemas, configuration, environment variables, or deployment behavior', 'must prohibit unverified API/path/config assumptions');
+requireText('AGENTS.md', 'Make the smallest coherent change that solves the requested problem', 'must require minimal scoped changes');
+requireText('AGENTS.md', 'Never delete, weaken, skip, or rewrite tests to make a change pass', 'must prohibit test weakening to satisfy CI');
+requireText('AGENTS.md', 'Anti-dumb-mistake finish check', 'must require an explicit pre-finish correctness checklist');
+requireText('AGENTS.md', 'Did I actually run the relevant test/build/QA, or am I assuming it works?', 'must require execution evidence instead of assumption');
+requireText('AGENTS.md', 'No filler or self-congratulation', 'must require concise factual completion communication');
 requireText('.github/PULL_REQUEST_TEMPLATE.md', 'Equivalent-work preflight', 'PRs must record duplicate-work preflight evidence');
 requireText('.github/PULL_REQUEST_TEMPLATE.md', 'Durable state / queue updated', 'PRs must explicitly reconcile durable state when reality changed');
 

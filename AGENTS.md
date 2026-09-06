@@ -101,6 +101,69 @@ Stop implementation and reconcile before continuing when any of these become tru
 
 Do not respond to a stop condition by spawning a replacement branch.
 
+## Codex execution discipline
+
+Coding agents must optimize for verified correctness, not apparent speed.
+
+### Read before write
+
+- Read the existing code and nearby patterns before changing them. Match local naming, structure, helpers, and error-handling conventions instead of inventing a parallel style.
+- Do not guess at APIs, file paths, schemas, configuration, environment variables, or deployment behavior. Verify them from the repository or the native system of record first.
+- Search for an existing utility, helper, component, script, or workflow before adding a new one.
+- Make the smallest coherent change that solves the requested problem. No drive-by refactors, formatting sweeps, dependency changes, or unrelated cleanup.
+- Never delete, weaken, skip, or rewrite tests to make a change pass. Fix the underlying defect.
+
+### Plan before ambiguous changes
+
+If a change touches more than one file, crosses systems, or has material ambiguity, state a 2–3 line execution plan before editing. The plan must identify the intended outcome, the files/systems expected to change, and the checks that will prove the change works.
+
+If a requirement remains genuinely ambiguous after reading the repo and relevant state, ask rather than silently guessing. If an assumption is unavoidable, label it explicitly in the PR or handoff.
+
+### Test after change
+
+Run the relevant tests, build, or QA after every coherent change before declaring it complete. Do not substitute code inspection for execution when an executable check exists.
+
+When CI fails:
+
+- diagnose the failing check;
+- fix the same branch/PR;
+- rerun the relevant check;
+- do not create replacement PRs or weaken the check.
+
+### Anti-dumb-mistake finish check
+
+Before finishing, explicitly verify:
+
+- Did I actually run the relevant test/build/QA, or am I assuming it works?
+- Did I read the current implementation before editing it?
+- Did I verify current `main` and check for overlapping PRs/branches?
+- Did I check for existing utilities/helpers/components before writing a new one?
+- Did I verify any API, file path, schema, config, or environment assumption from source?
+- Did I handle the error/edge case, not just the happy path?
+- Does this match the naming/style already used nearby?
+- Did I preserve Mission Rated trust, consent, savings, rating, and authorization semantics?
+- Did I accidentally change unrelated behavior?
+- Did I leave debug prints, temporary flags, commented-out code, or unintended TODOs?
+- If I claim production is live, did I verify the exact production SHA and required release evidence?
+
+If any answer is “no,” fix it or state the unresolved blocker before declaring completion.
+
+### Communication
+
+- No filler or self-congratulation. State the change and the reason.
+- State which checks were actually run and their result.
+- State PR, merge, and deployment status precisely; include the PR number and exact SHA when relevant.
+- Flag uncertainty and assumptions explicitly instead of burying them.
+- Do not call work “done,” “live,” “deployed,” or “verified” based on expected behavior.
+
+Preferred completion format:
+
+- **Changed:** one sentence.
+- **Checks:** tests/build/QA actually run.
+- **PR:** number or `not opened`.
+- **Production:** exact status/SHA or `not deployed`.
+- **Blocker:** only when one exists.
+
 ## Required engineering workflow
 
 For material repository changes:
