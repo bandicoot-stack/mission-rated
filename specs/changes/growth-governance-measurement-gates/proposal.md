@@ -17,6 +17,7 @@ Adopt practical AI/agent governance that prevents costly failures without adding
 8. Analytics failures fail closed for reporting: unavailable/incomplete metrics are labeled unavailable/incomplete rather than estimated.
 9. Sponsorship/payment remains separate from ratings, Mission Score, verification, exclusivity evidence, and organic rank.
 10. Growth Product may implement bounded reversible changes; Growth QA independently validates measurement semantics before production truth.
+11. One user share interaction must produce at most one `share_action` intent event; helper-level share completion logic must not emit the same event a second time.
 
 ## Evidence ladder
 - Observed intent: view, click, form attempt, share action.
@@ -31,6 +32,7 @@ Higher levels may not be inferred solely from lower levels.
 - The savings ledger cannot increment from generic outbound clicks, page views, or unconfirmed claims.
 - The subscriber KPI cannot increment solely from client-side form submission.
 - Referral KPIs distinguish share actions, referred sessions, and downstream conversions.
+- A user share interaction records no more than one `share_action` intent event, including when the share helper completes successfully.
 - Exclusive offers retain confirmation provenance.
 - Growth scorecard surfaces measurement-health status for subscriber, referral, claim/redemption, and savings metrics.
-- QA includes negative tests proving proxy events do not become confirmed outcomes.
+- QA includes negative tests proving proxy events do not become confirmed outcomes or duplicate a single share interaction.
