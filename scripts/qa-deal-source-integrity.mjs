@@ -41,17 +41,28 @@ for (const key of sourceFixes.keys()) {
 }
 
 // Exact-offer contracts are intentionally narrow and reviewable. They exist for
-// cases where one merchant has multiple concurrent promotions and merchant-path
-// validation alone cannot prove the linked page supports the displayed offer.
+// cases where merchant-path validation alone cannot prove the linked page
+// supports the displayed offer. Every runtime source correction is frozen here
+// so a later edit cannot silently swap in another same-merchant promotion.
 const exactSourceContracts = new Map([
-  [
-    'Norfolk|Columbia Factory Store|Additional 20% off for military and first responders with valid ID',
-    '/outlet/norfolk/stores/columbia-factory-store/stream/thank-you-military-and-first-responders-6288463'
-  ],
-  [
-    'Norfolk|Columbia Factory Store|Clearance event up to 70% off',
-    '/outlet/norfolk/stores/columbia-factory-store/stream/clearance-event--up-to-70-off-6285727'
-  ]
+  ['Norfolk|Nike Factory Store|Up to 30% off fleece','/outlet/norfolk/stores/nike-factory-store/stream/nike--up-to-30-off-fleece-93-99-6288015'],
+  ['Norfolk|Nike Factory Store|Running footwear starting at $49.99','/outlet/norfolk/stores/nike-factory-store/stream/running-footwear-starting-at-4999-93-99-6288017'],
+  ['Norfolk|Nike Factory Store|Up to 30% off backpacks','/outlet/norfolk/stores/nike-factory-store/stream/up-to-30-off-backpacks-6288020'],
+  ['Norfolk|Under Armour Factory House|50% off entire store','/outlet/norfolk/stores/under-armour-factory-house/stream/50-off-entire-store-at-under-armour-6288656'],
+  ['Norfolk|Under Armour Factory House|$19.99 hoodies','/outlet/norfolk/stores/under-armour-factory-house/stream/score-of-the-week-1999-hoodies-at-under-armour-6287030'],
+  ['Norfolk|Crocs|2 for $50 on select styles & clearance footwear','/outlet/norfolk/stores/crocs/stream/2-for-50-on-select-styles-clearance-footwear-6288526'],
+  ['Norfolk|Skechers|BOGO 50% off footwear','/outlet/norfolk/stores/skechers/stream/back-2-school-bogo-50-off-footwear-6285855'],
+  ['Norfolk|The Uniform Outlet|Scrubs under $20','/outlet/norfolk/stores/the-uniform-outlet/stream/scrubs-under-20-at-the-uniform-outlet-6277085'],
+  ['Norfolk|Columbia Factory Store|Additional 20% off for military and first responders with valid ID','/outlet/norfolk/stores/columbia-factory-store/stream/thank-you-military-and-first-responders-6288463'],
+  ['Norfolk|Columbia Factory Store|Clearance event up to 70% off','/outlet/norfolk/stores/columbia-factory-store/stream/clearance-event--up-to-70-off-6285727'],
+  ['Williamsburg|Nike Factory Store|Up to 30% off fleece','/outlet/williamsburg/stores/nike-factory-store/stream/nike--up-to-30-off-fleece-93-99-6288015'],
+  ['Williamsburg|Nike Factory Store|Running footwear starting at $49.99','/outlet/williamsburg/stores/nike-factory-store/stream/running-footwear-starting-at-4999-93-99-6288017'],
+  ['Williamsburg|Nike Factory Store|Up to 30% off backpacks','/outlet/williamsburg/stores/nike-factory-store/stream/up-to-30-off-backpacks-6288020'],
+  ['Williamsburg|Under Armour Factory House|50% off entire store','/outlet/williamsburg/stores/under-armour-factory-house/stream/50-off-entire-store-at-under-armour-6288656'],
+  ['Williamsburg|Under Armour Factory House|$19.99 hoodies','/outlet/williamsburg/stores/under-armour-factory-house/stream/score-of-the-week-1999-hoodies-at-under-armour-6287030'],
+  ['Williamsburg|Aeropostale|60% off storewide + BOGO free jeans','/outlet/williamsburg/stores/aeropostale/stream/60-off-storewide-bogo-free-jeans-6288658'],
+  ['Williamsburg|Tommy Hilfiger|50% off almost everything','/outlet/williamsburg/stores/tommy-hilfiger/stream/50-off-almost-everything-6288642'],
+  ['Williamsburg|ASICS|BOGO 60% off footwear','/outlet/williamsburg/stores/asics/stream/bogo-60-off-footwear-6288628']
 ]);
 
 // Some merchant pages legitimately contain several offer lines on one source
@@ -150,6 +161,9 @@ for (const [groupKey, group] of premiumGroups) {
 
 for (const [key] of exactSourceContracts) {
   if (!inventoryKeys.has(key)) failures.push(`orphan exact-offer source contract does not match a current deal: ${key}`);
+}
+for (const key of sourceFixes.keys()) {
+  if (!exactSourceContracts.has(key)) failures.push(`source correction lacks an exact-offer contract: ${key}`);
 }
 for (const [groupKey, pathname] of reviewedSharedSourceGroups) {
   const group = premiumGroups.get(groupKey);
