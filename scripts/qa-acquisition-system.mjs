@@ -6,6 +6,10 @@ must(text['dist/family-pass.html'].includes('utm_campaign')&&text['dist/family-p
 must(text['dist/pcs-hampton-roads.html'].includes('hampton-roads-pcs'),'PCS campaign attribution missing');
 must(text['dist/business-share-kit.html'].includes('utm_source'),'Business share attribution missing');
 must(text['dist/business-share-kit.html'].includes("utm_source','business"),'Business share attribution must use neutral business-source semantics');
+must(text['dist/business-share-kit.html'].includes("utm_medium','business-share"),'Business share attribution must retain the business-share distribution channel');
+must(text['dist/business-share-kit.html'].includes("utm_campaign','business-distribution"),'Unauthenticated Business Share links must use fixed channel-level campaign attribution');
+must(!text['dist/business-share-kit.html'].includes("utm_campaign',slug"),'Business Share Kit must not persist a user-entered business slug as authoritative campaign attribution');
+must(text['dist/business-share-kit.html'].includes('not recorded as verified per-business Growth attribution'),'Business Share Kit must explain that self-entered business identity is presentation-only');
 must(text['dist/business-share-kit.html'].includes("allowedDest=u=>u.protocol==='https:'"),'Business share kit must fail closed to HTTPS Mission Rated destinations');
 must(text['dist/business-share-kit.html'].includes("u.hostname==='missionratedhq.com'||u.hostname==='www.missionratedhq.com'"),'Business share kit must restrict generated links to Mission Rated production domains');
 must(text['dist/business-share-kit.html'].includes("Destination must be on missionratedhq.com."),'Business share kit must explain rejected external destinations');
