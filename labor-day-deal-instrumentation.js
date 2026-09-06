@@ -9,6 +9,7 @@ const sourceFixes=new Map([
   ['Norfolk|Crocs|2 for $50 on select styles & clearance footwear','https://www.premiumoutlets.com/outlet/norfolk/stores/crocs/stream/2-for-50-on-select-styles-clearance-footwear-6288526'],
   ['Norfolk|Skechers|BOGO 50% off footwear','https://www.premiumoutlets.com/outlet/norfolk/stores/skechers/stream/back-2-school-bogo-50-off-footwear-6285855'],
   ['Norfolk|The Uniform Outlet|Scrubs under $20','https://www.premiumoutlets.com/outlet/norfolk/stores/the-uniform-outlet/stream/scrubs-under-20-at-the-uniform-outlet-6277085'],
+  ['Norfolk|Columbia Factory Store|Clearance event up to 70% off','https://www.premiumoutlets.com/outlet/norfolk/stores/columbia-factory-store/stream/clearance-event--up-to-70-off-6285727'],
   ['Williamsburg|Nike Factory Store|Up to 30% off fleece','https://www.premiumoutlets.com/outlet/williamsburg/stores/nike-factory-store/stream/nike--up-to-30-off-fleece-93-99-6288015'],
   ['Williamsburg|Nike Factory Store|Running footwear starting at $49.99','https://www.premiumoutlets.com/outlet/williamsburg/stores/nike-factory-store/stream/running-footwear-starting-at-4999-93-99-6288017'],
   ['Williamsburg|Nike Factory Store|Up to 30% off backpacks','https://www.premiumoutlets.com/outlet/williamsburg/stores/nike-factory-store/stream/up-to-30-off-backpacks-6288020'],
