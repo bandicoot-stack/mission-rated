@@ -114,8 +114,9 @@ requireToken(buildAll, '<script src="/labor-day-deal-instrumentation.js" defer><
 if (laborDayDealInstrumentation.includes('mrTrack') || laborDayDealInstrumentation.includes('verified_savings')) errors.push('Labor Day deal decorator must only opt into the shared analytics contract and must not create custom metrics or savings evidence');
 if (/visitor|session|referral|email|user/i.test(laborDayDealInstrumentation.match(/const stableDealKey=[\s\S]*?};/)?.[0] || '')) errors.push('Labor Day per-offer target identifiers must not derive from visitor, session, referral, email, or user data');
 
-requireToken(share, "window.mrTrack('share_action'", 'successful deal share must emit share_action');
-requireToken(share, "if(err?.name==='AbortError')", 'cancelled native shares must not be counted as completed shares');
+requireToken(analytics, "send('share_action'", 'shared analytics must retain the single share-action intent event');
+requireToken(share, "if(err?.name==='AbortError')", 'cancelled native shares must remain distinguishable from successful share/copy outcomes');
+if (/window\.mrTrack\s*\(\s*['"]share_action['"]/.test(share)) errors.push('deal-share helper must not emit share_action because the shared click listener already records that user intent');
 if (/mrTrack\(['"]share_action['"][^\n]*\burl\s*:/.test(share)) errors.push('share_action must not send generated referral URLs to analytics');
 
 if (errors.length) {
@@ -124,4 +125,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, share outcomes, signup consent contracts, founder-metrics withdrawal, savings separation, Labor Day source integrity/outbound intent, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, single-emission share intent, signup consent contracts, founder-metrics withdrawal, savings separation, Labor Day source integrity/outbound intent, and origin integrity are guarded.');
