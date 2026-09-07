@@ -35,7 +35,14 @@
     base.searchParams.set('utm_campaign','weekend_brief_referral');
     const url=window.mrReferralUrl?.(base.toString())||base.toString();
     const data={title:'Mission Rated',text:'Useful Hampton Roads military-family deals, events, and local finds.',url};
-    try{if(navigator.share){await navigator.share(data)}else{await navigator.clipboard.writeText(data.url);status.textContent='Family Pass link copied — thanks for sharing.'}}catch{}
+    let method='copy';
+    try{
+      if(navigator.share){await navigator.share(data);method='native'}
+      else{await navigator.clipboard.writeText(data.url);status.textContent='Family Pass link copied — thanks for sharing.'}
+      // This proves only that the client-side native share/copy operation completed.
+      // It does not prove downstream delivery, referral conversion, redemption, or savings.
+      window.mrTrack?.('share_completed',{share_method:method});
+    }catch{}
   });
   form.addEventListener('submit',async e=>{
     e.preventDefault();
