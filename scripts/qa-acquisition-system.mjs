@@ -28,7 +28,8 @@ must(weekendCompletedIndex>=0&&weekendCatchIndex>weekendCompletedIndex,'Weekend 
 must(text['dist/savings.html'].includes('/deal-share.js')&&text['dist/savings.html'].includes('/savings-share.js'),'Savings release must load the supported share helper and bounded savings share decorator');
 must(text['dist/savings-share.js'].includes("button.dataset.dealAction='share'"),'Savings cards must opt into supported share-intent measurement');
 must(text['dist/savings-share.js'].includes("new URL('/savings.html',location.origin)"),'Savings shares must remain on a Mission Rated destination');
-must(text['dist/savings-share.js'].includes("url.searchParams.set('q',name)"),'Savings shared links must deep-link back to the selected business context');
+must(text['dist/savings-share.js'].includes("url.searchParams.set('id',businessId)"),'Savings shared links must carry the stable public business ID');
+must(text['dist/savings-share.js'].includes("url.searchParams.set('q',name)"),'Savings shared links must retain a human-readable business search context');
 must(text['dist/savings-share.js'].includes("targetType:'business'")&&text['dist/savings-share.js'].includes('targetId:businessId'),'Savings completed-share evidence must use the public business target context');
 must(!/affiliate_url|source_url|website_url/.test(text['dist/savings-share.js']),'Savings share flow must not decorate or share merchant/source URLs');
 must(text['analytics.js'].includes("send('share_action'"),'Shared analytics must retain click-level share intent');
