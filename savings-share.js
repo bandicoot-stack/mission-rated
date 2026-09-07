@@ -24,6 +24,7 @@ const decorate=()=>{
     button.addEventListener('click',async()=>{
       if(typeof window.mrDealShare!=='function')return;
       const url=new URL('/savings.html',location.origin);
+      url.searchParams.set('id',businessId);
       url.searchParams.set('q',name);
       const result=await window.mrDealShare({
         url:url.toString(),
