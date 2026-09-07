@@ -41,6 +41,8 @@ must(!text['analytics.js'].includes("send('share_completed'"),'Generic click ana
 must(text['api/event.js'].includes("'share_completed'"),'Growth event boundary must allow completed-share evidence');
 must(text['deal-share.js'].includes("window.mrTrack?.('share_completed'"),'Share helper must emit completed-share evidence after successful native share/copy');
 must(text['deal-share.js'].includes("if(err?.name==='AbortError')"),'Cancelled native shares must remain distinguishable from completion');
+must(!text['deal-share.js'].includes("text='Check this verified military value on Mission Rated.'"),'Generic share helper must not fabricate verification in default copy');
+must(text['deal-share.js'].includes("text='Check this deal on Mission Rated.'"),'Generic share helper default copy must remain trust-neutral');
 must(!/share_completed[^\n]*\burl\s*:/.test(text['deal-share.js']),'Completed-share analytics must not persist generated referral URLs');
 const completedIndex=text['deal-share.js'].indexOf("window.mrTrack?.('share_completed'");
 const catchIndex=text['deal-share.js'].indexOf('}catch(err){');

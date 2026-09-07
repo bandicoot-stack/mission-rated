@@ -14,7 +14,7 @@ const referralUrl=(url=location.href)=>{
     return dest.toString();
   }catch{return url}
 };
-const share=async({url=location.href,title='Mission Rated military deal',text='Check this verified military value on Mission Rated.',targetType='deal',targetId=null}={})=>{
+const share=async({url=location.href,title='Mission Rated deal',text='Check this deal on Mission Rated.',targetType='deal',targetId=null}={})=>{
   const shareUrl=referralUrl(url);
   let method='copy';
   try{
