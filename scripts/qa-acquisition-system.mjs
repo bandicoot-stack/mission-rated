@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-const required=['dist/family-pass.html','dist/pcs-hampton-roads.html','dist/business-share-kit.html','dist/creator-guides.html','dist/growth-loop.js','dist/weekend-brief.js'];
+const required=['dist/family-pass.html','dist/pcs-hampton-roads.html','dist/business-share-kit.html','dist/creator-guides.html','dist/growth-loop.js','dist/weekend-brief.js','analytics.js','deal-share.js','api/event.js'];
 const text={};for(const f of required)text[f]=await readFile(f,'utf8');
 const must=(cond,msg)=>{if(!cond)throw new Error(`Acquisition QA: ${msg}`)};
 must(text['dist/family-pass.html'].includes('utm_campaign')&&text['dist/family-pass.html'].includes('Share the Pass'),'Family Pass referral share flow missing');
@@ -19,4 +19,13 @@ must(text['dist/creator-guides.html'].includes('utm_source'),'Creator attributio
 must(text['dist/growth-loop.js'].includes('family_pass_cta_clicked'),'Sitewide Family Pass CTA tracking missing');
 must(text['dist/weekend-brief.js'].includes('window.mrReferralUrl')&&text['dist/weekend-brief.js'].includes('data-deal-action="share"'),'Weekend Brief referral loop missing supported referral/share contract');
 must(!text['dist/weekend-brief.js'].includes('weekend_brief_referral_shared'),'Weekend Brief contains unsupported custom referral event');
+must(text['analytics.js'].includes("send('share_action'"),'Shared analytics must retain click-level share intent');
+must(!text['analytics.js'].includes("send('share_completed'"),'Generic click analytics must not fabricate completed-share evidence');
+must(text['api/event.js'].includes("'share_completed'"),'Growth event boundary must allow completed-share evidence');
+must(text['deal-share.js'].includes("window.mrTrack?.('share_completed'"),'Share helper must emit completed-share evidence after successful native share/copy');
+must(text['deal-share.js'].includes("if(err?.name==='AbortError')"),'Cancelled native shares must remain distinguishable from completion');
+must(!/share_completed[^\n]*\burl\s*:/.test(text['deal-share.js']),'Completed-share analytics must not persist generated referral URLs');
+const completedIndex=text['deal-share.js'].indexOf("window.mrTrack?.('share_completed'");
+const catchIndex=text['deal-share.js'].indexOf('}catch(err){');
+must(completedIndex>=0&&catchIndex>=0&&completedIndex<catchIndex,'Completed-share evidence must only emit in the successful operation path');
 console.log('Acquisition system QA passed');

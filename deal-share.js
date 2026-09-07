@@ -32,9 +32,10 @@ const share=async({url=location.href,title='Mission Rated military deal',text='C
       input.remove();
       if(!copied)throw new Error('copy_failed');
     }
-    // The shared analytics click listener records share_action as observed intent.
-    // Do not emit the same event here after native share/copy success: that would
-    // double-count one user interaction and mix intent with completion semantics.
+    // share_action remains click-level intent. share_completed is stronger but
+    // still bounded evidence: the native share operation resolved or the URL was
+    // copied successfully. It does not prove downstream delivery or conversion.
+    window.mrTrack?.('share_completed',{target_type:clean(targetType)||'deal',target_id:clean(targetId)||null,share_method:method});
     return {ok:true,method,url:shareUrl};
   }catch(err){
     if(err?.name==='AbortError')return {ok:false,cancelled:true,url:shareUrl};
