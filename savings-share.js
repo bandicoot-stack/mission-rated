@@ -4,8 +4,25 @@ const grid=document.getElementById('grid');
 if(!grid)return;
 const search=document.getElementById('q');
 const params=new URLSearchParams(location.search);
+const sharedId=String(params.get('id')||'').trim().slice(0,120);
 const sharedQuery=String(params.get('q')||'').trim().slice(0,120);
-if(sharedQuery&&search){search.value=sharedQuery;search.dispatchEvent(new Event('input',{bubbles:true}));}
+if(!sharedId&&sharedQuery&&search){search.value=sharedQuery;search.dispatchEvent(new Event('input',{bubbles:true}));}
+let sharedResolved=false;
+const resolveSharedTarget=()=>{
+  if(sharedResolved||!sharedId)return;
+  const card=[...grid.querySelectorAll('.card[data-business-id]')].find(item=>String(item.dataset.businessId||'').trim()===sharedId);
+  if(!card)return;
+  const name=String(card.querySelector('h2')?.textContent||'').trim();
+  sharedResolved=true;
+  if(search&&name){
+    search.value=name;
+    search.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  requestAnimationFrame(()=>{
+    const exact=[...grid.querySelectorAll('.card[data-business-id]')].find(item=>String(item.dataset.businessId||'').trim()===sharedId);
+    exact?.scrollIntoView({block:'center'});
+  });
+};
 const decorate=()=>{
   grid.querySelectorAll('.card[data-business-id]').forEach(card=>{
     if(card.querySelector('.mrSavingsShare'))return;
@@ -41,6 +58,7 @@ const decorate=()=>{
     });
     actions.appendChild(button);
   });
+  resolveSharedTarget();
 };
 decorate();
 new MutationObserver(decorate).observe(grid,{childList:true,subtree:true});
