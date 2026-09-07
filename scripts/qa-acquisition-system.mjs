@@ -19,6 +19,12 @@ must(text['dist/creator-guides.html'].includes('utm_source'),'Creator attributio
 must(text['dist/growth-loop.js'].includes('family_pass_cta_clicked'),'Sitewide Family Pass CTA tracking missing');
 must(text['dist/weekend-brief.js'].includes('window.mrReferralUrl')&&text['dist/weekend-brief.js'].includes('data-deal-action="share"'),'Weekend Brief referral loop missing supported referral/share contract');
 must(!text['dist/weekend-brief.js'].includes('weekend_brief_referral_shared'),'Weekend Brief contains unsupported custom referral event');
+must(text['dist/weekend-brief.js'].includes("window.mrTrack?.('share_completed',{share_method:method})"),'Weekend Brief must record completed native share/copy operations through the supported completion event');
+must(text['dist/weekend-brief.js'].includes("if(navigator.share){await navigator.share(data);method='native'}"),'Weekend Brief completion evidence must follow successful native share resolution');
+must(!/share_completed[^\n]*\burl\s*:/.test(text['dist/weekend-brief.js']),'Weekend Brief completed-share analytics must not persist generated referral URLs');
+const weekendCompletedIndex=text['dist/weekend-brief.js'].indexOf("window.mrTrack?.('share_completed'");
+const weekendCatchIndex=text['dist/weekend-brief.js'].indexOf('}catch{}',weekendCompletedIndex);
+must(weekendCompletedIndex>=0&&weekendCatchIndex>weekendCompletedIndex,'Weekend Brief completed-share evidence must stay inside the successful share/copy path');
 must(text['analytics.js'].includes("send('share_action'"),'Shared analytics must retain click-level share intent');
 must(!text['analytics.js'].includes("send('share_completed'"),'Generic click analytics must not fabricate completed-share evidence');
 must(text['api/event.js'].includes("'share_completed'"),'Growth event boundary must allow completed-share evidence');
