@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-const required=['dist/family-pass.html','dist/pcs-hampton-roads.html','dist/business-share-kit.html','dist/creator-guides.html','dist/growth-loop.js','dist/weekend-brief.js','analytics.js','deal-share.js','api/event.js'];
+const required=['dist/family-pass.html','dist/pcs-hampton-roads.html','dist/business-share-kit.html','dist/creator-guides.html','dist/growth-loop.js','dist/weekend-brief.js','dist/savings.html','dist/savings-share.js','analytics.js','deal-share.js','api/event.js'];
 const text={};for(const f of required)text[f]=await readFile(f,'utf8');
 const must=(cond,msg)=>{if(!cond)throw new Error(`Acquisition QA: ${msg}`)};
 must(text['dist/family-pass.html'].includes('utm_campaign')&&text['dist/family-pass.html'].includes('Share the Pass'),'Family Pass referral share flow missing');
@@ -25,6 +25,17 @@ must(!/share_completed[^\n]*\burl\s*:/.test(text['dist/weekend-brief.js']),'Week
 const weekendCompletedIndex=text['dist/weekend-brief.js'].indexOf("window.mrTrack?.('share_completed'");
 const weekendCatchIndex=text['dist/weekend-brief.js'].indexOf('}catch{}',weekendCompletedIndex);
 must(weekendCompletedIndex>=0&&weekendCatchIndex>weekendCompletedIndex,'Weekend Brief completed-share evidence must stay inside the successful share/copy path');
+must(text['dist/savings.html'].includes('/deal-share.js')&&text['dist/savings.html'].includes('/savings-share.js'),'Savings release must load the supported share helper and bounded savings share decorator');
+must(text['dist/savings-share.js'].includes("button.dataset.dealAction='share'"),'Savings cards must opt into supported share-intent measurement');
+must(text['dist/savings-share.js'].includes("new URL('/savings.html',location.origin)"),'Savings shares must remain on a Mission Rated destination');
+must(text['dist/savings-share.js'].includes("url.searchParams.set('id',businessId)"),'Savings shared links must carry the stable public business ID');
+must(text['dist/savings-share.js'].includes("url.searchParams.set('q',name)"),'Savings shared links must retain a human-readable business search context');
+must(text['dist/savings-share.js'].includes("const sharedId=String(params.get('id')||'')"),'Savings receiver must read the stable public business ID from a shared link');
+must(text['dist/savings-share.js'].includes("String(item.dataset.businessId||'').trim()===sharedId"),'Savings receiver must resolve shared targets by exact public business ID');
+must(text['dist/savings-share.js'].includes('if(!sharedId&&sharedQuery&&search)'),'Savings receiver must use the human-readable query only as fallback when no stable business ID is present');
+must(text['dist/savings-share.js'].includes("search.value=name")&&text['dist/savings-share.js'].includes("scrollIntoView({block:'center'})"),'Savings receiver must derive display filtering from the resolved business and focus the exact shared card');
+must(text['dist/savings-share.js'].includes("targetType:'business'")&&text['dist/savings-share.js'].includes('targetId:businessId'),'Savings completed-share evidence must use the public business target context');
+must(!/affiliate_url|source_url|website_url/.test(text['dist/savings-share.js']),'Savings share flow must not decorate or share merchant/source URLs');
 must(text['analytics.js'].includes("send('share_action'"),'Shared analytics must retain click-level share intent');
 must(!text['analytics.js'].includes("send('share_completed'"),'Generic click analytics must not fabricate completed-share evidence');
 must(text['api/event.js'].includes("'share_completed'"),'Growth event boundary must allow completed-share evidence');
