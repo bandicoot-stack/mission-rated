@@ -1,0 +1,27 @@
+# Mission Rated Production Release Report
+
+- **Production SHA:** `c4bdf8eecb2be58eb602a55aeb6afc1bd3318128`
+- **Verified at:** 2026-09-08T14:29:46Z
+- **GitHub Actions run:** https://github.com/bandicoot-stack/mission-rated/actions/runs/34238526796
+- **Commit:** https://github.com/bandicoot-stack/mission-rated/commit/c4bdf8eecb2be58eb602a55aeb6afc1bd3318128
+- **Production:** https://www.missionratedhq.com
+- **Workflow:** Mission Rated Production Verification
+- **Trigger:** push
+- **Actor:** bandicoot-stack
+
+## Verification evidence
+
+- [x] Production `/release.json` converged to the exact GitHub SHA.
+- [x] Required production route smoke tests returned HTTP 200.
+- [x] Mobile visual QA passed at 390x844.
+- [x] Desktop visual QA passed at 1440x1000.
+- [x] Production visual QA ran with Mission Rated analytics suppression active.
+- [x] Yorktown Tools partner logo decoded and rendered on homepage and Featured page.
+- [x] Hunt Club Farm rendered inside the Featured Partners landing surface.
+- [x] Featured Partners remained the active production landing surface expected by the release test.
+
+## Discipline declaration
+
+This report was generated only after every preceding production-verification step in the same workflow job succeeded. A failed or incomplete production verification cannot produce this success report.
+
+The audit is stored on the dedicated `release-audit` branch so recording evidence cannot trigger another production deployment from `main`.
