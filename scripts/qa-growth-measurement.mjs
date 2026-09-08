@@ -75,20 +75,20 @@ requireToken(weekendBrief, 'previously unsubscribed', 'Weekend Brief UI must exp
 if (/mrTrack\?\.\(['"]weekend_brief_signup_confirmed['"]/.test(weekendBrief)) errors.push('Weekend Brief UI must not emit confirmed signup from an already-active address; confirmation is reserved for authoritative inbox-confirmation success');
 requireToken(weekendBrief, 'already-active address is an idempotent lookup', 'Weekend Brief UI must document that already-subscribed responses are not new conversion evidence');
 
-requireToken(laborDay, 'data-weekend-brief="true"', 'Labor Day signup must participate in generic Weekend Brief attempt attribution');
-requireToken(laborDay, 'data-signup-surface="labor-day-2026"', 'Labor Day signup must preserve explicit signup-surface attribution');
-requireToken(laborDay, "res.status===409&&body.error==='resubscribe_required'", 'Labor Day signup must handle resubscribe-required before generic success/error handling');
-requireToken(laborDay, "res.status===503&&body.error==='confirmation_required'", 'Labor Day signup must handle confirmation-required before generic success/error handling');
-requireToken(laborDay, 'previously unsubscribed', 'Labor Day signup must explain that an unsubscribed address was not reactivated');
-requireToken(laborDay, 'won’t mark you subscribed without verifying your email first', 'Labor Day signup must fail closed when inbox confirmation is unavailable');
-requireToken(laborDay, 'body.already_subscribed', 'Labor Day signup must distinguish an already-active address from a new signup response');
-if (/mrTrack\?\.\(['"]weekend_brief_signup_confirmed['"]/.test(laborDay)) errors.push('Labor Day signup must not emit confirmed conversion evidence from a browser success or already-active response');
-if (/You’re in\. We’ll bring the Labor Day updates to you\./.test(laborDay)) errors.push('Labor Day signup must not claim subscription success without authoritative inbox confirmation');
+requireToken(laborDay, 'data-weekend-brief="true"', 'historical Labor Day signup source must retain generic Weekend Brief attempt attribution');
+requireToken(laborDay, 'data-signup-surface="labor-day-2026"', 'historical Labor Day signup source must preserve explicit signup-surface attribution');
+requireToken(laborDay, "res.status===409&&body.error==='resubscribe_required'", 'historical Labor Day signup source must handle resubscribe-required before generic success/error handling');
+requireToken(laborDay, "res.status===503&&body.error==='confirmation_required'", 'historical Labor Day signup source must handle confirmation-required before generic success/error handling');
+requireToken(laborDay, 'previously unsubscribed', 'historical Labor Day signup source must explain that an unsubscribed address was not reactivated');
+requireToken(laborDay, 'won’t mark you subscribed without verifying your email first', 'historical Labor Day signup source must fail closed when inbox confirmation is unavailable');
+requireToken(laborDay, 'body.already_subscribed', 'historical Labor Day signup source must distinguish an already-active address from a new signup response');
+if (/mrTrack\?\.\(['"]weekend_brief_signup_confirmed['"]/.test(laborDay)) errors.push('historical Labor Day signup source must not emit confirmed conversion evidence from a browser success or already-active response');
+if (/You’re in\. We’ll bring the Labor Day updates to you\./.test(laborDay)) errors.push('historical Labor Day signup source must not claim subscription success without authoritative inbox confirmation');
 
-requireToken(laborDayDeals, 'class="mrDealVerify"', 'Labor Day offer cards must retain their source CTA');
-requireToken(laborDayDealInstrumentation, 'const sourceFixes=new Map([', 'Labor Day source corrections must remain explicit and reviewable');
-requireToken(laborDayDealInstrumentation, 'sourceMatchesMerchant', 'Labor Day outbound sources must fail closed on merchant/source mismatches');
-requireToken(laborDayDealInstrumentation, 'card.remove();', 'Labor Day cards with unresolved merchant/source mismatches must be withheld rather than shown');
+requireToken(laborDayDeals, 'class="mrDealVerify"', 'historical Labor Day offer source must retain its source CTA');
+requireToken(laborDayDealInstrumentation, 'const sourceFixes=new Map([', 'historical Labor Day source corrections must remain explicit and reviewable');
+requireToken(laborDayDealInstrumentation, 'sourceMatchesMerchant', 'historical Labor Day outbound sources must fail closed on merchant/source mismatches');
+requireToken(laborDayDealInstrumentation, 'card.remove();', 'historical Labor Day cards with unresolved merchant/source mismatches must be withheld rather than shown');
 for (const badPath of [
   'stores/loft-outlet/stream/labor-day-sales-on-sale-6288333',
   'stores/kate-spade-new-york-outlet/stream/you-are-invited-to-shop-the-labor-day-sale-6288351',
@@ -99,18 +99,18 @@ for (const badPath of [
 ]) {
   if (laborDayDealInstrumentation.includes(badPath)) errors.push(`Labor Day correction layer must not retain known cross-merchant source path: ${badPath}`);
 }
-requireToken(laborDayDealInstrumentation, "link.dataset.dealAction='get-deal'", 'Labor Day source links must opt into supported deal outbound instrumentation');
-requireToken(laborDayDealInstrumentation, "link.dataset.dealSource='seasonal-source-link'", 'Labor Day outbound measurement must describe a source-link click without asserting independent verification');
-if (laborDayDealInstrumentation.includes("link.dataset.dealSource='verified-source'")) errors.push('Labor Day instrumentation must not label seasonal source links as verified-source without independent verification evidence');
-requireToken(laborDayDealInstrumentation, 'card.dataset.dealId=stableDealKey(card)', 'Labor Day outbound events must carry a deterministic content-derived per-offer target identifier');
-requireToken(laborDayDealInstrumentation, 'const source=', 'Labor Day per-offer target identifiers must be derived from existing offer content rather than user data');
-requireToken(laborDayDealInstrumentation, 'const business=', 'Labor Day per-offer target identifiers must include the existing business label');
-requireToken(laborDayDealInstrumentation, 'const offer=', 'Labor Day per-offer target identifiers must include the existing offer text');
+requireToken(laborDayDealInstrumentation, "link.dataset.dealAction='get-deal'", 'historical Labor Day source links must retain supported deal outbound instrumentation');
+requireToken(laborDayDealInstrumentation, "link.dataset.dealSource='seasonal-source-link'", 'historical Labor Day outbound measurement must describe a source-link click without asserting independent verification');
+if (laborDayDealInstrumentation.includes("link.dataset.dealSource='verified-source'")) errors.push('historical Labor Day instrumentation must not label seasonal source links as verified-source without independent verification evidence');
+requireToken(laborDayDealInstrumentation, 'card.dataset.dealId=stableDealKey(card)', 'historical Labor Day outbound events must carry a deterministic content-derived per-offer target identifier');
+requireToken(laborDayDealInstrumentation, 'const source=', 'historical Labor Day per-offer target identifiers must be derived from existing offer content rather than user data');
+requireToken(laborDayDealInstrumentation, 'const business=', 'historical Labor Day per-offer target identifiers must include the existing business label');
+requireToken(laborDayDealInstrumentation, 'const offer=', 'historical Labor Day per-offer target identifiers must include the existing offer text');
 requireToken(analytics, "send('deal_outbound_click'", 'supported deal outbound intent must retain the deal_outbound_click event contract');
 requireToken(analytics, "if(card?.dataset?.dealId)return {target_type:'deal',target_id:card.dataset.dealId}", 'shared analytics must preserve deal target attribution when a deterministic deal key is present');
 requireToken(eventApi, "'deal_outbound_click'", 'server event allowlist must accept deal_outbound_click');
-requireToken(buildAll, "'labor-day-deal-instrumentation.js'", 'release build must package Labor Day deal instrumentation');
-requireToken(buildAll, '<script src="/labor-day-deal-instrumentation.js" defer></script>', 'release build must load Labor Day deal instrumentation on seasonal deal surfaces');
+if (buildAll.includes("'labor-day-deal-instrumentation.js'")) errors.push('release build must not package expired Labor Day deal instrumentation');
+if (buildAll.includes('<script src="/labor-day-deal-instrumentation.js" defer></script>')) errors.push('release build must not load expired Labor Day deal instrumentation');
 if (laborDayDealInstrumentation.includes('mrTrack') || laborDayDealInstrumentation.includes('verified_savings')) errors.push('Labor Day deal decorator must only opt into the shared analytics contract and must not create custom metrics or savings evidence');
 if (/visitor|session|referral|email|user/i.test(laborDayDealInstrumentation.match(/const stableDealKey=[\s\S]*?};/)?.[0] || '')) errors.push('Labor Day per-offer target identifiers must not derive from visitor, session, referral, email, or user data');
 
@@ -125,4 +125,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, single-emission share intent, signup consent contracts, founder-metrics withdrawal, savings separation, Labor Day source integrity/outbound intent, and origin integrity are guarded.');
+console.log('Growth measurement QA passed: supported OIDC durable persistence, attribution, single-emission share intent, signup consent contracts, founder-metrics withdrawal, savings separation, retained historical Labor Day source integrity, expired Labor Day release withdrawal, and origin integrity are guarded.');
