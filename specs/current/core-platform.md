@@ -16,12 +16,14 @@ Mission Rated is a military-family discovery and decision-support experience for
 The homepage prioritizes these discovery paths:
 
 1. Today’s Deals
-2. Labor Day / active major seasonal experience
+2. Fall Deals & Finds / active major seasonal experience
 3. Local Deals
 4. Everyday Deals
 5. Places
 6. Businesses
 7. Schools
+
+Expired seasonal experiences are removed from the production release and public discovery surfaces when the active seasonal slot rotates. Historical source artifacts may remain in repository history, but they are not treated as current public content.
 
 Buy a Car is an integrated Mission Rated journey rather than a separate product identity.
 
