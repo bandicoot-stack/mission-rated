@@ -8,7 +8,7 @@ await cp('shared','dist/shared',{recursive:true});
 await mkdir('dist/partners',{recursive:true});
 await cp('partners','dist/partners',{recursive:true});
 await copyFile('brand.js','dist/brand.js');
-for (const file of ['school.html','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-partners.js','partner-logo.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js','fall.html','fall-mission-rated.js','fall-sort.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','instagram-connect.html','instagram-connect-tool.js','deal-share.js','savings-share.js','featured.html','family-pass.html','growth-loop.js','pcs-hampton-roads.html','business-share-kit.html','creator-guides.html','partner-pipeline.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
+for (const file of ['school.html','school-maturity.js','installation.html','detail-links.js','deal-expiry.js','weekly.js','home-priority.js','featured-partners.js','partner-logo.js','featured-home.js','gui-cleanup.js','featured-landing-fix.js','fall.html','fall-mission-rated.js','fall-sort.js','local-intel.html','local-intel-embeds.js','instagram-connect.js','instagram-connect.html','instagram-connect-tool.js','deal-share.js','savings-share.js','featured.html','family-pass.html','growth-loop.js','pcs-hampton-roads.html','business-share-kit.html','creator-guides.html','partner-pipeline.html','99012cfad8c2e9d0d3cc9683bb7afaba.txt']) await copyFile(file, `dist/${file}`);
 for (const file of ['schools.html','bases.html']) {
   const path = `dist/${file}`;
   let html = await readFile(path, 'utf8');
@@ -26,6 +26,11 @@ for (const file of ['index.html','military-value.html']) {
 for (const file of ['business.html','school.html','installation.html']) {
   const path=`dist/${file}`;let html=await readFile(path,'utf8');
   for(const asset of ['quick-vote.js','lifestyle-nav.js','mobile-browse.js','browse-state.js']) if(!html.includes(asset)) html=html.replace('</body>',`<script src="/${asset}" defer></script>\n</body>`);
+  await writeFile(path,html);
+}
+for (const file of ['schools.html','school.html']) {
+  const path=`dist/${file}`;let html=await readFile(path,'utf8');
+  if(!html.includes('/school-maturity.js'))html=html.replace('</body>','<script src="/school-maturity.js" defer></script>\n</body>');
   await writeFile(path,html);
 }
 {
