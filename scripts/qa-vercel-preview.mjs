@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { decideVercelBuild } from './vercel-ignore-build.mjs';
 
 const decide = input => decideVercelBuild(input);
@@ -11,4 +12,18 @@ assert.equal(decide({ env: { VERCEL_ENV: 'preview' }, branch: 'feature/x', commi
 assert.equal(decide({ env: { VERCEL_ENV: 'preview' }, branch: 'feature/x', commitMessage: '[skip preview]' }).action, 'ignore');
 assert.equal(decide({ env: { VERCEL_ENV: 'preview' }, branch: 'feature/x', commitMessage: '' }).action, 'ignore');
 
-console.log('Vercel preview policy QA passed: production always builds; previews require [preview].');
+const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+assert.equal(
+  packageJson.engines?.node,
+  '20.x',
+  'Mission Rated must pin the Node major to 20.x so Vercel cannot silently advance to a future major.'
+);
+
+const nvmrc = readFileSync(new URL('../.nvmrc', import.meta.url), 'utf8').trim();
+assert.equal(
+  nvmrc,
+  '20',
+  'Mission Rated local Node selection must stay on the same Node 20 major as production.'
+);
+
+console.log('Vercel runtime QA passed: production always builds, previews require [preview], and production/local Node stay pinned to major 20.');
