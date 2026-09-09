@@ -15,13 +15,16 @@
 - [x] Rotate sitemap and generated discovery metadata to Fall Deals & Finds.
 - [x] Add QA coverage that fails if Labor Day assets or sitemap discovery return.
 - [x] Update the current core-platform contract for the active fall seasonal experience.
+- [x] Refresh the Fall Deals & Finds surface on September 9 with verified Hampton Roads anchors: Naval Station Norfolk Fleet Fest and Military Aviation Museum Living History Event.
+- [x] Replace generic Hunt Club military-offer language with the official coupon/valid-ID terms and avoid unsupported discount amounts.
+- [x] Raise the curated Fall Deals & Finds inventory from 30 to 32 and update fall QA to guard the refreshed date, sources, anchors, and card count.
 
 ## Verification
 
 - [ ] Run Mission Rated QA.
 - [ ] Run Mission Rated Integration QA.
 - [ ] Verify mobile behavior and keyboard focus states through the established release QA path.
-- [ ] Verify Fall source links and freshness language.
+- [x] Verify Fall source links and freshness language for the September 9 refresh.
 - [ ] Verify `/fall` in production.
 - [ ] Verify `/labor-day` and `/labor-day.html` are not publicly served after deployment.
 - [ ] Verify production exact-SHA convergence and release audit evidence.
