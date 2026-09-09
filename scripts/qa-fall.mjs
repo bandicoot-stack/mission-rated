@@ -17,9 +17,10 @@ requireToken(build,"'fall-mission-rated.js'",'release build must copy fall Missi
 requireToken(sitemap,'https://www.missionratedhq.com/fall','sitemap must publish Fall Deals & Finds');
 for(const token of ["'labor-day.html'","'labor-day-promo.js'","'labor-day-deals.js'","'labor-day-deal-instrumentation.js'","'labor-day-nav.js'"]) forbidToken(build,token,`release build must not publish ${token}`);
 forbidToken(sitemap,'https://www.missionratedhq.com/labor-day','sitemap must not advertise the expired Labor Day surface');
-for(const token of ['Historic Greenbrier Farms','Hunt Club Farm','Bergey’s Breadbasket','Bluebird Gap Farm Fall Festival','UPDATED SEPTEMBER 2, 2026']) requireToken(fall,token,`fall page missing ${token}`);
-for(const host of ['historicgreenbrierfarms.com','huntclubfarm.com','bergeysbreadbasket.com','hampton.gov']) requireToken(fall,host,`fall page missing source host ${host}`);
+for(const token of ['Historic Greenbrier Farms','Hunt Club Farm','Bergey’s Breadbasket','Bluebird Gap Farm Fall Festival','Naval Station Norfolk Fleet Fest','Military Aviation Museum Living History Event','UPDATED SEPTEMBER 9, 2026','32 Fall Deals & Finds']) requireToken(fall,token,`fall page missing ${token}`);
+for(const host of ['historicgreenbrierfarms.com','huntclubfarm.com','bergeysbreadbasket.com','hampton.gov','navylifema.com','militaryaviationmuseum.org']) requireToken(fall,host,`fall page missing source host ${host}`);
 for(const token of ['MR Building','Military discount: not yet confirmed','10% off','quick-rank-vote','▲','▼','Community signal only','function dedupe()','4e05ea3f-84e2-4e44-89f7-fc7023e6aedf','f2d39470-11f2-4ff1-ac10-1706f1efa43a','a59e8e05-3bd2-4d2c-b391-1c32aa887111','3721c86b-0aff-4169-8546-43898c05121b']) requireToken(fallAttrs,token,`fall Mission Rated attributes missing ${token}`);
+if((fall.match(/<article class="card">/g)||[]).length!==32)errors.push('fall page must publish exactly 32 curated listing cards for the September 9 refresh');
 if(!/meta name="description"/.test(fall))errors.push('fall page must include discovery metadata');
 if(!/@media\(max-width:820px\)/.test(fall))errors.push('fall page must retain mobile responsive layout');
 
@@ -28,4 +29,4 @@ if(errors.length){
   for(const error of errors) console.error(` - ${error}`);
   process.exit(1);
 }
-console.log('Fall Deals & Finds QA passed: seasonal navigation, Labor Day retirement, source coverage, MR attributes, military-value visibility, guaranteed voting IDs, build inclusion, sitemap discovery, and mobile metadata are guarded.');
+console.log('Fall Deals & Finds QA passed: seasonal navigation, Labor Day retirement, 32-listing source coverage, verified fall anchors, MR attributes, military-value visibility, guaranteed voting IDs, build inclusion, sitemap discovery, and mobile metadata are guarded.');
