@@ -26,4 +26,26 @@ assert.equal(
   'Mission Rated local Node selection must stay on the same Node 24 major as production.'
 );
 
-console.log('Vercel runtime QA passed: production always builds, previews require [preview], and production/local Node stay pinned to major 24.');
+const vercelConfig = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+const globalHeaders = vercelConfig.headers?.find(rule => rule.source === '/(.*)')?.headers ?? [];
+const headerValue = key => globalHeaders.find(header => header.key.toLowerCase() === key.toLowerCase())?.value;
+
+assert.equal(
+  headerValue('Strict-Transport-Security'),
+  'max-age=63072000; includeSubDomains; preload',
+  'Mission Rated must preserve the production HSTS policy.'
+);
+assert.equal(headerValue('X-Frame-Options'), 'DENY', 'Mission Rated must remain protected against framing.');
+assert.equal(headerValue('X-Content-Type-Options'), 'nosniff', 'Mission Rated must disable MIME sniffing.');
+assert.equal(
+  headerValue('Referrer-Policy'),
+  'strict-origin-when-cross-origin',
+  'Mission Rated must preserve the production referrer policy.'
+);
+assert.equal(
+  headerValue('Permissions-Policy'),
+  'camera=(), microphone=(), geolocation=()',
+  'Mission Rated must keep unused browser capabilities disabled by default.'
+);
+
+console.log('Vercel runtime QA passed: production always builds, previews require [preview], Node stays pinned to major 24, and baseline security headers are enforced.');
