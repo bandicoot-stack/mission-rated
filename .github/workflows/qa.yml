@@ -22,5 +22,12 @@ jobs:
           node-version: 24
       - name: Install QA dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Capture generated lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-foundation-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 1
       - name: Build and validate release
         run: npm run qa
