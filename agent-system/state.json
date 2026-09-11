@@ -1,26 +1,29 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T19:54:03Z",
+  "updated_at": "2026-09-11T03:58:23Z",
   "current_focus": "Run Mission Rated from reconciled production truth with audited releases, defensible measurement, authenticated operational surfaces, and durable agent-state semantics.",
-  "active_change": "At the 2026-09-03T19:54:03Z reconciliation snapshot, GitHub main and Vercel production were both on bcd6474124f903d5acf2d254ae5449613a2b4656. The exact-SHA release audit passed convergence, required route smoke tests, mobile and desktop visual QA, analytics suppression during production visual QA, Yorktown Tools rendering, Hunt Club Farm Featured rendering, and the expected Featured Partners landing surface. Nine open PRs were observed; none is active Growth MVP work overlapping this reconciliation. Supabase was ACTIVE_HEALTHY. Growth event persistence remains on the shipped Vercel OIDC to Supabase growth-event-ingest boundary; issue #141 remains closed. Founder operational metrics remain fail-closed and guarded by Growth QA until founder/operator authorization is proven; issue #142 remains the authorization boundary. Weekend Brief signup is deployed as version 4 with first-time consent fail-closed pending a real inbox-confirmation path. External reconciliation fields below are timestamped observations, never live authority; reread native systems before material work.",
+  "active_change": "At the 2026-09-11T03:58:23Z reconciliation snapshot, GitHub main and Vercel production were both on 19d4ed0d2600c7d21c333152ad4f7722ad7f5bb1 after the bounded ESLint QA foundation merged. The immutable release-audit branch independently recorded production on that exact SHA. No open pull requests were observed. Vercel production was READY and reported no runtime errors in the latest 24-hour window. Supabase project vquwdypidgjmxnhhdbol was ACTIVE_HEALTHY. External reconciliation fields below remain timestamped observations, never live authority; reread native systems before material work.",
   "operator_next_action": "Before material work, reread GitHub main/open PRs/checks, the exact-SHA release audit, Vercel production/runtime health, and relevant Supabase live state. Preserve the shipped OIDC event-persistence boundary, analytics-suppression release QA, the fail-closed founder metrics boundary, and the fail-closed Weekend Brief consent contract. Do not infer current operational truth from this repository snapshot after native systems change.",
   "reconciliation": {
     "semantics": "external-state-snapshot",
     "authority": "observational_only_reread_native_systems_before_material_work",
-    "observed_at": "2026-09-03T19:54:03Z",
+    "observed_at": "2026-09-11T03:58:23Z",
     "github": {
-      "observed_open_pull_requests": 9,
-      "observed_main_sha": "bcd6474124f903d5acf2d254ae5449613a2b4656",
+      "observed_open_pull_requests": 0,
+      "observed_main_sha": "19d4ed0d2600c7d21c333152ad4f7722ad7f5bb1",
       "release_audit_branch": "release-audit",
-      "observed_verified_production_sha": "bcd6474124f903d5acf2d254ae5449613a2b4656",
-      "observed_release_report": "reports/2026-09-03/bcd6474124f903d5acf2d254ae5449613a2b4656.md"
+      "observed_verified_production_sha": "19d4ed0d2600c7d21c333152ad4f7722ad7f5bb1",
+      "observed_release_audit_commit": "432b72c0a2d47218614994b730d3c824828d522e"
     },
     "vercel": {
       "observed_production_state": "READY",
-      "observed_verified_sha": "bcd6474124f903d5acf2d254ae5449613a2b4656"
+      "observed_verified_sha": "19d4ed0d2600c7d21c333152ad4f7722ad7f5bb1",
+      "observed_runtime_errors_24h": 0
     },
     "supabase": {
       "observed_project_status": "ACTIVE_HEALTHY",
+      "live_project_status_verified_at": "2026-09-11T03:58:23Z",
+      "operational_boundary_details_last_verified_at": "2026-09-03T19:54:03Z",
       "observed_mission_control_metrics_verify_jwt": true,
       "observed_mission_control_metrics_version": 4,
       "observed_product_event_verify_jwt": true,
@@ -52,7 +55,7 @@
     "Family Pass and Business Share Kit acquisition measurement must remain within the supported event contract; unsupported custom events must not be represented as measured Growth signals.",
     "Founder operational status artifacts remain repository-only until a server-side founder authorization boundary is established.",
     "Volatile external reconciliation data in agent-system/state.json is a timestamped observation, never live authority; native systems must be reread before material work.",
-    "Weekend Brief first-time signup consent remains fail-closed until inbox-control confirmation exists; browser Origin is not subscriber consent."
+    "Weekend Brief first-time signup consent remains fail-closed until inbox-control confirmation exists. Browser Origin is not subscriber consent."
   ],
   "native_state_to_verify_when_relevant": [
     "GitHub branch/PR/check status",
