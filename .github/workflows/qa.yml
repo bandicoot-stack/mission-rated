@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: mission-rated-qa-${{ github.ref }}
@@ -17,21 +17,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v7
         with:
           node-version: 24
       - name: Install QA dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Commit generated lockfile once
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: commit deterministic npm lockfile"
-            git push origin HEAD:${{ github.event.pull_request.head.ref }}
-          fi
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Build and validate release
         run: npm run qa
