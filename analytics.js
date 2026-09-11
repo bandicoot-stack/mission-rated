@@ -92,9 +92,21 @@ const targetContext=el=>{
   if(params.get('id'))return {target_type:location.pathname.includes('school')?'school':location.pathname.includes('installation')?'installation':'business',target_id:params.get('id')};
   return {};
 };
+const recordDeliveryFailure=(eventName,status)=>{
+  try{
+    const key='mr_analytics_delivery_failures';
+    const failures=JSON.parse(sessionStorage.getItem(key)||'[]');
+    failures.push({event_name:clean(eventName).slice(0,60),status:String(status||'network').slice(0,24),ts:Date.now()});
+    sessionStorage.setItem(key,JSON.stringify(failures.slice(-10)));
+  }catch{}
+};
 const send=(eventName,extra={})=>{
   const payload={event_name:eventName,path:location.pathname||'/',session_id:session,visitor_id:visitor,referrer_host:referrerHost,...acquisition,...extra};
-  try{fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'same-origin'}).catch(()=>{})}catch{}
+  try{
+    fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload),keepalive:true,credentials:'same-origin'})
+      .then(response=>{if(!response.ok)recordDeliveryFailure(eventName,response.status)})
+      .catch(()=>recordDeliveryFailure(eventName,'network'));
+  }catch{recordDeliveryFailure(eventName,'client')}
 };
 window.mrTrack=send;
 // Subscription integrations must call this only after the authoritative
