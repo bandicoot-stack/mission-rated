@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 
 const home = readFileSync('home-priority.js','utf8');
 const fall = readFileSync('fall.html','utf8');
+const currentFall = readFileSync('fall-current.html','utf8');
+const vercel = JSON.parse(readFileSync('vercel.json','utf8'));
 const fallAttrs = readFileSync('fall-mission-rated.js','utf8');
 const build = readFileSync('scripts/build-all.mjs','utf8');
 const sitemap = readFileSync('sitemap.xml','utf8');
@@ -10,9 +12,13 @@ const requireToken=(source,token,message)=>{if(!source.includes(token))errors.pu
 const forbidToken=(source,token,message)=>{if(source.includes(token))errors.push(message)};
 
 requireToken(home,"['fall','Fall Deals & Finds']",'homepage seasonal slot must include Fall Deals & Finds');
-requireToken(home,"location.href='/fall.html'",'homepage fall action must route to /fall.html');
+requireToken(home,"location.href='/fall'",'homepage fall action must route to refreshed /fall');
 requireToken(home,"document.getElementById('mrLaborDay')?.remove()",'homepage must remove the legacy Labor Day promotional surface');
 requireToken(build,"'fall.html'",'release build must copy fall.html');
+requireToken(build,"'fall-current.html'",'release build must copy refreshed fall-current.html');
+if (!vercel.rewrites?.some(rule=>rule.source==='/fall'&&rule.destination==='/fall-current.html')) errors.push('/fall must rewrite to the refreshed Fall Deals file');
+if (!vercel.redirects?.some(rule=>rule.source==='/fall.html'&&rule.destination==='/fall')) errors.push('legacy /fall.html must redirect to /fall');
+for (const token of ['Fall Deals & Finds','https://www.missionratedhq.com/fall','UPDATED OCTOBER 8, 2026','Military Family Festival & Resource Fair']) requireToken(currentFall,token,`refreshed fall page missing ${token}`);
 requireToken(build,"'fall-mission-rated.js'",'release build must copy fall Mission Rated attributes');
 requireToken(sitemap,'https://www.missionratedhq.com/fall','sitemap must publish Fall Deals & Finds');
 for(const token of ["'labor-day.html'","'labor-day-promo.js'","'labor-day-deals.js'","'labor-day-deal-instrumentation.js'","'labor-day-nav.js'"]) forbidToken(build,token,`release build must not publish ${token}`);
